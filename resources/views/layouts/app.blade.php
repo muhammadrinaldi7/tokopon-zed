@@ -19,12 +19,18 @@
 <body class="min-h-screen bg-gray-50 antialiased flex flex-col">
 
     <livewire:header />
-
+    @auth
+        @unless(auth()->user()->hasRole('cs'))
+            <livewire:chatroom />
+        @endunless
+    @endauth
     <main class="flex-1">
         {{ $slot }}
     </main>
 
     <livewire:footer />
+
+    <livewire:confirm-modal />
 
 </body>
 

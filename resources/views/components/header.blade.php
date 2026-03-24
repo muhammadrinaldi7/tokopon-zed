@@ -1,6 +1,7 @@
 <?php
 // ⚡ header
 
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 new class extends Component {
@@ -11,6 +12,12 @@ new class extends Component {
         $this->mobileMenuOpen = !$this->mobileMenuOpen;
     }
 
+    public function confirmLogout(): void
+    {
+        $this->dispatch('show-confirm', title: 'Logout', message: 'Apakah Anda yakin ingin keluar dari akun?', confirmEvent: 'do-logout', type: 'warning', confirmText: 'Ya, Logout', cancelText: 'Batal');
+    }
+
+    #[On('do-logout')]
     public function logout(): void
     {
         auth()->logout();
@@ -59,7 +66,7 @@ new class extends Component {
         <div class="hidden lg:flex items-center gap-3">
             @auth
                 <span class="text-sm text-gray-600">Halo, <strong>{{ auth()->user()->name }}</strong></span>
-                <button wire:click="logout"
+                <button wire:click="confirmLogout"
                     class="px-5 py-2 text-sm font-semibold text-gray-500 bg-gray-100 border border-gray-200 rounded-lg transition hover:bg-gray-200">
                     Logout
                 </button>
@@ -123,7 +130,7 @@ new class extends Component {
             <div class="flex flex-col gap-3 mt-4 pt-4 border-t border-gray-100">
                 @auth
                     <span class="px-4 text-sm text-gray-600">Halo, <strong>{{ auth()->user()->name }}</strong></span>
-                    <button wire:click="logout"
+                    <button wire:click="confirmLogout"
                         class="block text-center px-5 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 border border-gray-200 rounded-lg transition hover:bg-gray-200">
                         Logout
                     </button>
