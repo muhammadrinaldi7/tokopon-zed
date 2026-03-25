@@ -47,6 +47,21 @@ class User extends Authenticatable
         ];
     }
 
+    public function profile()
+    {
+        return $this->hasOne(\App\Models\UserProfile::class);
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany(\App\Models\UserAddress::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(\App\Models\Order::class);
+    }
+
     public function conversations()
     {
         return $this->hasMany(\App\Models\Conversation::class);

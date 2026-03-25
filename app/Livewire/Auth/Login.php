@@ -35,7 +35,15 @@ class Login extends Component
         }
 
         session()->regenerate();
-        $this->redirect('/', navigate: true);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        
+        if ($user->roles->count() > 0 && !$user->hasRole('user')) {
+            $this->redirect('/admin/dashboard', navigate: true);
+        } else {
+            $this->redirect('/', navigate: true);
+        }
     }
 
     public function render()

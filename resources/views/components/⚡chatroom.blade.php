@@ -254,27 +254,30 @@ new class extends Component {
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
                         </svg>
-                    </button>
-                </form>
-            @else
-                <div class="py-2 px-1">
-                    <p class="text-xs text-gray-500 mb-3 font-medium flex items-center justify-center gap-1.5 font-mono">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            @if($status === 'closed')
+                <div class="absolute inset-0 bg-white/50 backdrop-blur-[2px] z-10 rounded-b-xl flex flex-col items-center justify-center p-4 text-center">
+                    <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                        <svg class="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                         </svg>
-                        Percakapan ini telah ditutup oleh CS.
-                    </p>
-                    <button
-                        wire:click="requestReopen"
-                        class="w-full h-10 bg-gradient-to-br from-indigo-500 to-blue-600 text-white rounded-full text-sm font-bold shadow-md hover:from-indigo-600 hover:to-blue-700 transition-all active:scale-95 flex items-center justify-center gap-2"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </div>
+                    <p class="text-sm font-medium text-gray-800 mb-4">Percakapan ini telah ditutup oleh CS.</p>
+                    <button wire:click="requestReopen" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-xl shadow-md transition-colors flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                         </svg>
                         Minta Buka Chat
                     </button>
                 </div>
             @endif
+
+            <form wire:submit="sendMessage" class="relative group">
+                <input wire:model="message" type="text" placeholder="Ketik pesan..."
+                    class="w-full border border-gray-200 rounded-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00bfa5]/20 focus:border-[#00bfa5] transition"
+                    autocomplete="off" {{ $status === 'closed' ? 'disabled' : '' }}>
+                <button type="submit"
+                    class="absolute right-2 top-1.5 p-1.5 bg-[#00bfa5] text-white rounded-full hover:bg-[#00a68f] transition shadow-sm group-focus-within:bg-linear-to-br from-[#00bfa5] to-[#009688]">  </button>
+            </form>
         </div>
     </div>
 </div>

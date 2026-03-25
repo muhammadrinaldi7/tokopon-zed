@@ -5,9 +5,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::home');
 
-Route::livewire('/cs', 'pages::cs-dashboard')
+Route::livewire('/admin/cs-chat', 'pages::cs-dashboard')
     ->middleware(['auth', 'role:cs'])
-    ->name('cs.dashboard');
+    ->name('admin.cs-chat');
+
+Route::livewire('/admin/dashboard', 'pages::admin.dashboard')
+    ->middleware(['auth'])
+    ->name('admin.dashboard');
+
+Route::livewire('/admin/users', 'pages::admin.user-management')
+    ->middleware(['auth', 'role:admin|superadmin'])
+    ->name('admin.users');
+
+Route::livewire('/admin/roles', 'pages::admin.role-permission')
+    ->middleware(['auth', 'role:admin|superadmin'])
+    ->name('admin.roles');
 
 // Logout route
 Route::post('/logout', function () {
