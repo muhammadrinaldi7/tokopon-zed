@@ -21,6 +21,22 @@ Route::livewire('/admin/roles', 'pages::admin.role-permission')
     ->middleware(['auth', 'role:admin|superadmin'])
     ->name('admin.roles');
 
+Route::get('/admin/products', \App\Livewire\Admin\Products\ProductManagement::class)
+    ->middleware(['auth', 'role:admin|superadmin'])
+    ->name('admin.products');
+
+Route::get('/admin/categories', \App\Livewire\Admin\Products\CategoryManagement::class)
+    ->middleware(['auth', 'role:admin|superadmin'])
+    ->name('admin.categories');
+
+Route::get('/admin/brands', \App\Livewire\Admin\Products\BrandManagement::class)
+    ->middleware(['auth', 'role:admin|superadmin'])
+    ->name('admin.brands');
+
+Route::get('/admin/products/{product}/variants', \App\Livewire\Admin\Products\VariantManagement::class)
+    ->middleware(['auth', 'role:admin|superadmin'])
+    ->name('admin.products.variants');
+
 // Logout route
 Route::post('/logout', function () {
     Auth::logout();
@@ -29,3 +45,9 @@ Route::post('/logout', function () {
 
     return redirect('/');
 })->middleware('auth')->name('logout');
+
+// Erzap Webhook Routes
+Route::post('/web_service/import_produk_json/new.json', [\App\Http\Controllers\Api\ErzapProductController::class, 'store']);
+Route::post('/web_service/import_produk_json/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'store']);
+Route::post('/web_service/sinkronisasi_stok/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'syncStock']);
+

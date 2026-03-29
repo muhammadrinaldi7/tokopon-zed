@@ -19,7 +19,7 @@
              x-cloak></div>
 
         {{-- Sidebar --}}
-        <x-admin.sidebar />
+        <livewire:admin-sidebar />
 
         {{-- Main Content --}}
         <div class="flex-1 flex flex-col h-screen overflow-hidden">
@@ -32,6 +32,7 @@
     </div>
     
     <livewire:confirm-modal />
+    <x-toast />
 </body>
 
 </html>

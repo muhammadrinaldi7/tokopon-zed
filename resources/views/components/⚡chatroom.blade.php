@@ -237,25 +237,9 @@ new class extends Component {
         </div>
 
         {{-- Input Area / Closed State --}}
-        <div class="p-3 bg-white border-t border-gray-100 text-center">
-            @if($status === 'open')
-                <form wire:submit="sendMessage" class="flex gap-2 items-center">
-                    <input
-                        type="text"
-                        wire:model="message"
-                        placeholder="Ketik pesan..."
-                        class="flex-1 border border-gray-200 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent bg-gray-50 transition-all"
-                        autocomplete="off"
-                    >
-                    <button
-                        type="submit"
-                        class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-full flex items-center justify-center hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 hover:scale-105 shadow-md"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
-                        </svg>
+        <div class="p-3 bg-white border-t border-gray-100 text-center relative">
             @if($status === 'closed')
-                <div class="absolute inset-0 bg-white/50 backdrop-blur-[2px] z-10 rounded-b-xl flex flex-col items-center justify-center p-4 text-center">
+                <div class="absolute inset-0 bg-white/90 backdrop-blur-[2px] z-10 rounded-b-xl flex flex-col items-center justify-center p-4 text-center">
                     <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
                         <svg class="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -271,12 +255,17 @@ new class extends Component {
                 </div>
             @endif
 
-            <form wire:submit="sendMessage" class="relative group">
+            <form wire:submit="sendMessage" class="relative group flex items-center">
                 <input wire:model="message" type="text" placeholder="Ketik pesan..."
-                    class="w-full border border-gray-200 rounded-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00bfa5]/20 focus:border-[#00bfa5] transition"
+                    class="w-full border border-gray-200 rounded-full px-4 py-3 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-[#00bfa5]/20 focus:border-[#00bfa5] transition"
                     autocomplete="off" {{ $status === 'closed' ? 'disabled' : '' }}>
                 <button type="submit"
-                    class="absolute right-2 top-1.5 p-1.5 bg-[#00bfa5] text-white rounded-full hover:bg-[#00a68f] transition shadow-sm group-focus-within:bg-linear-to-br from-[#00bfa5] to-[#009688]">  </button>
+                    {{ $status === 'closed' ? 'disabled' : '' }}
+                    class="absolute right-2 top-1.5 p-1.5 bg-[#00bfa5] text-white rounded-full hover:bg-[#00a68f] transition shadow-sm group-focus-within:bg-linear-to-br from-[#00bfa5] to-[#009688]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+                    </svg>
+                </button>
             </form>
         </div>
     </div>

@@ -12,4 +12,9 @@ class ProductVariant extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function erzapData()
+    {
+        return $this->belongsTo(ProductErzap::class, 'erzap_item_id', 'erzap_id');
+    }
 }

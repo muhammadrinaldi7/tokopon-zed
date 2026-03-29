@@ -14,9 +14,14 @@ return new class extends Migration
         Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
-            $table->string('erzap_item_id')->nullable()->index(); // ID Unik dari Erzap
+            
+            // Hubungan referensial dengan Product Erzap (Webhook)
+            $table->string('erzap_item_id')->nullable()->index(); 
+            $table->foreign('erzap_item_id')->references('erzap_id')->on('product_erzaps')->nullOnDelete();
+            
             $table->string('sku')->unique()->nullable();
             $table->string('condition'); // Baru, Bekas Like New, dll
+            $table->string('ram')->nullable();
             $table->string('storage')->nullable(); // 128GB, 256GB
             $table->string('color')->nullable();
             $table->decimal('price', 15, 2);

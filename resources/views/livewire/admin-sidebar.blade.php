@@ -1,30 +1,3 @@
-<?php
-
-use Livewire\Component;
-use Livewire\Attributes\On;
-use App\Models\Message;
-use App\Models\Conversation;
-use App\Events\MessageSent;
-
-new class extends Component {
-    public $unreadCount = 0;
-
-    #[On('echo-private:user.{userId},MessageSent')]
-    public function updateUnreadCount($event)
-    {
-        $this->unreadCount = Message::where('user_id', auth()->id())
-            ->where('is_read', false)
-            ->count();
-    }
-
-    public function mount()
-    {
-        $this->unreadCount = Message::where('user_id', auth()->id())
-            ->where('is_read', false)
-            ->count();
-    }
-};
-?>
 <aside
     class="w-[280px] lg:w-64 bg-white border-r border-gray-100 flex flex-col h-screen shrink-0 fixed lg:sticky top-0 left-0 z-30 transform transition-transform duration-300 ease-in-out lg:translate-x-0 shadow-2xl lg:shadow-none"
     :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
@@ -82,7 +55,7 @@ new class extends Component {
             </a>
         @endrole
 
-        <a href="#"
+        {{-- <a href="#"
             class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm transition-colors cursor-pointer {{ request()->routeIs('admin.orders') ? $activeClass : $inactiveClass }}">
             <svg class="w-5 h-5 {{ request()->routeIs('admin.orders') ? $activeIconClass : $inactiveIconClass }}"
                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -120,7 +93,43 @@ new class extends Component {
                     d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
             Tips Gadget
-        </a>
+        </a> --}}
+
+        @hasanyrole('admin|superadmin')
+            <div class="px-4 mt-8 mb-2">
+                <p class="text-[10px] font-bold tracking-wider text-gray-400 uppercase">Toko & Katalog</p>
+            </div>
+
+            <div x-data="{ openProducts: {{ request()->routeIs('admin.products', 'admin.products.variants', 'admin.categories', 'admin.brands') ? 'true' : 'false' }} }">
+                <button @click="openProducts = !openProducts" type="button"
+                    class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm transition-colors cursor-pointer {{ request()->routeIs('admin.products', 'admin.products.variants', 'admin.categories', 'admin.brands') ? $activeClass : $inactiveClass }}">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 {{ request()->routeIs('admin.products', 'admin.products.variants', 'admin.categories', 'admin.brands') ? $activeIconClass : $inactiveIconClass }}"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                        Katalog Pusat
+                    </div>
+                    <svg :class="{'rotate-180': openProducts}" class="w-4 h-4 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                
+                <div x-show="openProducts" style="display: none;" class="pl-12 mt-1 mb-2 space-y-1">
+                    <a href="{{ route('admin.products') }}" wire:navigate
+                        class="block px-4 py-2 rounded-xl text-xs transition-colors cursor-pointer {{ request()->routeIs('admin.products', 'admin.products.variants') ? 'bg-[#4E44DB]/10 text-[#4E44DB] font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800 font-medium' }}">
+                        ↳ Produk Utama
+                    </a>
+                    <a href="{{ route('admin.categories') }}" wire:navigate
+                        class="block px-4 py-2 rounded-xl text-xs transition-colors cursor-pointer {{ request()->routeIs('admin.categories') ? 'bg-[#4E44DB]/10 text-[#4E44DB] font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800 font-medium' }}">
+                        ↳ Master Kategori
+                    </a>
+                    <a href="{{ route('admin.brands') }}" wire:navigate
+                        class="block px-4 py-2 rounded-xl text-xs transition-colors cursor-pointer {{ request()->routeIs('admin.brands') ? 'bg-[#4E44DB]/10 text-[#4E44DB] font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800 font-medium' }}">
+                        ↳ Master Merek
+                    </a>
+                </div>
+            </div>
+        @endhasanyrole
 
         @hasanyrole('admin|super admin')
             <div class="px-4 mt-8 mb-2">
