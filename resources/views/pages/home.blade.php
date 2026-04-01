@@ -22,4 +22,7 @@ new #[Title('Home - TokoPun')] class extends Component {
 
 <div class="pb-20 bg-white">
     <livewire:pages.service-selection />
+
+    <livewire:pages.description />
+    <livewire:pages.catalog />
 </div>
