@@ -95,12 +95,16 @@
                             <div
                                 class="absolute z-10 w-full bg-white mt-1 border border-gray-200 rounded-lg shadow-xl max-h-48 overflow-y-auto">
                                 @forelse($searchResults as $res)
-                                    <div wire:click="selectErzap('{{ $res->erzap_id }}', {{ $res->discount_price > 0 ? $res->discount_price : $res->base_price }}, {{ $res->stock }})"
+                                    @php
+                                        $kode = $res->raw_data['kode'] ?? '';
+                                        $harga = $res->discount_price > 0 ? $res->discount_price : $res->base_price;
+                                    @endphp
+                                    <div wire:click="selectErzap('{{ $res->erzap_id }}', {{ $harga }}, {{ $res->stock }}, '{{ $kode }}')"
                                         class="p-3 hover:bg-[#eff2ff] cursor-pointer border-b border-gray-50 last:border-b-0">
                                         <div class="font-bold text-sm text-gray-800 line-clamp-1">
                                             {{ $res->name ?? $res->erzap_id }}</div>
                                         <div class="flex justify-between items-center mt-1">
-                                            <span class="text-xs text-gray-500 font-mono">{{ $res->erzap_id }}</span>
+                                            <span class="text-xs text-gray-500 font-mono">{{ $kode ?: $res->erzap_id }}</span>
                                             <span class="text-xs font-bold text-[#4E44DB]">Stok:
                                                 {{ $res->stock }}</span>
                                         </div>

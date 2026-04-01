@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminRoleSeeder::class,
             CsRoleSeeder::class,
-            PermissionSeeder::class
+            PermissionSeeder::class,
+            ProductErzapSeed::class,
         ]);
     }
 }

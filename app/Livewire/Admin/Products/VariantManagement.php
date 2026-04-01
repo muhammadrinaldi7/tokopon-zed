@@ -24,6 +24,7 @@ class VariantManagement extends Component
     // Autocomplete for Erzap
     public $searchErzap = '';
     public $selectedErzapId = null;
+    public $selectedKode = null;
     public $searchResults = [];
     public $simulatedPrice = 0;
     public $simulatedStock = 0;
@@ -45,8 +46,11 @@ class VariantManagement extends Component
     public function updatedSearchErzap()
     {
         if (strlen($this->searchErzap) > 2) {
-            $this->searchResults = ProductErzap::where('name', 'like', '%' . $this->searchErzap . '%')
-                ->orWhere('erzap_id', 'like', '%' . $this->searchErzap . '%')
+            $this->searchResults = ProductErzap::where(function ($query) {
+                    $query->where('name', 'like', '%' . $this->searchErzap . '%')
+                        ->orWhere('erzap_id', 'like', '%' . $this->searchErzap . '%');
+                })
+                ->doesntHave('variants')
                 ->take(5)
                 ->get();
         } else {
@@ -54,10 +58,11 @@ class VariantManagement extends Component
         }
     }
 
-    public function selectErzap($erzapId, $price, $stock)
+    public function selectErzap($erzapId, $price, $stock, $kode = null)
     {
         $this->selectedErzapId = $erzapId;
-        $this->searchErzap = $erzapId;
+        $this->selectedKode = $kode;
+        $this->searchErzap = $kode ? $kode . ' - ' . $erzapId : $erzapId;
         $this->simulatedPrice = $price;
         $this->simulatedStock = $stock;
         $this->searchResults = []; // close dropdown
@@ -66,6 +71,7 @@ class VariantManagement extends Component
     public function clearErzap()
     {
         $this->selectedErzapId = null;
+        $this->selectedKode = null;
         $this->searchErzap = '';
         $this->simulatedPrice = 0;
         $this->simulatedStock = 0;
@@ -118,9 +124,10 @@ class VariantManagement extends Component
         $this->resetForm();
         $this->loadVariants();
 
-        $this->dispatch('toast', 
-            title: 'Berhasil', 
-            message: $isNew ? 'Varian baru berhasil ditambahkan.' : 'Perubahan varian berhasil disimpan!', 
+        $this->dispatch(
+            'toast',
+            title: 'Berhasil',
+            message: $isNew ? 'Varian baru berhasil ditambahkan.' : 'Perubahan varian berhasil disimpan!',
             type: 'success'
         );
     }
@@ -154,7 +161,8 @@ class VariantManagement extends Component
             if ($variant->erzap_item_id) {
                 $erzap = $variant->erzapData;
                 if ($erzap) {
-                    $this->selectErzap($erzap->erzap_id, $variant->price, $variant->stock);
+                    $kode = $erzap->raw_data['kode'] ?? null;
+                    $this->selectErzap($erzap->erzap_id, $variant->price, $variant->stock, $kode);
                 }
             }
         }
@@ -181,10 +189,11 @@ class VariantManagement extends Component
         ProductVariant::find($id)?->delete();
         $this->triggerObserverCalculation();
         $this->loadVariants();
-        
-        $this->dispatch('toast', 
-            title: 'Terhapus', 
-            message: 'Varian produk berhasil dihapus dari sistem.', 
+
+        $this->dispatch(
+            'toast',
+            title: 'Terhapus',
+            message: 'Varian produk berhasil dihapus dari sistem.',
             type: 'info'
         );
     }

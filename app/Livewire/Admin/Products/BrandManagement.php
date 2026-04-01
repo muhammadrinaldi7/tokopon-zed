@@ -5,20 +5,30 @@ namespace App\Livewire\Admin\Products;
 use Livewire\Component;
 use App\Models\Brand;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Illuminate\Support\Str;
 
 class BrandManagement extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     public $showModal = false;
     public $isEditing = false;
     public $brandId;
-    
+
     public $name;
     public $logo;
+    public $currentLogoUrl;
+
+    protected function rules()
+    {
+        return [
+            'name' => 'required|string|min:2|max:255',
+            'logo' => $this->isEditing ? 'nullable|image|max:2048' : 'nullable|image|max:2048',
+        ];
+    }
 
     public function create()
     {
@@ -32,75 +42,63 @@ class BrandManagement extends Component
         $brand = Brand::findOrFail($id);
         $this->brandId = $id;
         $this->name = $brand->name;
-        $this->logo = $brand->logo;
-
+        $this->currentLogoUrl = $brand->getFirstMediaUrl('logo');
         $this->isEditing = true;
         $this->showModal = true;
     }
 
     public function store()
     {
-        $this->validate([
-            'name' => 'required|string|max:255',
-            'logo' => 'nullable|string|max:255',
-        ]);
+        $this->validate();
+
+        $data = [
+            'name' => $this->name,
+            'slug' => Str::slug($this->name),
+        ];
 
         if ($this->isEditing) {
             $brand = Brand::find($this->brandId);
-            $brand->update([
-                'name' => $this->name,
-                'slug' => Str::slug($this->name),
-                'logo' => $this->logo,
-            ]);
+            $brand->update($data);
         } else {
-            Brand::create([
-                'name' => $this->name,
-                'slug' => Str::slug($this->name),
-                'logo' => $this->logo,
-            ]);
+            $brand = Brand::create($data);
+        }
+
+        // Upload logo via Spatie Media Library
+        if ($this->logo) {
+            $brand->addMedia($this->logo->getRealPath())
+                ->usingFileName($this->logo->getClientOriginalName())
+                ->toMediaCollection('logo');
         }
 
         $this->showModal = false;
         $this->resetFields();
-        
-        $this->dispatch('toast', 
-            title: 'Berhasil', 
-            message: 'Data merek berhasil disimpan.', 
+
+        $this->dispatch(
+            'toast',
+            title: 'Berhasil',
+            message: 'Data merek berhasil disimpan.',
             type: 'success'
         );
     }
-    
-    public function confirmDelete($id)
+
+    public function delete($id)
     {
         $brand = Brand::find($id);
-        if ($brand->products()->count() > 0) {
-            $this->dispatch('toast', title: 'Terikat Data', message: 'Merek ini digunakan oleh produk. Tidak bisa dihapus.', type: 'warning');
+
+        if ($brand && $brand->products()->count() > 0) {
+            $this->dispatch('toast', title: 'Gagal', message: 'Merek ini masih digunakan oleh produk.', type: 'warning');
             return;
         }
 
-        $this->dispatch(
-            'show-confirm',
-            title: 'Hapus Merek',
-            message: 'Apakah Anda yakin ingin menghapus merek ' . $brand->name . '?',
-            confirmEvent: 'delete-brand',
-            confirmParams: [$id],
-            type: 'danger',
-            confirmText: 'Hapus',
-            cancelText: 'Batal',
-        );
-    }
-
-    #[On('delete-brand')]
-    public function deleteBrand($id)
-    {
-        Brand::find($id)?->delete();
-        $this->dispatch('toast', title: 'Terhapus', message: 'Merek berhasil dihapus permanen.', type: 'info');
+        $brand?->delete();
+        $this->dispatch('toast', title: 'Terhapus', message: 'Merek berhasil dihapus.', type: 'info');
     }
 
     public function resetFields()
     {
         $this->name = '';
-        $this->logo = '';
+        $this->logo = null;
+        $this->currentLogoUrl = null;
         $this->brandId = null;
         $this->isEditing = false;
     }
@@ -109,7 +107,6 @@ class BrandManagement extends Component
     public function render()
     {
         $brands = Brand::withCount('products')->orderBy('name')->paginate(10);
-        
         return view('livewire.admin.products.brand-management', [
             'brands' => $brands
         ]);
