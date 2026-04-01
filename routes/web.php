@@ -1,9 +1,11 @@
 <?php
 
+use App\Livewire\Pages\Buymobile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::home');
+Route::get('/buy-mobile',Buymobile::class)->name('buy-mobile');
 
 Route::livewire('/admin/cs-chat', 'pages::cs-dashboard')
     ->middleware(['auth', 'role:cs'])

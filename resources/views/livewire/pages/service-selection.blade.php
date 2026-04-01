@@ -7,8 +7,7 @@
 
     <div class="mt-4 grid grid-cols-3 gap-2 md:gap-4 lg:gap-6 ">
         <div
-            class="group relative rounded-lg md:rounded-2xl bg-blue-500 p-2 md:p-6 lg:p-8 text-white shadow-xl aspect-2/3 flex flex-col justify-between overflow-hidden cursor-pointer">
-
+            class="group relative rounded-lg md:rounded-2xl bg-blue-500 p-2 md:p-6 lg:p-8 text-white shadow-xl aspect-2/3 flex flex-col justify-between overflow-hidden cursor-pointer" wire:click="navigateToBuyMobile"> 
             <div class="relative w-full h-1/2 flex justify-end mt-6">
 
                 <img src="{{ asset('assets/png/buymobile3.png') }}" alt="gold phone"
@@ -26,7 +25,7 @@
                     Buy<br>Mobile<br>Phones
                 </h2>
 
-                <a href="#"
+                <a href=""
                     class="rounded-full bg-white text-[#0090FF] h-6 md:h-10 w-auto flex items-center justify-center  p-1.5 md:p-2.5 shadow-md group-hover:scale-110 transition-transform duration-300">
                     <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2.5">
