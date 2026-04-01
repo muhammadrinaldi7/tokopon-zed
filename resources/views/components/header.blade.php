@@ -44,8 +44,8 @@ new class extends Component {
                 class="px-4 py-2 text-sm font-medium rounded-lg transition {{ request()->is('/') ? 'text-blue-500 bg-blue-50 font-semibold' : 'text-gray-500 hover:text-blue-500 hover:bg-blue-50/50' }}">
                 Home
             </a>
-            <a href="#"
-                class="px-4 py-2 text-sm font-medium text-gray-500 rounded-lg transition hover:text-blue-500 hover:bg-blue-50/50">
+            <a href="/products" wire:navigate
+                class="px-4 py-2 text-sm font-medium rounded-lg transition {{ request()->is('products*') ? 'text-blue-500 bg-blue-50 font-semibold' : 'text-gray-500 hover:text-blue-500 hover:bg-blue-50/50' }}">
                 Buy Phones
             </a>
             <a href="#"
@@ -110,8 +110,8 @@ new class extends Component {
                 class="block px-4 py-3 text-sm font-medium rounded-lg transition {{ request()->is('/') ? 'text-blue-500 bg-blue-50' : 'text-gray-500 hover:text-blue-500 hover:bg-blue-50/50' }}">
                 Home
             </a>
-            <a href="#"
-                class="block px-4 py-3 text-sm font-medium text-gray-500 rounded-lg transition hover:text-blue-500 hover:bg-blue-50/50">
+            <a href="/products" wire:navigate
+                class="block px-4 py-3 text-sm font-medium rounded-lg transition {{ request()->is('products*') ? 'text-blue-500 bg-blue-50 font-semibold' : 'text-gray-500 hover:text-blue-500 hover:bg-blue-50/50' }}">
                 Buy Phones
             </a>
             <a href="#"

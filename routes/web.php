@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::home');
+Route::get('/products', \App\Livewire\Pages\ProductList::class)->name('products.index');
 
 Route::livewire('/admin/cs-chat', 'pages::cs-dashboard')
     ->middleware(['auth', 'role:cs'])

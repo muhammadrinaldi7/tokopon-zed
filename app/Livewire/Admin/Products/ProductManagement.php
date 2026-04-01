@@ -6,22 +6,32 @@ use Livewire\Component;
 use App\Models\Product;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
+use Livewire\WithFileUploads;
+
 
 class ProductManagement extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     public $showModal = false;
     public $showDetailModal = false;
     public $isEditing = false;
     public $productId;
     public $detailProduct = null;
-    
+
     public $name;
     public $description;
     public $specifications = [];
     public $categoryId;
     public $brandId;
+
+    // Media properties
+    public $coverImage;
+    public $galleryImages = [];
+    public $currentCoverUrl;
+    public $currentGallery = [];
+
 
     public function addSpecification()
     {
@@ -37,8 +47,11 @@ class ProductManagement extends Component
     public function create()
     {
         $this->resetFields();
+        $this->currentCoverUrl = null;
+        $this->currentGallery = [];
         $this->showModal = true;
     }
+
 
     public function viewDetail($id)
     {
@@ -55,7 +68,7 @@ class ProductManagement extends Component
         $this->description = $product->description;
         $this->categoryId = $product->category_id;
         $this->brandId = $product->brand_id;
-        
+
         // Format saved dict to array of key-value pairs for UI
         if (is_array($product->specifications)) {
             foreach ($product->specifications as $key => $value) {
@@ -64,8 +77,17 @@ class ProductManagement extends Component
         }
 
         $this->isEditing = true;
+
+        // Load current media
+        $this->currentCoverUrl = $product->getFirstMediaUrl('cover');
+        $this->currentGallery = $product->getMedia('gallery')->map(fn($media) => [
+            'id' => $media->id,
+            'url' => $media->getUrl('thumb'),
+        ])->toArray();
+
         $this->showModal = true;
     }
+
 
     public function store()
     {
@@ -75,7 +97,10 @@ class ProductManagement extends Component
             'brandId' => 'nullable|exists:brands,id',
             'specifications.*.key' => 'required|string',
             'specifications.*.value' => 'required|string',
+            'coverImage' => 'nullable|image|max:2048', // Max 2MB
+            'galleryImages.*' => 'nullable|image|max:2048',
         ]);
+
 
         // Transform array back to dictionary for JSON storage
         $specsDict = [];
@@ -107,16 +132,64 @@ class ProductManagement extends Component
             ]);
         }
 
+        // Handle Media Uploads
+        if ($this->coverImage) {
+            $product->addMedia($this->coverImage->getRealPath())
+                ->usingFileName($this->coverImage->getClientOriginalName())
+                ->toMediaCollection('cover');
+        }
+
+        if (!empty($this->galleryImages)) {
+            foreach ($this->galleryImages as $image) {
+                $product->addMedia($image->getRealPath())
+                    ->usingFileName($image->getClientOriginalName())
+                    ->toMediaCollection('gallery');
+            }
+        }
+
         $this->showModal = false;
+
         $this->resetFields();
         $this->dispatch('toast', title: 'Berhasil', message: 'Produk berhasil disimpan.', type: 'success');
     }
 
+    public function confirmDelete($id)
+    {
+        $product = Product::find($id);
+        $this->dispatch(
+            'show-confirm',
+            title: 'Hapus Produk',
+            message: 'Apakah Anda yakin ingin menghapus ' . $product->name . '?',
+            confirmEvent: 'delete-product',
+            confirmParams: [$id],
+            type: 'danger',
+            confirmText: 'Hapus',
+            cancelText: 'Batal',
+        );
+    }
+    #[On('delete-product')]
     public function delete($id)
     {
-        Product::find($id)?->delete();
+        $product = Product::find($id);
+        if ($product) {
+            // Spatie handles media deletion automatically if configured or manually
+            $product->delete();
+        }
         $this->dispatch('toast', title: 'Terhapus', message: 'Produk berhasil dihapus permanen.', type: 'info');
     }
+
+    public function removeGalleryImage($mediaId)
+    {
+        $product = Product::find($this->productId);
+        $product?->deleteMedia($mediaId);
+
+        // Refresh gallery
+        $this->currentGallery = $product?->getMedia('gallery')->map(fn($media) => [
+            'id' => $media->id,
+            'url' => $media->getUrl('thumb'),
+        ])->toArray();
+    }
+
 
     public function resetFields()
     {
@@ -126,8 +199,11 @@ class ProductManagement extends Component
         $this->specifications = [];
         $this->categoryId = null;
         $this->brandId = null;
+        $this->coverImage = null;
+        $this->galleryImages = [];
         $this->isEditing = false;
     }
+
 
     #[Layout('layouts.admin')]
     public function render()
@@ -135,7 +211,7 @@ class ProductManagement extends Component
         $products = Product::with(['category', 'brand'])->orderByDesc('id')->paginate(10);
         $categoriesList = \App\Models\Category::orderBy('name')->get();
         $brandsList = \App\Models\Brand::orderBy('name')->get();
-        
+
         return view('livewire.admin.products.product-management', [
             'products' => $products,
             'categoriesList' => $categoriesList,
