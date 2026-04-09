@@ -20,5 +20,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \App\Models\ProductErzap::observe(\App\Observers\ProductErzapObserver::class);
+
+        // Merge guest cart saat user login
+        \Illuminate\Support\Facades\Event::listen(
+            \Illuminate\Auth\Events\Login::class,
+            \App\Listeners\MergeGuestCartOnLogin::class
+        );
     }
 }

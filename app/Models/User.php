@@ -67,6 +67,11 @@ class User extends Authenticatable
         return $this->hasMany(\App\Models\Conversation::class);
     }
 
+    public function cart()
+    {
+        return $this->hasOne(\App\Models\Cart::class);
+    }
+
     public function getUserPermissions()
     {
         return $this->getAllPermissions()->mapWithKeys(fn($permission) => [$permission['name'] => true]);

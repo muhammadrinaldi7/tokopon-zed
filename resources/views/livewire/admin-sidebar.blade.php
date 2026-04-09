@@ -107,13 +107,16 @@
                         <svg class="w-5 h-5 {{ request()->routeIs('admin.products', 'admin.products.variants', 'admin.categories', 'admin.brands') ? $activeIconClass : $inactiveIconClass }}"
                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                         </svg>
                         Katalog Pusat
                     </div>
-                    <svg :class="{'rotate-180': openProducts}" class="w-4 h-4 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    <svg :class="{ 'rotate-180': openProducts }" class="w-4 h-4 transition-transform duration-200"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
                 </button>
-                
+
                 <div x-show="openProducts" style="display: none;" class="pl-12 mt-1 mb-2 space-y-1">
                     <a href="{{ route('admin.products') }}" wire:navigate
                         class="block px-4 py-2 rounded-xl text-xs transition-colors cursor-pointer {{ request()->routeIs('admin.products', 'admin.products.variants') ? 'bg-[#4E44DB]/10 text-[#4E44DB] font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800 font-medium' }}">
@@ -129,6 +132,14 @@
                     </a>
                 </div>
             </div>
+            <a href="/admin/orders" wire:navigate
+                class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm transition-colors cursor-pointer {{ request()->routeIs('admin.orders.management') ? $activeClass : $inactiveClass }}">
+                <svg class="w-5 h-5 {{ request()->routeIs('admin.orders.management') ? $activeIconClass : $inactiveIconClass }}"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                Pesanan
+            </a>
         @endhasanyrole
 
         @hasanyrole('admin|super admin')

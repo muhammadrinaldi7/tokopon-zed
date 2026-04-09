@@ -82,14 +82,6 @@ new class extends Component {
             </a>
         @endrole
 
-        <a href="#"
-            class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm transition-colors cursor-pointer {{ request()->routeIs('admin.orders') ? $activeClass : $inactiveClass }}">
-            <svg class="w-5 h-5 {{ request()->routeIs('admin.orders') ? $activeIconClass : $inactiveIconClass }}"
-                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-            Pesanan Saya
-        </a>
 
         <a href="#"
             class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm transition-colors cursor-pointer {{ request()->is('admin/services') ? $activeClass : $inactiveClass }}">
@@ -126,6 +118,15 @@ new class extends Component {
             <div class="px-4 mt-8 mb-2">
                 <p class="text-[10px] font-bold tracking-wider text-gray-400 uppercase">Administrator</p>
             </div>
+
+            <a href="{{ route('admin.orders.management') }}" wire:navigate
+                class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm transition-colors cursor-pointer {{ request()->routeIs('admin.orders.management') ? $activeClass : $inactiveClass }}">
+                <svg class="w-5 h-5 {{ request()->routeIs('admin.orders.management') ? $activeIconClass : $inactiveIconClass }}"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                Kelola Pesanan
+            </a>
 
             <a href="/admin/users" wire:navigate
                 class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm transition-colors cursor-pointer {{ request()->routeIs('admin.users') ? $activeClass : $inactiveClass }}">

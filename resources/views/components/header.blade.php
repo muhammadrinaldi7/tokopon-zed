@@ -1,11 +1,24 @@
 <?php
 // ⚡ header
 
+use App\Services\CartService;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 new class extends Component {
     public bool $mobileMenuOpen = false;
+    public int $cartCount = 0;
+
+    public function mount(): void
+    {
+        $this->refreshCartCount();
+    }
+
+    #[On('cart-updated')]
+    public function refreshCartCount(): void
+    {
+        $this->cartCount = app(CartService::class)->getCount();
+    }
 
     public function toggleMobileMenu(): void
     {
@@ -44,7 +57,7 @@ new class extends Component {
                 class="px-4 py-2 text-sm font-medium rounded-lg transition {{ request()->is('/') ? 'text-blue-500 bg-blue-50 font-semibold' : 'text-gray-500 hover:text-blue-500 hover:bg-blue-50/50' }}">
                 Home
             </a>
-            <a href="/products" wire:navigate
+            <a href="/buy-mobile" wire:navigate
                 class="px-4 py-2 text-sm font-medium rounded-lg transition {{ request()->is('products*') ? 'text-blue-500 bg-blue-50 font-semibold' : 'text-gray-500 hover:text-blue-500 hover:bg-blue-50/50' }}">
                 Buy Phones
             </a>
@@ -64,8 +77,27 @@ new class extends Component {
 
         {{-- Desktop CTA --}}
         <div class="hidden lg:flex items-center gap-3">
+            {{-- Cart Icon --}}
+            <a href="/cart" wire:navigate
+                class="relative p-2 text-gray-500 hover:text-[#4E44DB] hover:bg-blue-50 rounded-xl transition {{ request()->is('cart') ? 'text-[#4E44DB] bg-blue-50' : '' }}">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+                </svg>
+                @if ($cartCount > 0)
+                    <span
+                        class="absolute -top-0.5 -right-0.5 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm animate-[bounce_0.5s_ease-in-out]">
+                        {{ $cartCount > 99 ? '99+' : $cartCount }}
+                    </span>
+                @endif
+            </a>
+
             @auth
                 <span class="text-sm text-gray-600">Halo, <strong>{{ auth()->user()->name }}</strong></span>
+                <a href="{{ route('orders.index') }}" wire:navigate
+                    class="px-4 py-2 text-sm font-semibold text-gray-500 hover:text-[#4E44DB] hover:bg-blue-50 rounded-lg transition {{ request()->is('orders*') ? 'text-[#4E44DB] bg-blue-50' : '' }}">
+                    Pesanan
+                </a>
                 <button wire:click="confirmLogout"
                     class="px-5 py-2 text-sm font-semibold text-gray-500 bg-gray-100 border border-gray-200 rounded-lg transition hover:bg-gray-200">
                     Logout
@@ -86,21 +118,38 @@ new class extends Component {
             @endauth
         </div>
 
-        {{-- Mobile Hamburger --}}
-        <button class="flex lg:hidden flex-col gap-[5px] p-2" wire:click="toggleMobileMenu" aria-label="Toggle menu">
-            @if ($mobileMenuOpen)
-                <span
-                    class="block w-6 h-0.5 bg-gray-700 rounded translate-y-[7.5px] rotate-45 transition-all duration-300"></span>
-                <span
-                    class="block w-6 h-0.5 bg-gray-700 rounded opacity-0 scale-x-0 transition-all duration-300"></span>
-                <span
-                    class="block w-6 h-0.5 bg-gray-700 rounded -translate-y-[7.5px] -rotate-45 transition-all duration-300"></span>
-            @else
-                <span class="block w-6 h-0.5 bg-gray-700 rounded transition-all duration-300"></span>
-                <span class="block w-6 h-0.5 bg-gray-700 rounded transition-all duration-300"></span>
-                <span class="block w-6 h-0.5 bg-gray-700 rounded transition-all duration-300"></span>
-            @endif
-        </button>
+        {{-- Mobile Right Actions --}}
+        <div class="flex lg:hidden items-center gap-2">
+            {{-- Mobile Cart Icon --}}
+            <a href="/cart" wire:navigate class="relative p-2 text-gray-500 hover:text-[#4E44DB] transition">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+                </svg>
+                @if ($cartCount > 0)
+                    <span
+                        class="absolute -top-0.5 -right-0.5 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm">
+                        {{ $cartCount > 99 ? '99+' : $cartCount }}
+                    </span>
+                @endif
+            </a>
+
+            {{-- Hamburger --}}
+            <button class="flex flex-col gap-[5px] p-2" wire:click="toggleMobileMenu" aria-label="Toggle menu">
+                @if ($mobileMenuOpen)
+                    <span
+                        class="block w-6 h-0.5 bg-gray-700 rounded translate-y-[7.5px] rotate-45 transition-all duration-300"></span>
+                    <span
+                        class="block w-6 h-0.5 bg-gray-700 rounded opacity-0 scale-x-0 transition-all duration-300"></span>
+                    <span
+                        class="block w-6 h-0.5 bg-gray-700 rounded -translate-y-[7.5px] -rotate-45 transition-all duration-300"></span>
+                @else
+                    <span class="block w-6 h-0.5 bg-gray-700 rounded transition-all duration-300"></span>
+                    <span class="block w-6 h-0.5 bg-gray-700 rounded transition-all duration-300"></span>
+                    <span class="block w-6 h-0.5 bg-gray-700 rounded transition-all duration-300"></span>
+                @endif
+            </button>
+        </div>
     </div>
 
     {{-- Mobile Menu --}}
@@ -127,9 +176,30 @@ new class extends Component {
                 Sell Phones
             </a>
 
+            {{-- Mobile Cart Link --}}
+            <a href="/cart" wire:navigate
+                class="flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-lg transition {{ request()->is('cart') ? 'text-blue-500 bg-blue-50 font-semibold' : 'text-gray-500 hover:text-blue-500 hover:bg-blue-50/50' }}">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+                </svg>
+                Keranjang
+                @if ($cartCount > 0)
+                    <span
+                        class="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $cartCount }}</span>
+                @endif
+            </a>
+
             <div class="flex flex-col gap-3 mt-4 pt-4 border-t border-gray-100">
                 @auth
                     <span class="px-4 text-sm text-gray-600">Halo, <strong>{{ auth()->user()->name }}</strong></span>
+                    <a href="{{ route('orders.index') }}" wire:navigate
+                        class="flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-lg transition {{ request()->is('orders*') ? 'text-blue-500 bg-blue-50 font-semibold' : 'text-gray-500 hover:text-blue-500 hover:bg-blue-50/50' }}">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        Pesanan Saya
+                    </a>
                     <button wire:click="confirmLogout"
                         class="block text-center px-5 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 border border-gray-200 rounded-lg transition hover:bg-gray-200">
                         Logout

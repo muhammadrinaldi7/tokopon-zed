@@ -117,7 +117,8 @@
         @else
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 @foreach($products as $product)
-                    <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 group flex flex-col h-full">
+                    <a href="{{ route('products.show', $product) }}" wire:navigate
+                        class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 group flex flex-col h-full">
                         {{-- Product Image --}}
                         <div class="relative w-full aspect-4/3 bg-gray-50 flex items-center justify-center overflow-hidden">
                             <div class="absolute inset-0 bg-linear-to-b from-transparent to-black/5 z-10"></div>
@@ -170,14 +171,14 @@
                                         Rp {{ number_format($product->starting_price ?? 0, 0, ',', '.') }}
                                     </p>
                                 </div>
-                                <button class="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center group-hover:bg-[#4E44DB] group-hover:text-white transition-colors shadow-sm focus:outline-none">
+                                <div class="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center group-hover:bg-[#4E44DB] group-hover:text-white transition-colors shadow-sm">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                     </svg>
-                                </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
 
