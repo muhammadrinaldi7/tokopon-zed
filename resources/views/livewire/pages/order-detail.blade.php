@@ -154,7 +154,24 @@
         @endif
 
         {{-- Actions --}}
-        <div class="flex flex-col sm:flex-row gap-3">
+        <div class="flex flex-col sm:flex-row gap-3 mt-8">
+            @if ($order->order_status === 'PENDING')
+                @php
+                    $pendingPayment = $order->payments->where('status', 'PENDING')->last();
+                @endphp
+                @if ($pendingPayment && $pendingPayment->xendit_invoice_url)
+                    <a href="{{ $pendingPayment->xendit_invoice_url }}" target="_blank"
+                        class="flex-1 bg-[#0097FF] text-white py-3.5 rounded-xl font-bold hover:bg-[#007ecc] transition shadow-lg shadow-[#0097FF]/25 text-center flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        </svg>
+                        Lanjutkan Pembayaran (Via Xendit)
+                    </a>
+                @else
+                    <p class="text-sm text-amber-600 bg-amber-50 p-4 rounded-xl w-full text-center border border-amber-100">Menunggu *update* Link Pembayaran dari sistem.</p>
+                @endif
+            @endif
+
             @if ($order->order_status === 'SHIPPED')
                 <button wire:click="confirmReceived"
                     class="flex-1 bg-emerald-500 text-white py-3.5 rounded-xl font-bold hover:bg-emerald-600 transition shadow-lg shadow-emerald-500/25 text-center"

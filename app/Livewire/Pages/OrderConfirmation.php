@@ -21,6 +21,12 @@ class OrderConfirmation extends Component
         $this->order = $order->load(['items.variant.product.media', 'payments']);
     }
 
+    public function checkStatus(): void
+    {
+        $this->order->refresh();
+        $this->order->load(['payments']);
+    }
+
     #[Layout('layouts.app', ['title' => 'Pesanan Berhasil - TokoPun'])]
     public function render()
     {

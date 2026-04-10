@@ -200,10 +200,29 @@
                             </div>
                         </div>
 
+                        {{-- Payment Method Info --}}
+                        <div class="mt-4 p-4 border border-blue-100 bg-blue-50/50 rounded-xl">
+                            <h3 class="text-xs font-bold text-gray-800 mb-2 flex items-center gap-1.5">
+                                <svg class="w-4 h-4 text-[#0097FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                                Pembayaran Aman
+                            </h3>
+                            <p class="text-[11px] text-gray-500 leading-relaxed">
+                                Setelah klik "Buat Pesanan", Anda akan dialihkan ke halaman secure payment Xendit untuk memilih metode pembayaran (Transfer Bank, E-Wallet, QRIS, dll).
+                            </p>
+                            <div class="flex gap-2 mt-3 items-center opacity-70">
+                                <span class="text-[10px] font-bold border px-1.5 py-0.5 rounded text-gray-500">QRIS</span>
+                                <span class="text-[10px] font-bold border px-1.5 py-0.5 rounded text-gray-500">BCA</span>
+                                <span class="text-[10px] font-bold border px-1.5 py-0.5 rounded text-gray-500">OVO</span>
+                                <span class="text-[10px] text-gray-400 font-medium">+ Metode Lain</span>
+                            </div>
+                        </div>
+
                         <button wire:click="placeOrder"
-                            class="w-full mt-6 bg-[#4E44DB] text-white py-4 rounded-xl font-bold text-base hover:bg-[#3f36b8] active:scale-[0.98] transition-all shadow-lg shadow-[#4E44DB]/25 flex items-center justify-center gap-2"
+                            class="w-full mt-6 bg-[#0097FF] text-white py-4 rounded-xl font-bold text-sm hover:bg-[#007ecc] active:scale-[0.98] transition-all shadow-lg shadow-[#0097FF]/25 flex items-center justify-center gap-2"
                             wire:loading.attr="disabled">
-                            <span wire:loading.remove wire:target="placeOrder">Buat Pesanan</span>
+                            <span wire:loading.remove wire:target="placeOrder">Buat Pesanan & Lanjut Bayar</span>
                             <span wire:loading wire:target="placeOrder" class="flex items-center gap-2">
                                 <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10"

@@ -5,9 +5,12 @@ namespace App\Livewire\Pages;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\UserAddress;
+use App\Models\OrderPayment;
 use App\Services\CartService;
+use App\Services\XenditService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -27,6 +30,7 @@ class Checkout extends Component
 
     public function mount(): void
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         // Load saved addresses
@@ -60,14 +64,16 @@ class Checkout extends Component
     public function useNewAddress(): void
     {
         $this->selectedAddressId = null;
-        $this->recipientName = Auth::user()->name;
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $this->recipientName = $user->name;
         $this->phoneNumber = '';
         $this->fullAddress = '';
         $this->postalCode = '';
         $this->showAddressForm = true;
     }
 
-    public function placeOrder(): void
+    public function placeOrder(XenditService $xenditService): void
     {
         $this->validate([
             'recipientName' => 'required|string|max:255',
@@ -90,7 +96,8 @@ class Checkout extends Component
         foreach ($items as $item) {
             $variant = $item->productVariant;
             if ($variant->stock < $item->qty) {
-                $this->dispatch('toast',
+                $this->dispatch(
+                    'toast',
                     title: 'Stok Tidak Cukup',
                     message: "Stok {$variant->product->name} hanya tersisa {$variant->stock}.",
                     type: 'warning'
@@ -110,7 +117,9 @@ class Checkout extends Component
             // Generate order number
             $orderNumber = 'TKP-' . now()->format('Ymd') . '-' . str_pad(
                 Order::whereDate('created_at', today())->count() + 1,
-                3, '0', STR_PAD_LEFT
+                3,
+                '0',
+                STR_PAD_LEFT
             );
 
             // Snapshot address
@@ -123,14 +132,16 @@ class Checkout extends Component
 
             // Save address if new
             if (!$this->selectedAddressId && $this->fullAddress) {
+                /** @var \App\Models\User $user */
+                $user = Auth::user();
                 UserAddress::create([
-                    'user_id' => Auth::id(),
+                    'user_id' => $user->id,
                     'label_address' => 'Alamat Baru',
                     'recipient_name' => $this->recipientName,
                     'phone_number' => $this->phoneNumber,
                     'full_address' => $this->fullAddress,
                     'postal_code' => $this->postalCode,
-                    'is_primary' => Auth::user()->addresses()->count() === 0,
+                    'is_primary' => $user->addresses()->count() === 0,
                 ]);
             }
 
@@ -169,13 +180,37 @@ class Checkout extends Component
             // Clear cart
             $cartService->clear();
 
+            // Integrasi Xendit Invoice
+            $invoiceUrl = '';
+            if ($xenditService->isConfigured()) {
+                // Generate Invoice
+                $invoice = $xenditService->createInvoice($order);
+                $invoiceUrl = $invoice['invoice_url'] ?? '';
+
+                if ($invoiceUrl) {
+                    // Record Payment Request
+                    OrderPayment::create([
+                        'order_id' => $order->id,
+                        'xendit_external_id' => $invoice['external_id'],
+                        'xendit_invoice_url' => $invoiceUrl,
+                        'amount' => $order->grand_total,
+                        'status' => 'PENDING',
+                        'payment_payload' => $invoice,
+                    ]);
+                }
+            }
+
             DB::commit();
 
-            // Redirect to order confirmation
-            $this->redirect(route('orders.confirmation', $order), navigate: true);
-
+            // Redirect ke Xendit Invoice jika berhasil digenerate, jika tidak kembali ke confirmation fallback
+            if (!empty($invoiceUrl)) {
+                $this->redirect($invoiceUrl);
+            } else {
+                $this->redirect(route('orders.confirmation', $order), navigate: true);
+            }
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error($e->getMessage());
             $this->dispatch('toast', title: 'Error', message: 'Terjadi kesalahan: ' . $e->getMessage(), type: 'danger');
         }
     }

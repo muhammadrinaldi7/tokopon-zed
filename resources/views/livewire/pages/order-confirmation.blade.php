@@ -1,18 +1,28 @@
-<div class="bg-gray-50 min-h-screen pb-20">
+<div class="bg-gray-50 min-h-screen pb-20" wire:poll.3s="checkStatus">
     <div class="max-w-2xl mx-auto px-6 pt-12">
 
-        {{-- Success Icon --}}
+        {{-- Verification / Success Icon --}}
         <div class="text-center mb-8">
-            <div
-                class="w-20 h-20 bg-emerald-100 rounded-full mx-auto flex items-center justify-center mb-4 animate-bounce">
-                <svg class="w-10 h-10 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-            </div>
-            <h1 class="text-3xl font-extrabold text-gray-900">Pesanan Berhasil!</h1>
-            <p class="text-gray-500 mt-2">Nomor pesanan Anda: <span
-                    class="font-bold text-[#4E44DB]">{{ $order->order_number }}</span></p>
+            @if ($order->order_status === 'PENDING')
+                <div class="w-20 h-20 bg-amber-100 rounded-full mx-auto flex items-center justify-center mb-4">
+                    <svg class="w-10 h-10 text-amber-500 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-extrabold text-gray-900">Pesanan Diterima!</h1>
+                <p class="text-amber-600 mt-2 font-medium animate-pulse">Menunggu verifikasi pembayaran Anda...</p>
+                <p class="text-gray-500 mt-1 text-sm">Nomor pesanan: <span class="font-bold text-[#4E44DB]">{{ $order->order_number }}</span></p>
+            @else
+                <div class="w-20 h-20 bg-emerald-100 rounded-full mx-auto flex items-center justify-center mb-4 animate-[bounce_1s_ease-in-out_2]">
+                    <svg class="w-10 h-10 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-extrabold text-gray-900">Pembayaran Berhasil!</h1>
+                <p class="text-emerald-600 mt-2 font-medium">Dana telah kami terima. Pesanan sedang diproses.</p>
+                <p class="text-gray-500 mt-1 text-sm">Nomor pesanan: <span class="font-bold text-[#4E44DB]">{{ $order->order_number }}</span></p>
+            @endif
         </div>
 
         {{-- Order Details Card --}}
@@ -97,14 +107,30 @@
 
         {{-- Actions --}}
         <div class="flex flex-col sm:flex-row gap-3 mt-6">
+            @php
+                $pendingPayment = $order->payments->where('status', 'PENDING')->last();
+            @endphp
+            
+            @if ($order->order_status === 'PENDING' && $pendingPayment && $pendingPayment->xendit_invoice_url)
+                <a href="{{ $pendingPayment->xendit_invoice_url }}" target="_blank"
+                    class="flex-1 text-center bg-[#0097FF] text-white py-3.5 rounded-xl font-bold hover:bg-[#007ecc] transition shadow-lg shadow-[#0097FF]/25 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                    Bayar Tagihan
+                </a>
+            @endif
+
             <a href="{{ route('orders.index') }}" wire:navigate
                 class="flex-1 text-center bg-white border-2 border-gray-200 text-gray-700 py-3.5 rounded-xl font-bold hover:bg-gray-50 transition">
-                Lihat Pesanan Saya
+                Pesanan Saya
             </a>
-            <a href="{{ route('products.index') }}" wire:navigate
-                class="flex-1 text-center bg-[#4E44DB] text-white py-3.5 rounded-xl font-bold hover:bg-[#3f36b8] transition shadow-lg shadow-[#4E44DB]/25">
-                Lanjut Belanja
-            </a>
+            @if ($order->order_status !== 'PENDING')
+                <a href="{{ route('products.index') }}" wire:navigate
+                    class="flex-1 text-center bg-[#4E44DB] text-white py-3.5 rounded-xl font-bold hover:bg-[#3f36b8] transition shadow-lg shadow-[#4E44DB]/25">
+                    Lanjut Belanja
+                </a>
+            @endif
         </div>
     </div>
 </div>

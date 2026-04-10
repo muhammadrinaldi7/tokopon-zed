@@ -52,6 +52,10 @@ Route::get('/admin/products/{product}/variants', \App\Livewire\Admin\Products\Va
     ->middleware(['auth', 'role:admin|superadmin'])
     ->name('admin.products.variants');
 
+Route::get('/admin/settings/payment', \App\Livewire\Admin\Settings\PaymentSettings::class)
+    ->middleware(['auth', 'role:admin|superadmin'])
+    ->name('admin.settings.payment');
+
 // Logout route
 Route::post('/logout', function () {
     Auth::logout();
