@@ -111,7 +111,7 @@
                                 </div>
                                 <div class="w-1/2">
                                     <label class="block text-xs font-bold text-gray-600 mb-1.5 ml-1">Kode Pos</label>
-                                    <input type="text" wire:model="postalCode" placeholder="12345"
+                                    <input type="text" wire:model.live.debounce.1000ms="postalCode" placeholder="12345"
                                         class="w-full text-sm rounded-xl border-gray-200 px-4 py-3 focus:ring-2 focus:ring-[#4E44DB]/20 focus:border-[#4E44DB] transition">
                                 </div>
                             </div>
@@ -176,6 +176,49 @@
                         <textarea wire:model="notes" rows="2" placeholder="Contoh: Warna hitam, packing kayu, dll..."
                             class="w-full text-sm rounded-xl border-gray-200 px-4 py-3 focus:ring-2 focus:ring-[#4E44DB]/20 focus:border-[#4E44DB] transition resize-none"></textarea>
                     </div>
+
+                    {{-- Shipping Options --}}
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <h2 class="font-bold text-gray-800 text-lg mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-[#4E44DB]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                            </svg>
+                            Metode Pengiriman
+                        </h2>
+                        
+                        @if(strlen($postalCode) < 5)
+                            <div class="p-4 bg-gray-50 border border-gray-100 rounded-xl text-center text-gray-500 text-sm">
+                                Harap masukkan <b>Kode Pos</b> yang valid pada alamat Anda untuk menampilkan ongkos kirim.
+                            </div>
+                        @else
+                            <div class="space-y-3 relative" wire:loading.class="opacity-50 pointer-events-none" wire:target="postalCode">
+                                @if(count($couriersList) > 0)
+                                    @foreach($couriersList as $courier)
+                                        @php
+                                            $code = ($courier['company'] ?? '') . '|' . ($courier['type'] ?? '');
+                                        @endphp
+                                        <label class="flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all {{ $selectedCourier === $code ? 'border-[#4E44DB] bg-[#4E44DB]/5' : 'border-gray-200 hover:border-[#4E44DB]/50' }}">
+                                            <div class="flex items-center gap-3">
+                                                <input type="radio" wire:model.live="selectedCourier" value="{{ $code }}" name="courier" class="w-4 h-4 text-[#4E44DB] border-gray-300 focus:ring-[#4E44DB]">
+                                                <div>
+                                                    <span class="block font-bold text-gray-800 uppercase">{{ $courier['courier_name'] ?? $courier['company'] ?? 'Kurir' }} <span class="text-xs text-gray-500 font-medium">({{ $courier['courier_service_name'] ?? $courier['type'] ?? 'Regular' }})</span></span>
+                                                    <span class="block text-xs text-gray-500 mt-0.5">Estimasi: {{ $courier['duration'] ?? '1-3 Hari' }}</span>
+                                                </div>
+                                            </div>
+                                            <span class="font-bold text-gray-800">Rp {{ number_format($courier['price'] ?? 0, 0, ',', '.') }}</span>
+                                        </label>
+                                    @endforeach
+                                @else
+                                    <div class="p-4 bg-rose-50 border border-rose-100 rounded-xl text-center text-rose-500 text-sm">
+                                        Tidak ada kurir yang tersedia untuk tujuan tersebut. Pastikan API Key Biteship sudah diatur.
+                                    </div>
+                                @endif
+                                <div wire:loading wire:target="postalCode" class="absolute inset-0 flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-[#4E44DB] animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 {{-- RIGHT: Order Summary --}}
@@ -191,12 +234,16 @@
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-500">Ongkos Kirim</span>
-                                <span class="font-semibold text-gray-500 italic text-xs">Segera tersedia</span>
+                                @if($shippingCost > 0)
+                                    <span class="font-semibold text-gray-800">Rp {{ number_format($shippingCost, 0, ',', '.') }}</span>
+                                @else
+                                    <span class="font-semibold text-gray-500 italic text-xs">Menunggu kurir...</span>
+                                @endif
                             </div>
                             <div class="border-t border-gray-100 pt-3 flex justify-between">
                                 <span class="font-bold text-gray-900 text-base">Total</span>
                                 <span class="font-black text-[#4E44DB] text-xl">Rp
-                                    {{ number_format($totalPrice, 0, ',', '.') }}</span>
+                                    {{ number_format($totalPrice + $shippingCost, 0, ',', '.') }}</span>
                             </div>
                         </div>
 

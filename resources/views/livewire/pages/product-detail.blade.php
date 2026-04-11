@@ -77,6 +77,16 @@
                     <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-1 leading-tight">
                         {{ $product->name }}
                     </h1>
+                    @if($product->reviews->count() > 0)
+                        <div class="flex items-center gap-2 mt-3">
+                            <div class="flex items-center text-amber-400">
+                                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                                <span class="ml-1 text-sm font-bold text-gray-800">{{ number_format($product->average_rating, 1) }}</span>
+                            </div>
+                            <span class="text-gray-300">•</span>
+                            <span class="text-sm text-gray-500 font-medium pb-px">{{ $product->reviews->count() }} Ulasan</span>
+                        </div>
+                    @endif
                 </div>
 
                 {{-- Price --}}
@@ -216,19 +226,45 @@
         </div>
     </div>
 
-    {{-- Reviews Section (Placeholder — akan diimplementasi di Fase 2) --}}
+    {{-- Reviews Section --}}
     <div class="max-w-7xl mx-auto px-6 mt-16">
         <div class="border-t border-gray-100 pt-10">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Ulasan Pelanggan</h2>
-            <div class="bg-gray-50 rounded-2xl p-10 text-center border border-gray-100">
-                <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
-                <p class="text-gray-400 font-medium">Belum ada ulasan untuk produk ini.</p>
-                <p class="text-gray-300 text-sm mt-1">Jadilah yang pertama memberikan ulasan!</p>
-            </div>
+            
+            @if($product->reviews->count() > 0)
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($product->reviews as $review)
+                        <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-full bg-[#4E44DB] text-white flex items-center justify-center font-bold text-sm shadow-md shadow-[#4E44DB]/20">
+                                    {{ strtoupper(substr($review->user->name ?? 'U', 0, 1)) }}
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 text-sm">{{ $review->user->name ?? 'Pengguna' }}</h4>
+                                    <p class="text-xs text-gray-500">{{ $review->created_at->diffForHumans() }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center text-amber-400 mb-3">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <svg class="w-4 h-4 {{ $i <= $review->rating ? 'fill-current' : 'text-gray-200 fill-current' }}" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                                @endfor
+                            </div>
+                            @if($review->comment)
+                                <p class="text-gray-600 text-sm leading-relaxed">
+                                    "{{ $review->comment }}"
+                                </p>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="bg-gray-50 rounded-2xl p-10 text-center border border-gray-100">
+                    <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                    <p class="text-gray-400 font-medium">Belum ada ulasan untuk produk ini.</p>
+                </div>
+            @endif
         </div>
     </div>
 </div>

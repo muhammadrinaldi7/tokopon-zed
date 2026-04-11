@@ -97,6 +97,20 @@
                                 <span class="text-xs text-gray-500">{{ $item->qty }}x @ Rp {{ number_format($item->price_at_checkout, 0, ',', '.') }}</span>
                                 <span class="font-bold text-gray-800">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
                             </div>
+                            @if($order->order_status === 'COMPLETED')
+                                <div class="mt-3 text-right">
+                                    @if($item->review)
+                                        <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100 flex items-center gap-1 w-fit ml-auto">
+                                            <svg class="w-4 h-4 text-emerald-500 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg> 
+                                            {{ $item->review->rating }}/5 (Diulas)
+                                        </span>
+                                    @else
+                                        <button wire:click="openReviewModal({{ $item->id }})" class="inline-flex text-xs font-bold text-[#4E44DB] border border-[#4E44DB] bg-white px-4 py-1.5 rounded-lg hover:bg-[#4E44DB] hover:text-white transition-colors">
+                                            Beri Ulasan
+                                        </button>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                     </div>
                 @endforeach
@@ -180,13 +194,49 @@
                     <span wire:loading wire:target="confirmReceived">Memproses...</span>
                 </button>
             @endif
-
-            @if ($order->order_status === 'COMPLETED')
-                <a href="{{ route('products.show', $order->items->first()?->variant?->product) }}" wire:navigate
-                    class="flex-1 bg-[#4E44DB] text-white py-3.5 rounded-xl font-bold hover:bg-[#3f36b8] transition shadow-lg shadow-[#4E44DB]/25 text-center">
-                    Tulis Review
-                </a>
-            @endif
         </div>
     </div>
+
+    {{-- Review Modal --}}
+    @if($showReviewModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div class="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative" @click.away="$wire.closeReviewModal()">
+                {{-- Close button --}}
+                <button wire:click="closeReviewModal" class="absolute top-4 right-4 bg-gray-50 text-gray-400 hover:text-gray-600 p-2 rounded-full transition hover:bg-gray-100">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+                
+                <div class="p-6 md:p-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Nilai Produk</h3>
+                    <p class="text-sm text-gray-500 mb-6">Bagaimana kepuasan Anda terhadap produk ini?</p>
+
+                    <form wire:submit="submitReview">
+                        <div class="flex items-center justify-center gap-2 mb-6">
+                            @for($i = 1; $i <= 5; $i++)
+                                <button type="button" wire:click="$set('reviewRating', {{ $i }})" class="focus:outline-none transition-transform hover:scale-110">
+                                    <svg class="w-10 h-10 {{ $i <= $reviewRating ? 'text-amber-400 fill-current' : 'text-gray-200 fill-current' }}" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                    </svg>
+                                </button>
+                            @endfor
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Ulasan (Opsional)</label>
+                            <textarea wire:model="reviewComment" rows="4" class="w-full text-sm rounded-xl border-gray-200 px-4 py-3 focus:ring-2 focus:ring-[#4E44DB]/20 focus:border-[#4E44DB] transition resize-none" placeholder="Tulis pengalaman Anda menggunakan produk ini..."></textarea>
+                            @error('reviewComment') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button type="button" wire:click="closeReviewModal" class="flex-1 bg-gray-100 text-gray-700 py-3.5 rounded-xl font-bold hover:bg-gray-200 transition">Batal</button>
+                            <button type="submit" class="flex-1 bg-[#4E44DB] text-white py-3.5 rounded-xl font-bold hover:bg-[#3f36b8] transition shadow-lg shadow-[#4E44DB]/25 flex items-center justify-center gap-2" wire:loading.attr="disabled">
+                                <span wire:loading.remove wire:target="submitReview">Kirim Ulasan</span>
+                                <span wire:loading wire:target="submitReview">Loading...</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>

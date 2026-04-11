@@ -23,6 +23,11 @@ class Checkout extends Component
     public $postalCode = '';
     public $notes = '';
 
+    // Shipping related
+    public $couriersList = [];
+    public $selectedCourier = '';
+    public $shippingCost = 0;
+
     // Saved addresses
     public $savedAddresses = [];
     public $selectedAddressId = null;
@@ -58,6 +63,10 @@ class Checkout extends Component
             $this->fullAddress = $address['full_address'];
             $this->postalCode = $address['postal_code'] ?? '';
             $this->showAddressForm = false;
+            
+            if (!empty($this->postalCode)) {
+                $this->loadShippingRates();
+            }
         }
     }
 
@@ -71,6 +80,66 @@ class Checkout extends Component
         $this->fullAddress = '';
         $this->postalCode = '';
         $this->showAddressForm = true;
+        $this->couriersList = [];
+        $this->selectedCourier = '';
+        $this->shippingCost = 0;
+    }
+
+    public function updatedPostalCode($value)
+    {
+        if (strlen($value) >= 5) {
+            $this->loadShippingRates();
+        } else {
+            $this->couriersList = [];
+            $this->selectedCourier = '';
+            $this->shippingCost = 0;
+        }
+    }
+
+    public function updatedSelectedCourier($value)
+    {
+        foreach ($this->couriersList as $courier) {
+            $code = ($courier['company'] ?? '') . '|' . ($courier['type'] ?? '');
+            if ($code === $value) {
+                $this->shippingCost = $courier['price'] ?? 0;
+                break;
+            }
+        }
+    }
+
+    public function loadShippingRates()
+    {
+        $biteshipService = app(\App\Services\BiteshipService::class);
+        $cartService = app(\App\Services\CartService::class);
+        $cart = $cartService->getCart();
+        
+        $items = [];
+        if ($cart) {
+            foreach ($cart->items->load(['productVariant.product']) as $item) {
+                $items[] = [
+                    'name' => $item->productVariant->product->name ?? 'Produk',
+                    'price' => $item->productVariant->price ?? 1000,
+                    'qty' => $item->qty
+                ];
+            }
+        }
+
+        $rates = $biteshipService->getRates($this->postalCode, null, $items);
+        if ($rates && isset($rates['pricing'])) {
+            // Sort by price ascending
+            $pricing = collect($rates['pricing'])->sortBy('price')->values()->toArray();
+            $this->couriersList = $pricing;
+            
+            if (count($this->couriersList) > 0 && empty($this->selectedCourier)) {
+                $first = $this->couriersList[0];
+                $this->selectedCourier = ($first['company'] ?? '') . '|' . ($first['type'] ?? '');
+                $this->shippingCost = $first['price'] ?? 0;
+            }
+        } else {
+            $this->couriersList = [];
+            $this->selectedCourier = '';
+            $this->shippingCost = 0;
+        }
     }
 
     public function placeOrder(XenditService $xenditService): void
@@ -111,8 +180,7 @@ class Checkout extends Component
 
             // Calculate totals
             $totalAmount = $items->sum(fn($item) => $item->qty * $item->productVariant->price);
-            $shippingCost = 0; // Will be updated when Biteship is integrated
-            $grandTotal = $totalAmount + $shippingCost;
+            $grandTotal = $totalAmount + $this->shippingCost;
 
             // Generate order number
             $orderNumber = 'TKP-' . now()->format('Ymd') . '-' . str_pad(
@@ -150,12 +218,26 @@ class Checkout extends Component
                 'user_id' => Auth::id(),
                 'order_number' => $orderNumber,
                 'total_amount' => $totalAmount,
-                'shipping_cost' => $shippingCost,
+                'shipping_cost' => $this->shippingCost,
                 'discount_amount' => 0,
                 'grand_total' => $grandTotal,
                 'order_status' => 'PENDING',
                 'shipping_address_snapshot' => $addressSnapshot,
             ]);
+
+            // Save Shipping Courier if Biteship used
+            if ($this->selectedCourier) {
+                $parts = explode('|', $this->selectedCourier);
+                DB::table('order_shippings')->insert([
+                    'order_id' => $order->id,
+                    'courier_company' => $parts[0] ?? '',
+                    'courier_type' => $parts[1] ?? '',
+                    'tracking_number' => null,
+                    'shipping_cost' => $this->shippingCost,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
 
             // Create order items & reduce stock
             foreach ($items as $item) {

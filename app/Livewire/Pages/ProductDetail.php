@@ -26,6 +26,7 @@ class ProductDetail extends Component
             'brand',
             'category',
             'media',
+            'reviews.user',
         ]);
 
         // Auto-select first available variant

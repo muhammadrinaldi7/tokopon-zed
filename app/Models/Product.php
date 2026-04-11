@@ -25,6 +25,16 @@ class Product extends Model implements HasMedia
         return $this->hasMany(ProductVariant::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+    
+    public function getAverageRatingAttribute()
+    {
+        return round($this->reviews()->avg('rating') ?: 0, 1);
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);

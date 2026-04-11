@@ -179,6 +179,15 @@
                 </svg>
                 Pengaturan Pembayaran
             </a>
+
+            <a href="{{ route('admin.settings.shipping') }}" wire:navigate
+                class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm transition-colors cursor-pointer {{ request()->routeIs('admin.settings.shipping') ? $activeClass : $inactiveClass }}">
+                <svg class="w-5 h-5 {{ request()->routeIs('admin.settings.shipping') ? $activeIconClass : $inactiveIconClass }}"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                </svg>
+                Pengaturan Pengiriman
+            </a>
         @endhasanyrole
     </nav>
 
