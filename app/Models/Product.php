@@ -16,6 +16,7 @@ class Product extends Model implements HasMedia
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_second' => 'boolean',
         'has_active_erzap' => 'boolean',
         'specifications' => 'array',
     ];

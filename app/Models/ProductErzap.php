@@ -12,6 +12,7 @@ class ProductErzap extends Model
 
     protected $fillable = [
         'erzap_id',
+        'source',
         'name',
         'base_price',
         'discount_price',

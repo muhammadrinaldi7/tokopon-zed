@@ -10,7 +10,42 @@ use Illuminate\Support\Facades\Log;
 
 class ErzapProductController extends Controller
 {
+    /**
+     * Import products from Erzap (Produk Baru - syihabstore.erzap.com)
+     */
     public function store(Request $request)
+    {
+        return $this->importProducts($request, 'syihab');
+    }
+
+    /**
+     * Sync stock from Erzap (Produk Baru - syihabstore.erzap.com)
+     */
+    public function syncStock(Request $request)
+    {
+        return $this->syncProductStock($request, 'syihab');
+    }
+
+    /**
+     * Import products from Erzap GSK (Produk Second - gsksyihab.erzap.com)
+     */
+    public function storeSecond(Request $request)
+    {
+        return $this->importProducts($request, 'gsksyihab');
+    }
+
+    /**
+     * Sync stock from Erzap GSK (Produk Second - gsksyihab.erzap.com)
+     */
+    public function syncStockSecond(Request $request)
+    {
+        return $this->syncProductStock($request, 'gsksyihab');
+    }
+
+    /**
+     * Shared import logic with source tagging
+     */
+    private function importProducts(Request $request, string $source)
     {
         $produks = $request->input('erzap.produks');
         
@@ -26,14 +61,14 @@ class ErzapProductController extends Controller
                 }
 
                 ProductErzap::updateOrCreate(
-                    ['erzap_id' => $data['kode']],
+                    ['erzap_id' => $data['kode'], 'source' => $source],
                     [
                         'name' => $data['nama'] ?? null,
                         'barcode' => $data['barcode'] ?? null,
                         'base_price' => $data['harga_jual'] ?? 0,
                         'discount_price' => $data['harga_diskon'] ?? null,
                         'stock' => $data['available_stok'] ?? 0,
-                        'raw_data' => $data // Simpan seluruh data untuk referensi
+                        'raw_data' => $data
                     ]
                 );
             }
@@ -46,12 +81,15 @@ class ErzapProductController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Erzap Sync Error: ' . $e->getMessage());
+            Log::error("Erzap Sync Error ({$source}): " . $e->getMessage());
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
 
-    public function syncStock(Request $request)
+    /**
+     * Shared stock sync logic with source tagging
+     */
+    private function syncProductStock(Request $request, string $source)
     {
         $produks = $request->input('erzap.produks');
         
@@ -66,10 +104,8 @@ class ErzapProductController extends Controller
                     continue;
                 }
 
-                // Pada sync stock cepat, kita hanya update stok dari produk yang sudah ada
-                // Atau ciptakan blank produk dengan stok saja (meskipun disarankan produk diimport by API master dulu)
                 ProductErzap::updateOrCreate(
-                    ['erzap_id' => $data['kode']],
+                    ['erzap_id' => $data['kode'], 'source' => $source],
                     [
                         'stock' => $data['stok'] ?? 0,
                     ]
@@ -79,7 +115,7 @@ class ErzapProductController extends Controller
             return response()->json(['status' => 'sukses']);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Erzap Stock Sync Error: ' . $e->getMessage());
+            Log::error("Erzap Stock Sync Error ({$source}): " . $e->getMessage());
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }

@@ -74,9 +74,14 @@
                             {{ $product->category->name }}
                         </span>
                     @endif
-                    <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-1 leading-tight">
-                        {{ $product->name }}
-                    </h1>
+                    <div class="flex items-center gap-3 mt-1">
+                        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight">
+                            {{ $product->name }}
+                        </h1>
+                        @if($product->is_second)
+                            <span class="bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-lg shadow-sm shrink-0">SECOND</span>
+                        @endif
+                    </div>
                     @if($product->reviews->count() > 0)
                         <div class="flex items-center gap-2 mt-3">
                             <div class="flex items-center text-amber-400">
@@ -179,6 +184,17 @@
                                 <span wire:loading wire:target="addToCart">Menambahkan...</span>
                             @endif
                         </button>
+                    </div>
+
+                    {{-- Trade In Button --}}
+                    <div class="mt-4">
+                        <a href="{{ route('trade-in.submit', $product) }}" wire:navigate
+                            class="w-full bg-amber-500 text-white py-3.5 rounded-xl font-bold text-base hover:bg-amber-600 active:scale-[0.98] transition-all shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                            </svg>
+                            Tukar Tambah dengan Produk Ini
+                        </a>
                     </div>
                 @elseif(!$selectedVariant)
                     <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">

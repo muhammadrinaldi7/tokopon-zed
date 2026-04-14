@@ -11,10 +11,23 @@ Route::get('/products/{product:slug}', \App\Livewire\Pages\ProductDetail::class)
 Route::get('/cart', \App\Livewire\Pages\CartPage::class)->name('cart');
 
 // Order routes (requires authentication)
-Route::get('/checkout', \App\Livewire\Pages\Checkout::class)->middleware('auth')->name('checkout');
-Route::get('/orders', \App\Livewire\Pages\OrderHistory::class)->middleware('auth')->name('orders.index');
-Route::get('/orders/{order}', \App\Livewire\Pages\OrderDetail::class)->middleware('auth')->name('orders.show');
-Route::get('/orders/{order}/confirmation', \App\Livewire\Pages\OrderConfirmation::class)->middleware('auth')->name('orders.confirmation');
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout', \App\Livewire\Pages\Checkout::class)->name('checkout');
+    Route::get('/orders', \App\Livewire\Pages\OrderHistory::class)->name('orders.index');
+    Route::get('/orders/{order}', \App\Livewire\Pages\OrderDetail::class)->name('orders.show');
+    Route::get('/orders/{order}/confirmation', \App\Livewire\Pages\OrderConfirmation::class)->name('orders.confirmation');
+
+    // Trade In Client
+    Route::get('/trade-in', \App\Livewire\Pages\TradeInHistory::class)->name('trade-ins.index');
+    Route::get('/trade-in/{product}/submit', \App\Livewire\Pages\SubmitTradeIn::class)->name('trade-in.submit');
+    Route::get('/trade-in/{tradeIn}/detail', \App\Livewire\Pages\TradeInDetail::class)->name('trade-ins.show');
+});
+
+// Admin Group Main
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/trade-ins', App\Livewire\Admin\TradeIn\Index::class)->name('trade-ins.index');
+    Route::get('/trade-ins/{tradeIn}', App\Livewire\Admin\TradeIn\Show::class)->name('trade-ins.show');
+});
 
 Route::livewire('/admin/cs-chat', 'pages::cs-dashboard')
     ->middleware(['auth', 'role:cs'])
@@ -69,7 +82,12 @@ Route::post('/logout', function () {
     return redirect('/');
 })->middleware('auth')->name('logout');
 
-// Erzap Webhook Routes
+// Erzap Webhook Routes (Produk Baru - syihabstore.erzap.com)
 Route::post('/web_service/import_produk_json/new.json', [\App\Http\Controllers\Api\ErzapProductController::class, 'store']);
 Route::post('/web_service/import_produk_json/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'store']);
 Route::post('/web_service/sinkronisasi_stok/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'syncStock']);
+
+// Erzap Webhook Routes (Produk Second - gsksyihab.erzap.com)
+Route::post('/web_service/gsksyihab/import_produk_json/new.json', [\App\Http\Controllers\Api\ErzapProductController::class, 'storeSecond']);
+Route::post('/web_service/gsksyihab/import_produk_json/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'storeSecond']);
+Route::post('/web_service/gsksyihab/sinkronisasi_stok/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'syncStockSecond']);

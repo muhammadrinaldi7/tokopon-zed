@@ -49,7 +49,10 @@
                 $status = $variant ? $variant->condition : 'New';
             @endphp
             <div class="shrink-0 w-40  md:w-50 lg:w-65">
-                <div class="bg-neutral-200 rounded-2xl py-5 flex items-center justify-center p-2 aspect-square">
+                <div class="bg-neutral-200 rounded-2xl py-5 flex items-center justify-center p-2 aspect-square relative">
+                    @if($product->is_second)
+                        <span class="absolute top-2 left-2 z-10 bg-amber-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-md shadow-sm">SECOND</span>
+                    @endif
                     @if ($imageUrl)
                         <img src="{{ $imageUrl }}" class="w-full h-full object-contain" alt="">
                     @else
@@ -93,7 +96,10 @@
                 $status = $variant ? $variant->condition : 'New';
             @endphp
             <div class="shrink-0 w-40  md:w-50 lg:w-65">
-                <div class="bg-neutral-200 rounded-2xl py-5 flex items-center justify-center p-2 aspect-square">
+                <div class="bg-neutral-200 rounded-2xl py-5 flex items-center justify-center p-2 aspect-square relative">
+                    @if($product->is_second)
+                        <span class="absolute top-2 left-2 z-10 bg-amber-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-md shadow-sm">SECOND</span>
+                    @endif
                     @if ($imageUrl)
                         <img src="{{ $imageUrl }}" class="w-full h-full object-contain" alt="">
                     @else

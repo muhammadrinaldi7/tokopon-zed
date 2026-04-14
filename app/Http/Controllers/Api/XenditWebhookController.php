@@ -51,6 +51,12 @@ class XenditWebhookController extends Controller
                 $orderPayment->order->update([
                     'order_status' => 'PROCESSING'
                 ]);
+
+                // Jika order ini terkait Trade-In, tandai COMPLETED
+                $tradeIn = \App\Models\TradeIn::where('order_id', $orderPayment->order_id)->first();
+                if ($tradeIn && $tradeIn->status === 'PAYING') {
+                    $tradeIn->update(['status' => 'COMPLETED']);
+                }
             } elseif ($status === 'EXPIRED') {
                 $orderPayment->order->update([
                     'order_status' => 'CANCELLED'

@@ -153,6 +153,13 @@
                                     </span>
                                 </div>
                             @endif
+                            @if($product->is_second)
+                                <div class="absolute top-4 left-4 z-20">
+                                    <span class="bg-amber-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                                        SECOND
+                                    </span>
+                                </div>
+                            @endif
                         </div>
 
                         {{-- Product Info --}}
