@@ -4,14 +4,19 @@ use App\Livewire\Pages\Buymobile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+// ─── Public Routes ──────────────────────────────────────────────
 Route::livewire('/', 'pages::home');
 Route::get('/buy-mobile', Buymobile::class)->name('buy-mobile');
 Route::get('/products', \App\Livewire\Pages\ProductList::class)->name('products.index');
 Route::get('/products/{product:slug}', \App\Livewire\Pages\ProductDetail::class)->name('products.show');
 Route::get('/cart', \App\Livewire\Pages\CartPage::class)->name('cart');
 
-// Order routes (requires authentication)
-Route::middleware('auth')->group(function () {
+// ─── Google OAuth Routes ────────────────────────────────────────
+Route::get('/auth/google', [\App\Http\Controllers\GoogleCallbackController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [\App\Http\Controllers\GoogleCallbackController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+
+// ─── Customer Routes (requires auth + customer role) ────────────
+Route::middleware(['auth', 'customer'])->group(function () {
     Route::get('/checkout', \App\Livewire\Pages\Checkout::class)->name('checkout');
     Route::get('/orders', \App\Livewire\Pages\OrderHistory::class)->name('orders.index');
     Route::get('/orders/{order}', \App\Livewire\Pages\OrderDetail::class)->name('orders.show');
@@ -23,57 +28,31 @@ Route::middleware('auth')->group(function () {
     Route::get('/trade-in/{tradeIn}/detail', \App\Livewire\Pages\TradeInDetail::class)->name('trade-ins.show');
 });
 
-// Admin Group Main
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+// ─── Admin Routes (requires auth + admin role) ──────────────────
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::livewire('/dashboard', 'pages::admin.dashboard')->name('dashboard');
+    Route::livewire('/users', 'pages::admin.user-management')->name('users');
+    Route::livewire('/roles', 'pages::admin.role-permission')->name('roles');
+
+    Route::get('/products', \App\Livewire\Admin\Products\ProductManagement::class)->name('products');
+    Route::get('/orders', \App\Livewire\Admin\Orders\OrderManagement::class)->name('orders.management');
+    Route::get('/categories', \App\Livewire\Admin\Products\CategoryManagement::class)->name('categories');
+    Route::get('/brands', \App\Livewire\Admin\Products\BrandManagement::class)->name('brands');
+    Route::get('/products/{product}/variants', \App\Livewire\Admin\Products\VariantManagement::class)->name('products.variants');
+
+    Route::get('/settings/payment', \App\Livewire\Admin\Settings\PaymentSettings::class)->name('settings.payment');
+    Route::get('/settings/shipping', \App\Livewire\Admin\Settings\ShippingSettings::class)->name('settings.shipping');
+
     Route::get('/trade-ins', App\Livewire\Admin\TradeIn\Index::class)->name('trade-ins.index');
     Route::get('/trade-ins/{tradeIn}', App\Livewire\Admin\TradeIn\Show::class)->name('trade-ins.show');
 });
 
+// ─── CS Chat Route (requires auth + admin middleware + cs role) ──
 Route::livewire('/admin/cs-chat', 'pages::cs-dashboard')
-    ->middleware(['auth', 'role:cs'])
+    ->middleware(['auth', 'admin'])
     ->name('admin.cs-chat');
 
-Route::livewire('/admin/dashboard', 'pages::admin.dashboard')
-    ->middleware(['auth'])
-    ->name('admin.dashboard');
-
-Route::livewire('/admin/users', 'pages::admin.user-management')
-    ->middleware(['auth', 'role:admin|superadmin'])
-    ->name('admin.users');
-
-Route::livewire('/admin/roles', 'pages::admin.role-permission')
-    ->middleware(['auth', 'role:admin|superadmin'])
-    ->name('admin.roles');
-
-Route::get('/admin/products', \App\Livewire\Admin\Products\ProductManagement::class)
-    ->middleware(['auth', 'role:admin|superadmin'])
-    ->name('admin.products');
-
-Route::get('/admin/orders', \App\Livewire\Admin\Orders\OrderManagement::class)
-    ->middleware(['auth', 'role:admin|superadmin'])
-    ->name('admin.orders.management');
-
-Route::get('/admin/categories', \App\Livewire\Admin\Products\CategoryManagement::class)
-    ->middleware(['auth', 'role:admin|superadmin'])
-    ->name('admin.categories');
-
-Route::get('/admin/brands', \App\Livewire\Admin\Products\BrandManagement::class)
-    ->middleware(['auth', 'role:admin|superadmin'])
-    ->name('admin.brands');
-
-Route::get('/admin/products/{product}/variants', \App\Livewire\Admin\Products\VariantManagement::class)
-    ->middleware(['auth', 'role:admin|superadmin'])
-    ->name('admin.products.variants');
-
-Route::get('/admin/settings/payment', \App\Livewire\Admin\Settings\PaymentSettings::class)
-    ->middleware(['auth', 'role:admin|superadmin'])
-    ->name('admin.settings.payment');
-
-Route::get('/admin/settings/shipping', \App\Livewire\Admin\Settings\ShippingSettings::class)
-    ->middleware(['auth', 'role:admin|superadmin'])
-    ->name('admin.settings.shipping');
-
-// Logout route
+// ─── Logout ─────────────────────────────────────────────────────
 Route::post('/logout', function () {
     Auth::logout();
     request()->session()->invalidate();
@@ -82,12 +61,12 @@ Route::post('/logout', function () {
     return redirect('/');
 })->middleware('auth')->name('logout');
 
-// Erzap Webhook Routes (Produk Baru - syihabstore.erzap.com)
+// ─── Erzap Webhook Routes (Produk Baru - syihabstore.erzap.com) ─
 Route::post('/web_service/import_produk_json/new.json', [\App\Http\Controllers\Api\ErzapProductController::class, 'store']);
 Route::post('/web_service/import_produk_json/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'store']);
 Route::post('/web_service/sinkronisasi_stok/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'syncStock']);
 
-// Erzap Webhook Routes (Produk Second - gsksyihab.erzap.com)
+// ─── Erzap Webhook Routes (Produk Second - gsksyihab.erzap.com) ─
 Route::post('/web_service/gsksyihab/import_produk_json/new.json', [\App\Http\Controllers\Api\ErzapProductController::class, 'storeSecond']);
 Route::post('/web_service/gsksyihab/import_produk_json/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'storeSecond']);
 Route::post('/web_service/gsksyihab/sinkronisasi_stok/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'syncStockSecond']);
