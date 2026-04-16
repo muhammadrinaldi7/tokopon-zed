@@ -25,6 +25,25 @@ class ProductManagement extends Component
     public $specifications = [];
     public $categoryId;
     public $brandId;
+    public $is_second = false;
+
+    // Filters
+    public $search = '';
+    public $filterCategory = '';
+    public $filterBrand = '';
+    public $filterCondition = '';
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'filterCategory' => ['except' => ''],
+        'filterBrand' => ['except' => ''],
+        'filterCondition' => ['except' => ''],
+    ];
+
+    public function updatingSearch() { $this->resetPage(); }
+    public function updatingFilterCategory() { $this->resetPage(); }
+    public function updatingFilterBrand() { $this->resetPage(); }
+    public function updatingFilterCondition() { $this->resetPage(); }
 
     // Media properties
     public $coverImage;
@@ -68,6 +87,7 @@ class ProductManagement extends Component
         $this->description = $product->description;
         $this->categoryId = $product->category_id;
         $this->brandId = $product->brand_id;
+        $this->is_second = (bool) $product->is_second;
 
         // Format saved dict to array of key-value pairs for UI
         if (is_array($product->specifications)) {
@@ -119,6 +139,7 @@ class ProductManagement extends Component
                 'category_id' => $this->categoryId,
                 'brand_id' => empty($this->brandId) ? null : $this->brandId,
                 'specifications' => empty($specsDict) ? null : $specsDict,
+                'is_second' => $this->is_second,
             ]);
         } else {
             $product = Product::create([
@@ -129,6 +150,7 @@ class ProductManagement extends Component
                 'brand_id' => empty($this->brandId) ? null : $this->brandId,
                 'specifications' => empty($specsDict) ? null : $specsDict,
                 'is_active' => true,
+                'is_second' => $this->is_second,
             ]);
         }
 
@@ -199,6 +221,7 @@ class ProductManagement extends Component
         $this->specifications = [];
         $this->categoryId = null;
         $this->brandId = null;
+        $this->is_second = false;
         $this->coverImage = null;
         $this->galleryImages = [];
         $this->isEditing = false;
@@ -208,7 +231,25 @@ class ProductManagement extends Component
     #[Layout('layouts.admin')]
     public function render()
     {
-        $products = Product::with(['category', 'brand'])->orderByDesc('id')->paginate(10);
+        $query = Product::with(['category', 'brand']);
+
+        if ($this->search) {
+            $query->where('name', 'like', '%' . $this->search . '%');
+        }
+
+        if ($this->filterCategory) {
+            $query->where('category_id', $this->filterCategory);
+        }
+
+        if ($this->filterBrand) {
+            $query->where('brand_id', $this->filterBrand);
+        }
+
+        if ($this->filterCondition !== '') {
+            $query->where('is_second', $this->filterCondition === 'second');
+        }
+
+        $products = $query->orderByDesc('id')->paginate(10);
         $categoriesList = \App\Models\Category::orderBy('name')->get();
         $brandsList = \App\Models\Brand::orderBy('name')->get();
 

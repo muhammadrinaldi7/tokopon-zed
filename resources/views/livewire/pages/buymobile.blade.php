@@ -38,7 +38,7 @@
         <h1 class="font-semibold text-xs md:text-lg">Best sellers and current promotions</h1>
     </div>
     <div class="flex gap-2 md:gap-6 overflow-x-auto overflow-hidden no-scrollbar mt-4 md:mt-10 snap-x snap-mandatory">
-        @foreach ($products as $product)
+        @forelse ($products as $product)
             @php
                 $imageUrl =
                     $product->getFirstMediaUrl('cover', 'thumb') ?:
@@ -77,7 +77,15 @@
                     </button>
                 </a>
             </div>
-        @endforeach
+        @empty
+            <div class="col-span-full py-16 text-center w-full flex flex-col items-center justify-center opacity-30">
+                <svg class="w-24 h-24 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+                <p class="font-bold text-2xl">Produk Tidak Tersedia</p>
+                <p class="text-sm">Maaf, saat ini belum ada produk pilihan untuk ditampilkan.</p>
+            </div>
+        @endforelse
     </div>
     <div class="flex flex-col mt-8 gap-1 md:gap-2 justify-center items-center ">
         <h1 class=" font-bold text-lg md:text-3xl lg:text-5xl text-neutral-400">
@@ -87,7 +95,7 @@
         <h1 class="font-semibold text-xs md:text-lg">All products are available</h1>
     </div>
     <div class="flex gap-2 md:gap-6 overflow-x-auto overflow-hidden no-scrollbar mt-4 md:mt-10 snap-x snap-mandatory">
-        @foreach ($products as $product)
+        @forelse ($products as $product)
             @php
                 $imageUrl =
                     $product->getFirstMediaUrl('cover', 'thumb') ?:
@@ -126,6 +134,14 @@
                     </button>
                 </a>
             </div>
-        @endforeach
+        @empty
+            <div class="col-span-full py-16 text-center w-full flex flex-col items-center justify-center opacity-30">
+                <svg class="w-20 h-20 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                <p class="font-bold text-xl">Katalog Kosong</p>
+                <p class="text-sm">Belum ada produk yang tersedia saat ini.</p>
+            </div>
+        @endforelse
     </div>
 </section>
