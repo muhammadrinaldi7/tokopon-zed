@@ -13,8 +13,16 @@
         <div class="lg:col-span-3 space-y-4">
             @forelse($variants as $variant)
                 <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center justify-between">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
+                    <div class="flex gap-4 items-center">
+                        <div class="w-16 h-16 shrink-0 bg-gray-50 rounded-xl border border-gray-100 overflow-hidden flex items-center justify-center">
+                            @if($url = $variant->getFirstMediaUrl('variant_image', 'thumb'))
+                                <img src="{{ $url }}" class="w-full h-full object-cover">
+                            @else
+                                <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            @endif
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
                             <h3 class="font-bold text-gray-800 text-lg">
                                 {{ $variant->ram ? $variant->ram . ' - ' : '' }}{{ $variant->storage ? $variant->storage . ' - ' : '' }}{{ $variant->color ?? 'Standar' }}
                             </h3>
@@ -43,6 +51,7 @@
                                     Manual (Tidak Sync)</span>
                             @endif
                         </div>
+                    </div>
                     </div>
                     <div class="text-right flex flex-col items-end">
                         <div class="text-xl font-bold text-[#4E44DB]">Rp
@@ -153,6 +162,23 @@
                                     class="text-gray-400 font-normal">(opsional)</span></label>
                             <input type="text" wire:model="sku"
                                 class="w-full text-[14px] rounded-xl border-gray-300 px-4 py-2.5 shadow-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all">
+                        </div>
+                    </div>
+
+                    {{-- Image Upload --}}
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1.5 ml-1">Gambar Varian <span class="text-gray-400 font-normal">(opsional)</span></label>
+                        <div class="flex items-center gap-4 border border-gray-300 rounded-xl px-4 py-3 bg-white shadow-sm focus-within:ring-4 focus-within:ring-[#4E44DB]/10 focus-within:border-[#4E44DB] transition-all">
+                            @if ($variantImage)
+                                <img src="{{ $variantImage->temporaryUrl() }}" class="w-12 h-12 rounded object-cover border border-gray-200">
+                            @elseif ($currentVariantImageUrl)
+                                <img src="{{ $currentVariantImageUrl }}" class="w-12 h-12 rounded object-cover border border-gray-200">
+                            @else
+                                <div class="w-12 h-12 rounded bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            @endif
+                            <input type="file" wire:model="variantImage" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:text-[#4E44DB] file:bg-[#eff2ff] hover:file:bg-[#e0e7ff] transition">
                         </div>
                     </div>
 

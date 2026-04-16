@@ -46,7 +46,7 @@ class ProductList extends Component
         $categories = Category::orderBy('name')->get();
 
         $query = Product::with(['category', 'brand', 'media'])
-            ->where('is_active', true);
+            ->availableForCustomer();
 
         if ($this->search) {
             $query->where('name', 'like', '%' . $this->search . '%');

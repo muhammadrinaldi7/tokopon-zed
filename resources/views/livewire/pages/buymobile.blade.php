@@ -49,9 +49,11 @@
                 $status = $variant ? $variant->condition : 'New';
             @endphp
             <div class="shrink-0 w-40  md:w-50 lg:w-65">
-                <div class="bg-neutral-200 rounded-2xl py-5 flex items-center justify-center p-2 aspect-square relative">
-                    @if($product->is_second)
-                        <span class="absolute top-2 left-2 z-10 bg-amber-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-md shadow-sm">SECOND</span>
+                <div
+                    class="bg-neutral-200 rounded-2xl py-5 flex items-center justify-center p-2 aspect-square relative">
+                    @if ($product->is_second)
+                        <span
+                            class="absolute top-2 left-2 z-10 bg-amber-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-md shadow-sm">SECOND</span>
                     @endif
                     @if ($imageUrl)
                         <img src="{{ $imageUrl }}" class="w-full h-full object-contain" alt="">
@@ -63,8 +65,8 @@
                     @endif
                 </div>
                 <div class="text-center py-2">
-                    <h1 class="font-semibold text-xs md:text-sm lg:text-lg line-clamp-1">{{ $product->name }} </h1>
-                    <h1 class="text-neutral-400 text-[10px] md:text-xs lg:text-sm"> {{ $status }} </h1>
+                    {{-- <h1 class="font-semibold text-xs md:text-sm lg:text-lg line-clamp-1">{{ $product->name }} </h1>
+                    <h1 class="text-neutral-400 text-[10px] md:text-xs lg:text-sm"> {{ $status }} </h1> --}}
                     <h1 class="font-bold text-xs md:text-sm lg:text-lg mt-2">Rp
                         {{ number_format($product->starting_price ?? 0, 0, ',', '.') }}</h1>
                 </div>
@@ -96,9 +98,11 @@
                 $status = $variant ? $variant->condition : 'New';
             @endphp
             <div class="shrink-0 w-40  md:w-50 lg:w-65">
-                <div class="bg-neutral-200 rounded-2xl py-5 flex items-center justify-center p-2 aspect-square relative">
-                    @if($product->is_second)
-                        <span class="absolute top-2 left-2 z-10 bg-amber-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-md shadow-sm">SECOND</span>
+                <div
+                    class="bg-neutral-200 rounded-2xl py-5 flex items-center justify-center p-2 aspect-square relative">
+                    @if ($product->is_second)
+                        <span
+                            class="absolute top-2 left-2 z-10 bg-amber-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-md shadow-sm">SECOND</span>
                     @endif
                     @if ($imageUrl)
                         <img src="{{ $imageUrl }}" class="w-full h-full object-contain" alt="">
@@ -111,7 +115,7 @@
                 </div>
                 <div class="text-center py-2">
                     <h1 class="font-semibold text-xs md:text-sm lg:text-lg line-clamp-1">{{ $product->name }} </h1>
-                    <h1 class="text-neutral-400 text-[10px] md:text-xs lg:text-sm"> {{ $status }} </h1>
+                    {{-- <h1 class="text-neutral-400 text-[10px] md:text-xs lg:text-sm"> {{ $status }} </h1> --}}
                     <h1 class="font-bold text-xs md:text-sm lg:text-lg mt-2">Rp
                         {{ number_format($product->starting_price ?? 0, 0, ',', '.') }}</h1>
                 </div>

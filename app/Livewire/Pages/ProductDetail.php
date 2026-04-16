@@ -21,6 +21,11 @@ class ProductDetail extends Component
 
     public function mount(Product $product): void
     {
+        $minStock = \App\Models\Setting::where('key', 'minimum_stock_threshold')->value('value') ?? 5;
+        if (!$product->is_active || !$product->has_active_erzap || $product->total_stock < $minStock) {
+            abort(404, 'Produk tidak ditemukan atau tidak tersedia.');
+        }
+
         $this->product = $product->load([
             'variants' => fn($q) => $q->orderBy('price'),
             'brand',
@@ -88,6 +93,14 @@ class ProductDetail extends Component
         }
         foreach ($this->product->getMedia('gallery') as $media) {
             $images->push($media);
+        }
+
+        // Include variant images in the gallery
+        foreach ($this->product->variants as $variant) {
+            if ($variantMedia = $variant->getFirstMedia('variant_image')) {
+                // Prevent duplicate images if they happen to be similar, though they are distinct IDs
+                $images->push($variantMedia);
+            }
         }
 
         return view('livewire.pages.product-detail', [

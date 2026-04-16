@@ -10,7 +10,7 @@ new #[Title('Home - TokoPun')] class extends Component {
     {
         return [
             'featuredProducts' => Product::with(['category', 'brand', 'media'])
-                ->where('is_active', true)
+                ->availableForCustomer()
                 ->orderByDesc('id')
                 ->take(4)
                 ->get(),

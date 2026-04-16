@@ -8,9 +8,12 @@ use App\Models\ProductVariant;
 use App\Models\ProductErzap;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
+use Livewire\WithFileUploads;
 
 class VariantManagement extends Component
 {
+    use WithFileUploads;
+
     public Product $product;
     public $variants;
 
@@ -20,6 +23,10 @@ class VariantManagement extends Component
     public $color;
     public $condition = 'Baru';
     public $sku;
+
+    // Image properties
+    public $variantImage;
+    public $currentVariantImageUrl;
 
     // Autocomplete for Erzap
     public $searchErzap = '';
@@ -85,6 +92,7 @@ class VariantManagement extends Component
             'storage' => 'nullable|string',
             'color' => 'nullable|string',
             'sku' => 'nullable|string',
+            'variantImage' => 'nullable|image|max:2048',
         ]);
 
         $isNew = false;
@@ -103,7 +111,7 @@ class VariantManagement extends Component
             ]);
         } else {
             // Create
-            ProductVariant::create([
+            $variant = ProductVariant::create([
                 'product_id' => $this->product->id,
                 'erzap_item_id' => $this->selectedErzapId,
                 'condition' => $this->condition,
@@ -115,6 +123,12 @@ class VariantManagement extends Component
                 'stock' => $this->selectedErzapId ? $this->simulatedStock : 0,
             ]);
             $isNew = true;
+        }
+
+        if ($this->variantImage) {
+            $variant->addMedia($this->variantImage->getRealPath())
+                ->usingFileName($this->variantImage->getClientOriginalName())
+                ->toMediaCollection('variant_image');
         }
 
         // Trigger manual update to ensure parent product gets re-calculated 
@@ -157,6 +171,7 @@ class VariantManagement extends Component
             $this->storage = $variant->storage;
             $this->color = $variant->color;
             $this->sku = $variant->sku;
+            $this->currentVariantImageUrl = $variant->getFirstMediaUrl('variant_image', 'thumb');
 
             if ($variant->erzap_item_id) {
                 $erzap = $variant->erzapData;
@@ -207,6 +222,8 @@ class VariantManagement extends Component
         $this->storage = '';
         $this->color = '';
         $this->sku = '';
+        $this->variantImage = null;
+        $this->currentVariantImageUrl = null;
         $this->clearErzap();
     }
 

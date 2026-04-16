@@ -121,7 +121,7 @@ class ProductManagement extends Component
                 'specifications' => empty($specsDict) ? null : $specsDict,
             ]);
         } else {
-            Product::create([
+            $product = Product::create([
                 'name' => $this->name,
                 'slug' => \Illuminate\Support\Str::slug($this->name) . '-' . time(),
                 'description' => $this->description,

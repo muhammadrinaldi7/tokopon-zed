@@ -138,9 +138,14 @@
                                             $variant->stock <= 0,
                                     ])
                                     @if ($variant->stock <= 0) disabled @endif>
-                                    <span>
-                                        {{ $variant->ram ? $variant->ram . ' / ' : '' }}{{ $variant->storage ?? '' }}
-                                        {{ $variant->color ? '- ' . $variant->color : '' }}
+                                    <span class="flex items-center justify-center gap-1.5">
+                                        @if($url = $variant->getFirstMediaUrl('variant_image', 'thumb'))
+                                            <img src="{{ $url }}" class="w-5 h-5 rounded-sm object-cover border border-gray-200" alt="Varian {{ $variant->color }}">
+                                        @endif
+                                        <span>
+                                            {{ $variant->ram ? $variant->ram . ' / ' : '' }}{{ $variant->storage ?? '' }}
+                                            {{ $variant->color ? '- ' . $variant->color : '' }}
+                                        </span>
                                     </span>
                                     <span class="block text-[10px] font-medium mt-0.5 opacity-70">
                                         Rp {{ number_format($variant->price, 0, ',', '.') }}

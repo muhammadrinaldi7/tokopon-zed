@@ -36,6 +36,14 @@ class Product extends Model implements HasMedia
         return round($this->reviews()->avg('rating') ?: 0, 1);
     }
 
+    public function scopeAvailableForCustomer($query)
+    {
+        $minStock = \App\Models\Setting::where('key', 'minimum_stock_threshold')->value('value') ?? 5;
+        return $query->where('is_active', true)
+                     ->where('has_active_erzap', true)
+                     ->where('total_stock', '>=', $minStock);
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);

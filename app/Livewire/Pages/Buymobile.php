@@ -18,7 +18,7 @@ class Buymobile extends Component
     ];
     public function render()
     {
-        $products = \App\Models\Product::with(['variants'])->where('is_active', true)->get();
+        $products = \App\Models\Product::with(['variants'])->availableForCustomer()->get();
         return view('livewire.pages.buymobile', ['products' => $products]);
     }
 }
