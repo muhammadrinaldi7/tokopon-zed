@@ -35,6 +35,7 @@ class VariantManagement extends Component
     public $searchResults = [];
     public $simulatedPrice = 0;
     public $simulatedStock = 0;
+    public $manualPrice = 0;
 
     public $isEditing = false;
     public $editingVariantId = null;
@@ -72,6 +73,11 @@ class VariantManagement extends Component
         $this->searchErzap = $kode ? $kode . ' - ' . $erzapId : $erzapId;
         $this->simulatedPrice = $price;
         $this->simulatedStock = $stock;
+        
+        if ($this->product->is_second && !$this->manualPrice) {
+            $this->manualPrice = $price; // Auto-fill baseline price for second products
+        }
+
         $this->searchResults = []; // close dropdown
     }
 
@@ -82,6 +88,10 @@ class VariantManagement extends Component
         $this->searchErzap = '';
         $this->simulatedPrice = 0;
         $this->simulatedStock = 0;
+        $this->manualPrice = 0;
+        if (!$this->isEditing) {
+            $this->manualPrice = 0;
+        }
     }
 
     public function saveVariant()
@@ -93,6 +103,7 @@ class VariantManagement extends Component
             'color' => 'nullable|string',
             'sku' => 'nullable|string',
             'variantImage' => 'nullable|image|max:2048',
+            'manualPrice' => $this->product->is_second ? 'required|numeric|min:0' : 'nullable',
         ]);
 
         $isNew = false;
@@ -106,7 +117,7 @@ class VariantManagement extends Component
                 'color' => $this->color,
                 'sku' => $this->sku,
                 // Price & stock handle by observer mostly, but we set initial here
-                'price' => $this->selectedErzapId ? $this->simulatedPrice : 0,
+                'price' => $this->manualPrice > 0 ? $this->manualPrice : ($this->selectedErzapId ? $this->simulatedPrice : 0),
                 'stock' => $this->selectedErzapId ? $this->simulatedStock : 0,
             ]);
         } else {
@@ -119,7 +130,7 @@ class VariantManagement extends Component
                 'storage' => $this->storage,
                 'color' => $this->color,
                 'sku' => $this->sku,
-                'price' => $this->selectedErzapId ? $this->simulatedPrice : 0,
+                'price' => $this->manualPrice > 0 ? $this->manualPrice : ($this->selectedErzapId ? $this->simulatedPrice : 0),
                 'stock' => $this->selectedErzapId ? $this->simulatedStock : 0,
             ]);
             $isNew = true;
@@ -171,6 +182,7 @@ class VariantManagement extends Component
             $this->storage = $variant->storage;
             $this->color = $variant->color;
             $this->sku = $variant->sku;
+            $this->manualPrice = $variant->price;
             $this->currentVariantImageUrl = $variant->getFirstMediaUrl('variant_image', 'thumb');
 
             if ($variant->erzap_item_id) {

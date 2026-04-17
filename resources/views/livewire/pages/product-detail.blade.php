@@ -23,10 +23,10 @@
             {{-- LEFT: Image Gallery --}}
             <div class="space-y-4">
                 {{-- Main Image --}}
-                <div class="relative aspect-square bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 flex items-center justify-center">
+                <div
+                    class="relative aspect-square bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 flex items-center justify-center">
                     @if ($images->isNotEmpty())
-                        <img src="{{ $images[$activeImageIndex]->getUrl() }}"
-                            alt="{{ $product->name }}"
+                        <img src="{{ $images[$activeImageIndex]->getUrl() }}" alt="{{ $product->name }}"
                             class="w-full h-full object-contain p-4 transition-opacity duration-300"
                             wire:key="main-img-{{ $activeImageIndex }}">
                     @else
@@ -57,8 +57,7 @@
                         @foreach ($images as $index => $media)
                             <button wire:click="setActiveImage({{ $index }})"
                                 class="shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all {{ $activeImageIndex === $index ? 'border-[#4E44DB] ring-2 ring-[#4E44DB]/20' : 'border-gray-100 hover:border-gray-300' }}">
-                                <img src="{{ $media->getUrl('thumb') }}" alt=""
-                                    class="w-full h-full object-cover">
+                                <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-cover">
                             </button>
                         @endforeach
                     </div>
@@ -78,18 +77,25 @@
                         <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight">
                             {{ $product->name }}
                         </h1>
-                        @if($product->is_second)
-                            <span class="bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-lg shadow-sm shrink-0">SECOND</span>
+                        @if ($product->is_second)
+                            <span
+                                class="bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-lg shadow-sm shrink-0">SECOND</span>
                         @endif
                     </div>
-                    @if($product->reviews->count() > 0)
+                    @if ($product->reviews->count() > 0)
                         <div class="flex items-center gap-2 mt-3">
                             <div class="flex items-center text-amber-400">
-                                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                                <span class="ml-1 text-sm font-bold text-gray-800">{{ number_format($product->average_rating, 1) }}</span>
+                                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                    </path>
+                                </svg>
+                                <span
+                                    class="ml-1 text-sm font-bold text-gray-800">{{ number_format($product->average_rating, 1) }}</span>
                             </div>
                             <span class="text-gray-300">•</span>
-                            <span class="text-sm text-gray-500 font-medium pb-px">{{ $product->reviews->count() }} Ulasan</span>
+                            <span class="text-sm text-gray-500 font-medium pb-px">{{ $product->reviews->count() }}
+                                Ulasan</span>
                         </div>
                     @endif
                 </div>
@@ -107,8 +113,7 @@
                                 {{ $selectedVariant->stock > 0 ? 'Stok: ' . $selectedVariant->stock : 'Habis' }}
                             </span>
                             @if ($selectedVariant->condition)
-                                <span
-                                    class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-gray-100 text-gray-600">
+                                <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-gray-100 text-gray-600">
                                     {{ $selectedVariant->condition }}
                                 </span>
                             @endif
@@ -127,20 +132,21 @@
                         <h3 class="text-sm font-bold text-gray-700 mb-3">Pilih Varian</h3>
                         <div class="flex flex-wrap gap-2">
                             @foreach ($product->variants as $variant)
-                                <button wire:click="selectVariant({{ $variant->id }})"
-                                    @class([
-                                        'px-4 py-2.5 rounded-xl border-2 text-sm font-semibold transition-all',
-                                        'border-[#4E44DB] bg-[#4E44DB]/5 text-[#4E44DB] ring-2 ring-[#4E44DB]/20' =>
-                                            $selectedVariantId === $variant->id,
-                                        'border-gray-200 text-gray-700 hover:border-gray-400' =>
-                                            $selectedVariantId !== $variant->id && $variant->stock > 0,
-                                        'border-gray-100 text-gray-300 cursor-not-allowed line-through' =>
-                                            $variant->stock <= 0,
-                                    ])
+                                <button wire:click="selectVariant({{ $variant->id }})" @class([
+                                    'px-4 py-2.5 rounded-xl border-2 text-sm font-semibold transition-all',
+                                    'border-[#4E44DB] bg-[#4E44DB]/5 text-[#4E44DB] ring-2 ring-[#4E44DB]/20' =>
+                                        $selectedVariantId === $variant->id,
+                                    'border-gray-200 text-gray-700 hover:border-gray-400' =>
+                                        $selectedVariantId !== $variant->id && $variant->stock > 0,
+                                    'border-gray-100 text-gray-300 cursor-not-allowed line-through' =>
+                                        $variant->stock <= 0,
+                                ])
                                     @if ($variant->stock <= 0) disabled @endif>
                                     <span class="flex items-center justify-center gap-1.5">
-                                        @if($url = $variant->getFirstMediaUrl('variant_image', 'thumb'))
-                                            <img src="{{ $url }}" class="w-5 h-5 rounded-sm object-cover border border-gray-200" alt="Varian {{ $variant->color }}">
+                                        @if ($url = $variant->getFirstMediaUrl('variant_image', 'thumb'))
+                                            <img src="{{ $url }}"
+                                                class="w-5 h-5 rounded-sm object-cover border border-gray-200"
+                                                alt="Varian {{ $variant->color }}">
                                         @endif
                                         <span>
                                             {{ $variant->ram ? $variant->ram . ' / ' : '' }}{{ $variant->storage ?? '' }}
@@ -195,8 +201,10 @@
                     <div class="mt-4">
                         <a href="{{ route('trade-in.submit', $product) }}" wire:navigate
                             class="w-full bg-amber-500 text-white py-3.5 rounded-xl font-bold text-base hover:bg-amber-600 active:scale-[0.98] transition-all shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                             </svg>
                             Tukar Tambah dengan Produk Ini
                         </a>
@@ -251,26 +259,33 @@
     <div class="max-w-7xl mx-auto px-6 mt-16">
         <div class="border-t border-gray-100 pt-10">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Ulasan Pelanggan</h2>
-            
-            @if($product->reviews->count() > 0)
+
+            @if ($product->reviews->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    @foreach($product->reviews as $review)
+                    @foreach ($product->reviews as $review)
                         <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
                             <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-[#4E44DB] text-white flex items-center justify-center font-bold text-sm shadow-md shadow-[#4E44DB]/20">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-[#4E44DB] text-white flex items-center justify-center font-bold text-sm shadow-md shadow-[#4E44DB]/20">
                                     {{ strtoupper(substr($review->user->name ?? 'U', 0, 1)) }}
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-gray-900 text-sm">{{ $review->user->name ?? 'Pengguna' }}</h4>
+                                    <h4 class="font-bold text-gray-900 text-sm">
+                                        {{ $review->user->name ?? 'Pengguna' }}</h4>
                                     <p class="text-xs text-gray-500">{{ $review->created_at->diffForHumans() }}</p>
                                 </div>
                             </div>
                             <div class="flex items-center text-amber-400 mb-3">
-                                @for($i = 1; $i <= 5; $i++)
-                                    <svg class="w-4 h-4 {{ $i <= $review->rating ? 'fill-current' : 'text-gray-200 fill-current' }}" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <svg class="w-4 h-4 {{ $i <= $review->rating ? 'fill-current' : 'text-gray-200 fill-current' }}"
+                                        viewBox="0 0 20 20">
+                                        <path
+                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                        </path>
+                                    </svg>
                                 @endfor
                             </div>
-                            @if($review->comment)
+                            @if ($review->comment)
                                 <p class="text-gray-600 text-sm leading-relaxed">
                                     "{{ $review->comment }}"
                                 </p>
@@ -280,8 +295,10 @@
                 </div>
             @else
                 <div class="bg-gray-50 rounded-2xl p-10 text-center border border-gray-100">
-                    <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                     </svg>
                     <p class="text-gray-400 font-medium">Belum ada ulasan untuk produk ini.</p>
                 </div>

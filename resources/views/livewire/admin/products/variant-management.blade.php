@@ -14,44 +14,50 @@
             @forelse($variants as $variant)
                 <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center justify-between">
                     <div class="flex gap-4 items-center">
-                        <div class="w-16 h-16 shrink-0 bg-gray-50 rounded-xl border border-gray-100 overflow-hidden flex items-center justify-center">
-                            @if($url = $variant->getFirstMediaUrl('variant_image', 'thumb'))
+                        <div
+                            class="w-16 h-16 shrink-0 bg-gray-50 rounded-xl border border-gray-100 overflow-hidden flex items-center justify-center">
+                            @if ($url = $variant->getFirstMediaUrl('variant_image', 'thumb'))
                                 <img src="{{ $url }}" class="w-full h-full object-cover">
                             @else
-                                <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg>
                             @endif
                         </div>
                         <div>
                             <div class="flex items-center gap-2 mb-1">
-                            <h3 class="font-bold text-gray-800 text-lg">
-                                {{ $variant->ram ? $variant->ram . ' - ' : '' }}{{ $variant->storage ? $variant->storage . ' - ' : '' }}{{ $variant->color ?? 'Standar' }}
-                            </h3>
-                            <span
-                                class="text-[10px] font-bold tracking-widest px-2 py-0.5 rounded bg-gray-100 text-gray-500 uppercase">{{ $variant->condition }}</span>
-                        </div>
-                        <p class="text-sm text-gray-500">SKU: <span
-                                class="font-mono text-gray-700">{{ $variant->sku ?? '-' }}</span></p>
-
-                        {{-- Erzap Connection Status --}}
-                        <div class="mt-3 flex items-center gap-2">
-                            @if ($variant->erzap_item_id)
-                                <div
-                                    class="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 20 20"
-                                        fill="currentColor">
-                                        <path fill-rule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    Terkoneksi Erzap: {{ $variant->erzap_item_id }}
-                                </div>
-                            @else
+                                <h3 class="font-bold text-gray-800 text-lg">
+                                    {{ $variant->ram ? $variant->ram . ' - ' : '' }}{{ $variant->storage ? $variant->storage . ' - ' : '' }}{{ $variant->color ?? 'Standar' }}
+                                </h3>
                                 <span
-                                    class="text-xs font-semibold text-rose-500 bg-rose-50 bg-opacity-50 px-2 py-1 rounded-md">Data
-                                    Manual (Tidak Sync)</span>
-                            @endif
+                                    class="text-[10px] font-bold tracking-widest px-2 py-0.5 rounded bg-gray-100 text-gray-500 uppercase">{{ $variant->condition }}</span>
+                            </div>
+                            <p class="text-sm text-gray-500">SKU: <span
+                                    class="font-mono text-gray-700">{{ $variant->sku ?? '-' }}</span></p>
+
+                            {{-- Erzap Connection Status --}}
+                            <div class="mt-3 flex items-center gap-2">
+                                @if ($variant->erzap_item_id)
+                                    <div
+                                        class="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 20 20"
+                                            fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        Terkoneksi Erzap: {{ $variant->erzap_item_id }}
+                                    </div>
+                                @else
+                                    <span
+                                        class="text-xs font-semibold text-rose-500 bg-rose-50 bg-opacity-50 px-2 py-1 rounded-md">Data
+                                        Manual (Tidak Sync)</span>
+                                @endif
+                            </div>
                         </div>
-                    </div>
                     </div>
                     <div class="text-right flex flex-col items-end">
                         <div class="text-xl font-bold text-[#4E44DB]">Rp
@@ -101,19 +107,23 @@
 
                         {{-- Dropdown Results --}}
                         @if (!empty($searchResults) && !$selectedErzapId)
+
                             <div
                                 class="absolute z-10 w-full bg-white mt-1 border border-gray-200 rounded-lg shadow-xl max-h-48 overflow-y-auto">
                                 @forelse($searchResults as $res)
                                     @php
                                         $kode = $res->raw_data['kode'] ?? '';
                                         $harga = $res->discount_price > 0 ? $res->discount_price : $res->base_price;
+                                        $meta = $res->raw_data['meta_description'];
+
                                     @endphp
                                     <div wire:click="selectErzap('{{ $res->erzap_id }}', {{ $harga }}, {{ $res->stock }}, '{{ $kode }}')"
                                         class="p-3 hover:bg-[#eff2ff] cursor-pointer border-b border-gray-50 last:border-b-0">
                                         <div class="font-bold text-sm text-gray-800 line-clamp-1">
-                                            {{ $res->name ?? $res->erzap_id }}</div>
+                                            {{ $meta ?? $res->erzap_id }}</div>
                                         <div class="flex justify-between items-center mt-1">
-                                            <span class="text-xs text-gray-500 font-mono">{{ $kode ?: $res->erzap_id }}</span>
+                                            <span
+                                                class="text-xs text-gray-500 font-mono">{{ $kode ?: $res->erzap_id }}</span>
                                             <span class="text-xs font-bold text-[#4E44DB]">Stok:
                                                 {{ $res->stock }}</span>
                                         </div>
@@ -167,27 +177,50 @@
 
                     {{-- Image Upload --}}
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1.5 ml-1">Gambar Varian <span class="text-gray-400 font-normal">(opsional)</span></label>
-                        <div class="flex items-center gap-4 border border-gray-300 rounded-xl px-4 py-3 bg-white shadow-sm focus-within:ring-4 focus-within:ring-[#4E44DB]/10 focus-within:border-[#4E44DB] transition-all">
+                        <label class="block text-xs font-bold text-gray-600 mb-1.5 ml-1">Gambar Varian <span
+                                class="text-gray-400 font-normal">(opsional)</span></label>
+                        <div
+                            class="flex items-center gap-4 border border-gray-300 rounded-xl px-4 py-3 bg-white shadow-sm focus-within:ring-4 focus-within:ring-[#4E44DB]/10 focus-within:border-[#4E44DB] transition-all">
                             @if ($variantImage)
-                                <img src="{{ $variantImage->temporaryUrl() }}" class="w-12 h-12 rounded object-cover border border-gray-200">
+                                <img src="{{ $variantImage->temporaryUrl() }}"
+                                    class="w-12 h-12 rounded object-cover border border-gray-200">
                             @elseif ($currentVariantImageUrl)
-                                <img src="{{ $currentVariantImageUrl }}" class="w-12 h-12 rounded object-cover border border-gray-200">
+                                <img src="{{ $currentVariantImageUrl }}"
+                                    class="w-12 h-12 rounded object-cover border border-gray-200">
                             @else
-                                <div class="w-12 h-12 rounded bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <div
+                                    class="w-12 h-12 rounded bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
                                 </div>
                             @endif
-                            <input type="file" wire:model="variantImage" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:text-[#4E44DB] file:bg-[#eff2ff] hover:file:bg-[#e0e7ff] transition">
+                            <input type="file" wire:model="variantImage"
+                                class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:text-[#4E44DB] file:bg-[#eff2ff] hover:file:bg-[#e0e7ff] transition">
                         </div>
                     </div>
+
+                    @if ($product->is_second)
+                        <div class="mt-4 p-4 border border-amber-200 bg-amber-50 rounded-xl">
+                            <label class="block text-xs font-bold text-amber-800 mb-2">Harga Manual (Produk Bekas)</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-[15px]">Rp</span>
+                                <input type="number" wire:model="manualPrice" 
+                                    class="w-full text-[15px] pl-10 pr-4 py-2.5 rounded-xl border-gray-300 bg-white shadow-sm focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium text-gray-800"
+                                    min="0">
+                            </div>
+                            @error('manualPrice') <span class="text-xs text-rose-500 mt-1">{{ $message }}</span> @enderror
+                        </div>
+                    @endif
 
                     @if ($selectedErzapId)
                         <div
                             class="p-4 bg-gray-50 rounded-xl border border-gray-100 flex justify-between items-center shadow-inner mt-2">
                             <div>
                                 <p class="text-xs text-gray-500 font-medium">Harga Sync:</p>
-                                <p class="text-lg font-bold text-[#4E44DB]">Rp
+                                <p class="text-lg font-bold {{ $product->is_second ? 'text-gray-400 line-through' : 'text-[#4E44DB]' }}">Rp
                                     {{ number_format($simulatedPrice, 0, ',', '.') }}</p>
                             </div>
                             <div class="text-right">

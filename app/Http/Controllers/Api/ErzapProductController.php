@@ -39,6 +39,7 @@ class ErzapProductController extends Controller
      */
     public function syncStockSecond(Request $request)
     {
+        Log::info('syncStockSecond', $request->all());
         return $this->syncProductStock($request, 'gsksyihab');
     }
 
@@ -48,7 +49,7 @@ class ErzapProductController extends Controller
     private function importProducts(Request $request, string $source)
     {
         $produks = $request->input('erzap.produks');
-        
+
         if (!$produks) {
             return response()->json(['error' => 'No products found in payload'], 400);
         }
@@ -92,7 +93,7 @@ class ErzapProductController extends Controller
     private function syncProductStock(Request $request, string $source)
     {
         $produks = $request->input('erzap.produks');
-        
+
         if (!$produks) {
             return response()->json(['error' => 'No products found'], 400);
         }
