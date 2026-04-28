@@ -5,7 +5,7 @@
         <div
             class="bg-[#00b16a] rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 text-white shadow-md mb-8 relative overflow-hidden">
             <div class="flex items-center gap-4 z-10">
-                <a href="{{ route('trade-ins.index') }}" wire:navigate
+                <a href="{{ route('trade-in-history') }}" wire:navigate
                     class="bg-black/10 hover:bg-black/20 p-2.5 rounded-lg transition">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />

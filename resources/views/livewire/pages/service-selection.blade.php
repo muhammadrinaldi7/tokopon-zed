@@ -6,8 +6,8 @@
     </h1>
 
     <div class="mt-4 grid grid-cols-3 gap-2 md:gap-4 lg:gap-6 ">
-        <div
-            class="group relative rounded-lg md:rounded-2xl bg-blue-500 p-2 md:p-6 lg:p-8 text-white shadow-xl aspect-2/3 flex flex-col justify-between overflow-hidden cursor-pointer" wire:click="navigateToBuyMobile"> 
+        <div class="group relative rounded-lg md:rounded-2xl bg-blue-500 p-2 md:p-6 lg:p-8 text-white shadow-xl aspect-2/3 flex flex-col justify-between overflow-hidden cursor-pointer"
+            wire:click="navigateToBuyMobile">
             <div class="relative w-full h-1/2 flex justify-end mt-6">
 
                 <img src="{{ asset('assets/png/buymobile3.png') }}" alt="gold phone"
@@ -37,7 +37,7 @@
 
         {{--  --}}
         <div class="flex flex-col gap-2 md:gap-4 lg:gap-6 ">
-            <div
+            <div wire:click="navigateToRepair"
                 class="w-full h-full bg-orange-500 rounded-lg md:rounded-2xl relative flex overflow-hidden p-2 md:p-6 lg:p-8 group cursor-pointer">
 
                 <div class="absolute w-1/2 right-0">
@@ -51,7 +51,7 @@
                         Phone <br> Repair
                     </h2>
 
-                    <a href="#"
+                    <a href="{{ route('phone-repair') }}"
                         class="rounded-full bg-white text-[#0090FF] h-4 md:h-8 lg:h-10 w-auto flex items-center justify-center p-1 md:p-2 lg:p-2.5 shadow-md group-hover:scale-110 transition-transform duration-300">
                         <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.5">
@@ -61,7 +61,7 @@
                 </div>
 
             </div>
-            <div
+            <div wire:click="navigateToTradeIn"
                 class="w-full h-full bg-emerald-500 rounded-lg md:rounded-2xl relative flex overflow-hidden p-2 md:p-6 lg:p-8 group cursor-pointer">
                 <div class="absolute w-1/2 right-0">
                     <img src="{{ asset('assets/png/trade1.png') }}" alt="phonerepair"

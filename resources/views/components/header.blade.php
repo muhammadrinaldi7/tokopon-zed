@@ -93,20 +93,70 @@ new class extends Component {
             </a>
 
             @auth
-                <span class="text-sm text-gray-600">Halo, <strong>{{ auth()->user()->name }}</strong></span>
-                <a href="{{ route('orders.index') }}" wire:navigate
-                    class="px-4 py-2 text-sm font-semibold text-gray-500 hover:text-[#4E44DB] hover:bg-blue-50 rounded-lg transition {{ request()->is('orders*') ? 'text-[#4E44DB] bg-blue-50' : '' }}">
-                    Pesanan
-                </a>
-                <a href="{{ route('trade-ins.index') }}" wire:navigate
-                    class="px-4 py-2 text-sm font-semibold text-gray-500 hover:text-[#4E44DB] hover:bg-amber-50 rounded-lg transition {{ request()->routeIs('trade-ins.*') ? 'text-amber-600 bg-amber-50' : '' }}">
-                    Tukar Tambah
-                </a>
-                <button wire:click="confirmLogout"
-                    class="px-5 py-2 text-sm font-semibold text-gray-500 bg-gray-100 border border-gray-200 rounded-lg transition hover:bg-gray-200">
-                    Logout
-                </button>
+                {{-- Profile Dropdown --}}
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" @click.outside="open = false"
+                        class="flex items-center gap-3 p-1 pr-3 rounded-full hover:bg-gray-50 transition border border-transparent hover:border-gray-100">
+                        {{-- Avatar --}}
+                        <div
+                            class="w-9 h-9 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                            {{ substr(auth()->user()->name, 0, 1) }}
+                        </div>
+                        <div class="text-left">
+                            <p class="text-[11px] text-gray-400 leading-none">Halo,</p>
+                            <p class="text-sm font-semibold text-gray-700 leading-tight">
+                                {{ explode(' ', auth()->user()->name)[0] }}</p>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                            :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    {{-- Dropdown Menu --}}
+                    <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-95"
+                        class="absolute right-0 mt-2 w-52 bg-white border border-gray-100 rounded-2xl shadow-xl shadow-gray-200/50 py-2 z-50">
+
+                        <div class="px-4 py-2 border-b border-gray-50 mb-1">
+                            <p class="text-xs text-gray-400">Akun Anda</p>
+                            <p class="text-sm font-bold text-gray-800 truncate">{{ auth()->user()->email }}</p>
+                        </div>
+
+                        <a href="{{ route('orders.index') }}" wire:navigate
+                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                            Pesanan Saya
+                        </a>
+
+                        <a href="{{ route('trade-in-history') }}" wire:navigate
+                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-amber-50 hover:text-amber-600 transition">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                            </svg>
+                            Tukar Tambah
+                        </a>
+
+                        <div class="h-px bg-gray-50 my-1"></div>
+
+                        <button wire:click="confirmLogout"
+                            class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition font-medium">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Keluar Akun
+                        </button>
+                    </div>
+                </div>
             @else
+                {{-- Login & Chat Button (Tetap Sama) --}}
                 <a href="/login" wire:navigate
                     class="px-5 py-2 text-sm font-semibold text-white bg-blue-500 rounded-lg shadow-md shadow-blue-500/30 transition hover:bg-blue-600 hover:-translate-y-0.5">
                     Login
@@ -199,15 +249,19 @@ new class extends Component {
                     <span class="px-4 text-sm text-gray-600">Halo, <strong>{{ auth()->user()->name }}</strong></span>
                     <a href="{{ route('orders.index') }}" wire:navigate
                         class="flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-lg transition {{ request()->is('orders*') ? 'text-blue-500 bg-blue-50 font-semibold' : 'text-gray-500 hover:text-blue-500 hover:bg-blue-50/50' }}">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
                         Pesanan Saya
                     </a>
-                    <a href="{{ route('trade-ins.index') }}" wire:navigate
-                        class="flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-lg transition {{ request()->routeIs('trade-ins.*') ? 'text-amber-500 bg-amber-50 font-semibold' : 'text-gray-500 hover:text-amber-500 hover:bg-amber-50/50' }}">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    <a href="{{ route('trade-in-history') }}" wire:navigate
+                        class="flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-lg transition {{ request()->routeIs('trade-in-history') ? 'text-amber-500 bg-amber-50 font-semibold' : 'text-gray-500 hover:text-amber-500 hover:bg-amber-50/50' }}">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
                         Tukar Tambah
                     </a>

@@ -10,25 +10,31 @@
     {{-- Filter Bar --}}
     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-wrap gap-4 items-center">
         <div class="flex-1 min-w-[200px] relative">
-            <input type="text" wire:model.live.debounce.500ms="search" placeholder="Cari nama produk..." 
+            <input type="text" wire:model.live.debounce.500ms="search" placeholder="Cari nama produk..."
                 class="w-full pl-10 pr-4 py-2.5 rounded-xl border-gray-200 text-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all">
             <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
             </div>
         </div>
-        <select wire:model.live="filterCategory" class="rounded-xl border-gray-200 text-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all py-2.5 px-4 min-w-[150px]">
+        <select wire:model.live="filterCategory"
+            class="rounded-xl border-gray-200 text-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all py-2.5 px-4 min-w-[150px]">
             <option value="">Semua Kategori</option>
-            @foreach($categoriesList as $cat)
+            @foreach ($categoriesList as $cat)
                 <option value="{{ $cat->id }}">{{ $cat->name }}</option>
             @endforeach
         </select>
-        <select wire:model.live="filterBrand" class="rounded-xl border-gray-200 text-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all py-2.5 px-4 min-w-[150px]">
+        <select wire:model.live="filterBrand"
+            class="rounded-xl border-gray-200 text-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all py-2.5 px-4 min-w-[150px]">
             <option value="">Semua Brand</option>
-            @foreach($brandsList as $b)
+            @foreach ($brandsList as $b)
                 <option value="{{ $b->id }}">{{ $b->name }}</option>
             @endforeach
         </select>
-        <select wire:model.live="filterCondition" class="rounded-xl border-gray-200 text-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all py-2.5 px-4 min-w-[150px]">
+        <select wire:model.live="filterCondition"
+            class="rounded-xl border-gray-200 text-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all py-2.5 px-4 min-w-[150px]">
             <option value="">Semua Kondisi</option>
             <option value="new">Baru</option>
             <option value="second">Bekas</option>
@@ -71,8 +77,9 @@
                                         class="font-bold text-[#4E44DB] hover:text-[#3f36b8] hover:underline text-left transition-colors">
                                         {{ $product->name }}
                                     </button>
-                                    @if($product->is_second)
-                                        <span class="text-[9px] font-black text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded w-fit mt-0.5 border border-amber-200">SECOND</span>
+                                    @if ($product->is_second)
+                                        <span
+                                            class="text-[9px] font-black text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded w-fit mt-0.5 border border-amber-200">SECOND</span>
                                     @endif
                                 </div>
                             </div>
@@ -195,18 +202,22 @@
                         </div>
                     </div>
 
-                    <div class="bg-[#eff2ff]/50 border border-[#4E44DB]/10 rounded-2xl p-4 flex items-center justify-between group cursor-pointer hover:bg-[#eff2ff] transition-all" 
+                    <div class="bg-[#eff2ff]/50 border border-[#4E44DB]/10 rounded-2xl p-4 flex items-center justify-between group cursor-pointer hover:bg-[#eff2ff] transition-all"
                         onclick="document.getElementById('is_second_check').click()">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-amber-500">
-                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <div
+                                class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-amber-500">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
                             </div>
                             <div>
                                 <p class="text-[14px] font-bold text-gray-800">Produk Bekas (Second)</p>
                                 <p class="text-[11px] text-gray-500">Aktifkan jika produk ini barang second</p>
                             </div>
                         </div>
-                        <input type="checkbox" id="is_second_check" wire:model="is_second" 
+                        <input type="checkbox" id="is_second_check" wire:model="is_second"
                             class="w-5 h-5 rounded-lg border-gray-300 text-[#4E44DB] focus:ring-[#4E44DB]/20 transition-all cursor-pointer">
                     </div>
 

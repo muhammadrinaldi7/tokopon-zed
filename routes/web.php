@@ -1,12 +1,16 @@
 <?php
 
 use App\Livewire\Pages\Buymobile;
+use App\Livewire\Pages\PhoneRepair;
+use App\Livewire\Pages\TradeIn;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // ─── Public Routes ──────────────────────────────────────────────
 Route::livewire('/', 'pages::home');
 Route::get('/buy-mobile', Buymobile::class)->name('buy-mobile');
+Route::get('/phone-repair', PhoneRepair::class)->name('phone-repair');
+Route::get('/trade-in/{product?}', TradeIn::class)->name('trade-in');
 Route::get('/products', \App\Livewire\Pages\ProductList::class)->name('products.index');
 Route::get('/products/{product:slug}', \App\Livewire\Pages\ProductDetail::class)->name('products.show');
 Route::get('/cart', \App\Livewire\Pages\CartPage::class)->name('cart');
@@ -23,7 +27,7 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::get('/orders/{order}/confirmation', \App\Livewire\Pages\OrderConfirmation::class)->name('orders.confirmation');
 
     // Trade In Client
-    Route::get('/trade-in', \App\Livewire\Pages\TradeInHistory::class)->name('trade-ins.index');
+    Route::get('/trade-in-history', \App\Livewire\Pages\TradeInHistory::class)->name('trade-in-history');
     Route::get('/trade-in/{product}/submit', \App\Livewire\Pages\SubmitTradeIn::class)->name('trade-in.submit');
     Route::get('/trade-in/{tradeIn}/detail', \App\Livewire\Pages\TradeInDetail::class)->name('trade-ins.show');
 });
