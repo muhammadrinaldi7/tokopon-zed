@@ -65,7 +65,7 @@ new class extends Component {
                 class="px-4 py-2 text-sm font-medium text-gray-500 rounded-lg transition hover:text-blue-500 hover:bg-blue-50/50">
                 Repair Service
             </a>
-            <a href="#"
+            <a href="{{ route('trade-in') }}" wire:navigate
                 class="px-4 py-2 text-sm font-medium text-gray-500 rounded-lg transition hover:text-blue-500 hover:bg-blue-50/50">
                 Trade In
             </a>

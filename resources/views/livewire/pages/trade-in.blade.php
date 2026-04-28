@@ -194,14 +194,14 @@
                                     class="h-full border-2 border-neutral-100 rounded-3xl p-4 transition-all duration-300 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 group-hover:shadow-lg group-hover:shadow-emerald-100">
                                     <div
                                         class="aspect-square bg-neutral-50 rounded-2xl mb-4 overflow-hidden flex items-center justify-center p-4 transition-all group-hover:scale-105">
-                                        <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}"
+                                        <img src="{{ $item->getFirstMediaUrl('cover') }}" alt="{{ $item->name }}"
                                             class="w-full h-auto object-contain drop-shadow-sm">
                                     </div>
                                     <div class="space-y-1">
                                         <h4 class="font-bold text-neutral-800 text-sm leading-tight">
                                             {{ $item->name }}</h4>
                                         <p class="text-emerald-600 font-extrabold text-xs">Rp
-                                            {{ number_format($item->price, 0, ',', '.') }}</p>
+                                            {{ number_format($item->starting_price, 0, ',', '.') }}</p>
                                     </div>
                                     <div
                                         class="absolute top-3 right-3 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white scale-0 transition-transform duration-300 peer-checked:scale-100">
