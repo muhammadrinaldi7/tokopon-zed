@@ -11,36 +11,23 @@ use Illuminate\Support\Facades\Log;
 class ErzapProductController extends Controller
 {
     /**
-     * Import products from Erzap (Produk Baru - syihabstore.erzap.com)
+     * Import products from Erzap (Dynamic Source)
+     * e.g., ?source=gsk_distri, ?source=syihab, dll.
      */
     public function store(Request $request)
     {
-        return $this->importProducts($request, 'syihab');
+        $source = $request->query('source', 'syihab'); // Default 'syihab'
+        return $this->importProducts($request, $source);
     }
 
     /**
-     * Sync stock from Erzap (Produk Baru - syihabstore.erzap.com)
+     * Sync stock from Erzap (Dynamic Source)
      */
     public function syncStock(Request $request)
     {
-        return $this->syncProductStock($request, 'syihab');
-    }
-
-    /**
-     * Import products from Erzap GSK (Produk Second - gsksyihab.erzap.com)
-     */
-    public function storeSecond(Request $request)
-    {
-        return $this->importProducts($request, 'gsksyihab');
-    }
-
-    /**
-     * Sync stock from Erzap GSK (Produk Second - gsksyihab.erzap.com)
-     */
-    public function syncStockSecond(Request $request)
-    {
-        Log::info('syncStockSecond', $request->all());
-        return $this->syncProductStock($request, 'gsksyihab');
+        $source = $request->query('source', 'syihab'); // Default 'syihab'
+        Log::info('syncStock Erzap', ['source' => $source, 'payload' => $request->all()]);
+        return $this->syncProductStock($request, $source);
     }
 
     /**

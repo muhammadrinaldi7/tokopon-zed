@@ -62,12 +62,7 @@ Route::post('/logout', function () {
     return redirect('/');
 })->middleware('auth')->name('logout');
 
-// ─── Erzap Webhook Routes (Produk Baru - syihabstore.erzap.com) ─
+// ─── Erzap Webhook Routes (Dynamic Source Support) ────────────────
 Route::post('/web_service/import_produk_json/new.json', [\App\Http\Controllers\Api\ErzapProductController::class, 'store']);
 Route::post('/web_service/import_produk_json/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'store']);
 Route::post('/web_service/sinkronisasi_stok/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'syncStock']);
-
-// ─── Erzap Webhook Routes (Produk Second - gsksyihab.erzap.com) ─
-Route::post('/web_service/gsksyihab/import_produk_json/new.json', [\App\Http\Controllers\Api\ErzapProductController::class, 'storeSecond']);
-Route::post('/web_service/gsksyihab/import_produk_json/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'storeSecond']);
-Route::post('/web_service/gsksyihab/sinkronisasi_stok/new', [\App\Http\Controllers\Api\ErzapProductController::class, 'syncStockSecond']);
