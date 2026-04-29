@@ -73,7 +73,7 @@
                                     @endif
                                 </div>
                                 <div class="flex flex-col">
-                                    <button wire:click="viewDetail({{ $product->slug }})"
+                                    <button wire:click="viewDetail({{ $product->id }})"
                                         class="font-bold text-[#4E44DB] hover:text-[#3f36b8] hover:underline text-left transition-colors">
                                         {{ $product->name }}
                                     </button>
