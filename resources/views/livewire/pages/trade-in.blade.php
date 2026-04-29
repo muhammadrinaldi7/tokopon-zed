@@ -44,7 +44,7 @@
                             <label class="text-sm font-bold text-neutral-700 ml-1">Merk HP</label>
 
                             <div class="relative">
-                                <select wire:model="old_phone_brand"
+                                <select wire:model.live="old_phone_brand"
                                     class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all appearance-none cursor-pointer">
                                     <option value="">Pilih Merk HP</option>
 
@@ -129,6 +129,51 @@
                     </div>
                 </div>
 
+                {{-- Input Battery Health Khusus Apple --}}
+                @if ($old_phone_brand === 'Apple')
+                    <div
+                        class="mt-6 p-6 bg-emerald-50 border-2 border-emerald-100 rounded-[2rem] animate-in fade-in slide-in-from-top-4 duration-300">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="p-2 bg-emerald-500 rounded-xl text-white shadow-lg shadow-emerald-200">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <label class="text-sm font-black text-neutral-800 uppercase tracking-wider">Battery
+                                    Health</label>
+                                <p class="text-[10px] text-emerald-600 font-bold uppercase">Estimasi kesehatan baterai
+                                    iPhone</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            @foreach (['95', '90', '85'] as $val)
+                                <label class="relative cursor-pointer group">
+                                    <input type="radio" wire:model="old_phone_battery_health"
+                                        value="{{ $val }}" class="peer hidden">
+                                    <div
+                                        class="p-4 bg-white border-2 border-transparent rounded-2xl text-center transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-500 peer-checked:text-white hover:border-emerald-200 shadow-sm">
+                                        <span class="block text-lg font-black">{{ $val }}%</span>
+                                        <span class="block text-[10px] opacity-70 font-bold uppercase">Sehat</span>
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+
+                        {{-- Input Manual jika ingin angka spesifik --}}
+                        <div class="mt-4">
+                            <input type="number" wire:model="old_phone_battery_health"
+                                placeholder="Atau masukkan angka lain..."
+                                class="w-full p-3 bg-white/50 border-2 border-dashed border-emerald-200 rounded-xl text-sm focus:border-emerald-500 focus:bg-white outline-none transition-all text-center font-bold text-neutral-600">
+                        </div>
+
+                        @error('old_phone_battery_health')
+                            <span class="text-red-500 text-xs mt-2 ml-1 block font-bold">{{ $message }}</span>
+                        @enderror
+                    </div>
+                @endif
                 <div class="bg-white rounded-3xl p-6 shadow-sm border border-neutral-100">
                     <div class="flex items-center mb-6">
                         <div

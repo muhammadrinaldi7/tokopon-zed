@@ -25,6 +25,7 @@ class TradeIn extends Component
     public $old_phone_condition; // Radio
     public $old_phone_sets = []; // Checkbox
     public $old_phone_additional_note; // Catatan manual tambahan
+    public $old_phone_battery_health;
     public $photos = [];
 
     /**
@@ -46,13 +47,18 @@ class TradeIn extends Component
             'old_phone_brand' => 'required',
             'old_phone_model' => 'required',
             'old_phone_condition' => 'required',
+            'old_phone_battery_health' => $this->old_phone_brand === 'Apple' ? 'required|integer|min:1|max:100' : 'nullable',
             'photos' => 'nullable|array', // Tambahkan validasi foto jika perlu
         ]);
 
         // --- PROSES PENGGABUNGAN DATA ---
         $kelengkapan = implode(', ', $this->old_phone_sets);
+        $bhText = ($this->old_phone_brand === 'Apple' && $this->old_phone_battery_health)
+            ? "Battery Health: {$this->old_phone_battery_health}%. "
+            : "";
 
         $deskripsiLengkap = "Kondisi: " . $this->old_phone_condition . ". ";
+        $deskripsiLengkap .= $bhText;
         $deskripsiLengkap .= "Kelengkapan: " . ($kelengkapan ?: 'Tidak ada') . ". ";
         $deskripsiLengkap .= "Catatan: " . ($this->old_phone_additional_note ?: '-');
 
