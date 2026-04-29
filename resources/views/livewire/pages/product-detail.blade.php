@@ -200,7 +200,7 @@
                     {{-- Trade In Button --}}
                     <div class="mt-4">
                         <a href="{{ route('trade-in', ['product' => $product->slug]) }}" wire:navigate
-                            class="w-full bg-amber-500 text-white py-3.5 rounded-xl font-bold text-base hover:bg-amber-600 active:scale-[0.98] transition-all shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2">
+                            class="w-full bg-emerald-500 text-white py-3.5 rounded-xl font-bold text-base hover:bg-emerald-600 active:scale-[0.98] transition-all shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                 stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
