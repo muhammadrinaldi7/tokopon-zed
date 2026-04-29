@@ -61,7 +61,7 @@ new class extends Component {
                 class="px-4 py-2 text-sm font-medium rounded-lg transition {{ request()->is('products*') ? 'text-blue-500 bg-blue-50 font-semibold' : 'text-gray-500 hover:text-blue-500 hover:bg-blue-50/50' }}">
                 Buy Phones
             </a>
-            <a href="#"
+            <a href="{{ route('phone-repair') }}" wire:navigate
                 class="px-4 py-2 text-sm font-medium text-gray-500 rounded-lg transition hover:text-blue-500 hover:bg-blue-50/50">
                 Repair Service
             </a>
@@ -69,7 +69,7 @@ new class extends Component {
                 class="px-4 py-2 text-sm font-medium text-gray-500 rounded-lg transition hover:text-blue-500 hover:bg-blue-50/50">
                 Trade In
             </a>
-            <a href="#"
+            <a href="{{ route('sell-phone') }}" wire:navigate
                 class="px-4 py-2 text-sm font-medium text-gray-500 rounded-lg transition hover:text-blue-500 hover:bg-blue-50/50">
                 Sell Phones
             </a>

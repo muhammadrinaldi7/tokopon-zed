@@ -2,12 +2,15 @@
 
 namespace App\Livewire\Pages;
 
+use App\Models\Product;
 use Livewire\Component;
 
 class Buymobile extends Component
 {
+    public $selectedBrand = null;
+
     public $brands = [
-        ['name' => 'iPhone', 'slug' => 'iphone', 'image' => 'iphone.png'],
+        ['name' => 'Apple', 'slug' => 'apple', 'image' => 'iphone.png'],
         ['name' => 'Samsung', 'slug' => 'samsung', 'image' => 'samsung.png'],
         ['name' => 'vivo', 'slug' => 'vivo', 'image' => 'vivo.png'],
         ['name' => 'Xiaomi', 'slug' => 'xiaomi', 'image' => 'xiaomi.png'],
@@ -16,9 +19,38 @@ class Buymobile extends Component
         ['name' => 'Realme', 'slug' => 'realme', 'image' => 'realme.png'],
         ['name' => 'Tecno', 'slug' => 'tecno', 'image' => 'tecno.png'],
     ];
+
+    public function setBrand($slug)
+    {
+        $this->selectedBrand = $slug;
+    }
+
+    public function goBack()
+    {
+        return redirect()->to('/');
+    }
+
     public function render()
     {
-        $products = \App\Models\Product::with(['variants'])->availableForCustomer()->get();
-        return view('livewire.pages.buymobile', ['products' => $products]);
+        $query = Product::with(['variants', 'brand'])->availableForCustomer();
+
+        // Filter berdasarkan brand jika selectedBrand tidak null
+        if ($this->selectedBrand) {
+            $query->whereHas('brand', function ($q) {
+                $q->where('name', 'like', '%' . $this->selectedBrand . '%');
+            });
+        }
+
+        $products = $query->get();
+
+        // Mengelompokkan produk berdasarkan nama brand untuk bagian "All Products"
+        $groupedProducts = $products->groupBy(function ($item) {
+            return $item->brand->name ?? 'Lainnya';
+        });
+
+        return view('livewire.pages.buymobile', [
+            'products' => $products,
+            'groupedProducts' => $groupedProducts
+        ]);
     }
 }

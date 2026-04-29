@@ -33,8 +33,8 @@
                     @endif
                 </div>
                 <div class="text-center py-2">
-                    {{-- <h1 class="font-semibold text-xs md:text-sm lg:text-lg line-clamp-1">{{ $product->name }} </h1>
-                    <h1 class="text-neutral-400 text-[10px] md:text-xs lg:text-sm"> {{ $status }} </h1> --}}
+                    <h1 class="font-semibold text-xs md:text-sm lg:text-lg line-clamp-1">{{ $product->name }} </h1>
+                    {{-- <h1 class="text-neutral-400 text-[10px] md:text-xs lg:text-sm"> {{ $status }} </h1> --}}
                     <h1 class="font-bold text-xs md:text-sm lg:text-lg mt-2">Rp
                         {{ number_format($product->starting_price ?? 0, 0, ',', '.') }}</h1>
                 </div>

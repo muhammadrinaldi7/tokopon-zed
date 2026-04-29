@@ -1,6 +1,6 @@
 <section class="max-w-5xl mx-auto p-4 md:p-10">
     <div class="mb-10">
-        <a href="#" class="flex items-center text-neutral-500 hover:text-orange-500 transition-colors mb-4">
+        <a href="/" class="flex items-center text-neutral-500 hover:text-orange-500 transition-colors mb-4">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>

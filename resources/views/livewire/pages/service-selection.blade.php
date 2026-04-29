@@ -25,7 +25,7 @@
                     Buy<br>Mobile<br>Phones
                 </h2>
 
-                <a href=""
+                <a href="{{ route('buy-mobile') }}"
                     class="rounded-full bg-white text-[#0090FF] h-6 md:h-10 w-auto flex items-center justify-center  p-1.5 md:p-2.5 shadow-md group-hover:scale-110 transition-transform duration-300">
                     <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2.5">
@@ -75,7 +75,7 @@
                         Trade- <br> In <br>Mobile <br> Phones
                     </h2>
 
-                    <a href="#"
+                    <a href="{{ route('trade-in') }}"
                         class="rounded-full bg-white text-[#0090FF] h-4 md:h-8 lg:h-10 w-auto flex items-center justify-center p-1 md:p-2 lg:p-2.5 shadow-md group-hover:scale-110 transition-transform duration-300">
                         <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.5">
@@ -104,7 +104,7 @@
                         Sell <br> Mobile <br> Phones
                     </h2>
 
-                    <a href="#"
+                    <a href="{{ route('sell-phone') }}"
                         class="rounded-full bg-white text-[#0090FF] h-4 md:h-8 lg:h-10 w-auto flex items-center justify-center p-1 md:p-2 shadow-md group-hover:scale-110 transition-transform duration-300">
                         <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.5">
