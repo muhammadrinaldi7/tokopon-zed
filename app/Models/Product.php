@@ -30,7 +30,7 @@ class Product extends Model implements HasMedia
     {
         return $this->hasMany(ProductReview::class);
     }
-    
+
     public function getAverageRatingAttribute()
     {
         return round($this->reviews()->avg('rating') ?: 0, 1);
@@ -40,8 +40,8 @@ class Product extends Model implements HasMedia
     {
         $minStock = \App\Models\Setting::where('key', 'minimum_stock_threshold')->value('value') ?? 5;
         return $query->where('is_active', true)
-                     ->where('has_active_erzap', true)
-                     ->where('total_stock', '>=', $minStock);
+            ->where('has_active_erzap', true)
+            ->where('total_stock', '>=', $minStock);
     }
 
     public function category()
@@ -65,9 +65,12 @@ class Product extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')
-              ->width(300)
-              ->height(300)
-              ->sharpen(10);
+            ->width(300)
+            ->height(300)
+            ->sharpen(10);
+    }
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }
-

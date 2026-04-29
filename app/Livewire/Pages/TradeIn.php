@@ -14,6 +14,7 @@ class TradeIn extends Component
     use WithFileUploads;
 
     public $selectedProductId;
+    public $selectedTargetBrand = null;
 
     // Properti Form
     public $old_phone_brand;
@@ -34,9 +35,14 @@ class TradeIn extends Component
      */
     public function mount(Product $product = null)
     {
-        // Jika ada product yang dikirim dari URL dan product-nya valid di DB
         if ($product && $product->exists) {
             $this->selectedProductId = $product->id;
+
+            // Tambahkan baris ini untuk otomatis mengisi brand incaran
+            // Kita ambil nama brand dari relasi product->brand
+            if ($product->brand) {
+                $this->selectedTargetBrand = $product->brand->name;
+            }
         }
     }
 
@@ -80,11 +86,29 @@ class TradeIn extends Component
         // Gunakan redirect()->route() agar lebih aman
         return redirect()->to('trade-in-history');
     }
-
+    public function updatedSelectedTargetBrand()
+    {
+        // Reset pilihan produk saat user mengganti brand
+        $this->selectedProductId = null;
+    }
     public function render()
     {
+        $targetProducts = Product::query();
+
+        if ($this->selectedTargetBrand) {
+            $targetProducts->whereHas('brand', function ($q) {
+                $q->where('name', $this->selectedTargetBrand);
+            });
+        } elseif ($this->selectedProductId) {
+            // Fallback: Jika ada product ID tapi brand belum terpilih (misal saat inisiasi)
+            // Tetap tampilkan setidaknya produk yang dipilih tersebut
+            $targetProducts->where('id', $this->selectedProductId);
+        } else {
+            $targetProducts->whereRaw('1 = 0');
+        }
+
         return view('livewire.pages.trade-in', [
-            'products' => Product::all(),
+            'products' => $targetProducts->get(),
             'brands' => Brand::all(),
         ]);
     }

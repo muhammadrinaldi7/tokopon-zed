@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::livewire('/', 'pages::home');
 Route::get('/buy-mobile', Buymobile::class)->name('buy-mobile');
 Route::get('/phone-repair', PhoneRepair::class)->name('phone-repair');
-Route::get('/trade-in/{product?}', TradeIn::class)->name('trade-in');
+Route::get('/trade-in/{product:slug?}', TradeIn::class)->name('trade-in');
 Route::get('/products', \App\Livewire\Pages\ProductList::class)->name('products.index');
 Route::get('/products/{product:slug}', \App\Livewire\Pages\ProductDetail::class)->name('products.show');
 Route::get('/cart', \App\Livewire\Pages\CartPage::class)->name('cart');

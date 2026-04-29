@@ -132,7 +132,7 @@
                 {{-- Input Battery Health Khusus Apple --}}
                 @if ($old_phone_brand === 'Apple')
                     <div
-                        class="mt-6 p-6 bg-emerald-50 border-2 border-emerald-100 rounded-[2rem] animate-in fade-in slide-in-from-top-4 duration-300">
+                        class="mt-6 p-6 bg-emerald-50 border-2 border-emerald-100 rounded-4xl animate-in fade-in slide-in-from-top-4 duration-300">
                         <div class="flex items-center gap-3 mb-4">
                             <div class="p-2 bg-emerald-500 rounded-xl text-white shadow-lg shadow-emerald-200">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,40 +226,68 @@
                     <div class="flex items-center mb-6">
                         <div
                             class="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center font-bold shadow-lg shadow-emerald-200">
-                            5</div>
+                            5
+                        </div>
                         <h3 class="text-xl font-bold ml-4 text-neutral-800">Pilih HP Incaranmu</h3>
                     </div>
 
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        @foreach ($products as $item)
-                            <label class="group relative cursor-pointer">
-                                <input type="radio" name="target_phone" value="{{ $item->id }}"
-                                    wire:model.live="selectedProductId" class="peer hidden">
-                                <div
-                                    class="h-full border-2 border-neutral-100 rounded-3xl p-4 transition-all duration-300 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 group-hover:shadow-lg group-hover:shadow-emerald-100">
-                                    <div
-                                        class="aspect-square bg-neutral-50 rounded-2xl mb-4 overflow-hidden flex items-center justify-center p-4 transition-all group-hover:scale-105">
-                                        <img src="{{ $item->getFirstMediaUrl('cover') }}" alt="{{ $item->name }}"
-                                            class="w-full h-auto object-contain drop-shadow-sm">
-                                    </div>
-                                    <div class="space-y-1">
-                                        <h4 class="font-bold text-neutral-800 text-sm leading-tight">
-                                            {{ $item->name }}</h4>
-                                        <p class="text-emerald-600 font-extrabold text-xs">Rp
-                                            {{ number_format($item->starting_price, 0, ',', '.') }}</p>
-                                    </div>
-                                    <div
-                                        class="absolute top-3 right-3 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white scale-0 transition-transform duration-300 peer-checked:scale-100">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </label>
-                        @endforeach
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        {{-- Select Brand Incaran --}}
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-neutral-700 ml-1">Pilih Brand</label>
+                            <select wire:model.live="selectedTargetBrand"
+                                class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all appearance-none cursor-pointer">
+                                <option value="">Pilih Brand Incaran</option>
+                                @foreach ($brands as $brand)
+                                    <option value="{{ $brand->name }}">{{ $brand->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Select Model Berdasarkan Brand --}}
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-neutral-700 ml-1">Pilih Model</label>
+                            <select wire:model.live="selectedProductId" @disabled(!$selectedTargetBrand)
+                                class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all appearance-none cursor-pointer disabled:opacity-50">
+                                <option value="">Pilih Model HP</option>
+                                @foreach ($products as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
+
+                    {{-- Preview Produk yang Dipilih --}}
+                    @if ($selectedProductId && ($currentProduct = App\Models\Product::find($selectedProductId)))
+                        <div class="animate-in zoom-in duration-300">
+                            <div
+                                class="flex flex-col md:flex-row items-center gap-6 p-6 bg-emerald-50 rounded-3xl border-2 border-emerald-100">
+                                <div
+                                    class="w-32 h-32 md:w-40 md:h-40 bg-white rounded-2xl p-4 shadow-sm flex items-center justify-center">
+                                    <img src="{{ $currentProduct->getFirstMediaUrl('cover') }}"
+                                        alt="{{ $currentProduct->name }}"
+                                        class="max-w-full max-h-full object-contain">
+                                </div>
+                                <div class="text-center md:text-left">
+                                    <span
+                                        class="px-3 py-1 bg-emerald-500 text-white text-[10px] font-black rounded-full uppercase tracking-widest">Pilihan
+                                        Kamu</span>
+                                    <h4 class="text-2xl font-black text-neutral-800 mt-2">{{ $currentProduct->name }}
+                                    </h4>
+                                    <p class="text-emerald-600 font-black text-xl mt-1">
+                                        Rp {{ number_format($currentProduct->starting_price, 0, ',', '.') }}
+                                    </p>
+                                    <p class="text-neutral-500 text-xs mt-2 italic">*Harga yang tertera adalah harga
+                                        mulai dari (estimasi).</p>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="text-center py-10 border-2 border-dashed border-neutral-100 rounded-3xl">
+                            <p class="text-neutral-400 text-sm italic">Silakan pilih brand dan model HP untuk melihat
+                                detail.</p>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -275,8 +303,13 @@
                     <div class="space-y-4 border-b border-emerald-500/50 pb-6 mb-6 relative z-10">
                         <div class="flex justify-between text-sm opacity-90">
                             <span>HP Incaran</span>
-                            <span
-                                class="font-bold text-right italic">{{ $selectedProductId ? $products->find($selectedProductId)->name : 'Belum memilih' }}</span>
+                            <span class="font-bold text-right italic uppercase">
+                                @if ($selectedProductId)
+                                    {{ \App\Models\Product::find($selectedProductId)?->name ?? 'Belum memilih' }}
+                                @else
+                                    Belum memilih
+                                @endif
+                            </span>
                         </div>
                     </div>
 
