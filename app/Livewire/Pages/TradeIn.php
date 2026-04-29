@@ -48,43 +48,58 @@ class TradeIn extends Component
 
     public function submit()
     {
+        // Validasi
         $this->validate([
             'selectedProductId' => 'required',
             'old_phone_brand' => 'required',
             'old_phone_model' => 'required',
             'old_phone_condition' => 'required',
+            'old_phone_ram' => 'required',
+            'old_phone_storage' => 'required',
+            'old_phone_sets' => 'required|array|min:1', // Pastikan kelengkapan dipilih
             'old_phone_battery_health' => $this->old_phone_brand === 'Apple' ? 'required|integer|min:1|max:100' : 'nullable',
-            'photos' => 'nullable|array', // Tambahkan validasi foto jika perlu
+            'photos' => 'required|array|min:2',
+        ], [
+            // Custom message agar user lebih paham (Opsional)
+            'required' => 'Bidang ini wajib diisi.',
+            'photos.min' => 'Wajib upload minimal 2 foto.',
+            'old_phone_sets.required' => 'Pilih minimal satu kelengkapan.',
         ]);
 
-        // --- PROSES PENGGABUNGAN DATA ---
-        $kelengkapan = implode(', ', $this->old_phone_sets);
-        $bhText = ($this->old_phone_brand === 'Apple' && $this->old_phone_battery_health)
-            ? "Battery Health: {$this->old_phone_battery_health}%. "
-            : "";
+        try {
+            // --- PROSES DATA ---
+            $kelengkapan = implode(', ', $this->old_phone_sets);
+            $bhText = ($this->old_phone_brand === 'Apple') ? "BH: {$this->old_phone_battery_health}%. " : "";
+            $deskripsiLengkap = "Kondisi: {$this->old_phone_condition}. {$bhText}Kelengkapan: " . ($kelengkapan ?: 'Tidak ada') . ". Catatan: {$this->old_phone_additional_note}";
 
-        $deskripsiLengkap = "Kondisi: " . $this->old_phone_condition . ". ";
-        $deskripsiLengkap .= $bhText;
-        $deskripsiLengkap .= "Kelengkapan: " . ($kelengkapan ?: 'Tidak ada') . ". ";
-        $deskripsiLengkap .= "Catatan: " . ($this->old_phone_additional_note ?: '-');
+            // 1. Simpan Model
+            $tradeIn = TradeInModel::create([
+                'user_id' => Auth::id(),
+                'target_product_id' => $this->selectedProductId,
+                'old_phone_brand' => $this->old_phone_brand,
+                'old_phone_model' => $this->old_phone_model,
+                'old_phone_ram' => $this->old_phone_ram,
+                'old_phone_storage' => $this->old_phone_storage,
+                'old_phone_minus_desc' => $deskripsiLengkap,
+                'status' => 'PENDING',
+            ]);
 
-        $tradeIn = TradeInModel::create([
-            'user_id' => Auth::id(),
-            'target_product_id' => $this->selectedProductId,
-            'old_phone_brand' => $this->old_phone_brand,
-            'old_phone_model' => $this->old_phone_model,
-            'old_phone_ram' => $this->old_phone_ram,
-            'old_phone_storage' => $this->old_phone_storage,
-            'old_phone_minus_desc' => $deskripsiLengkap,
-            'status' => 'PENDING',
-        ]);
+            // 2. Simpan Foto (Pake looping file temporary)
+            if (!empty($this->photos)) {
+                foreach ($this->photos as $photo) {
+                    $tradeIn->addMedia($photo->getRealPath())
+                        ->usingFileName($photo->getClientOriginalName())
+                        ->toMediaCollection('phone_condition');
+                }
+            }
 
-        // Opsional: Proses simpan foto di sini jika kamu sudah setup storage/media library
+            session()->flash('message', 'Pengajuan berhasil dikirim!');
 
-        session()->flash('message', 'Pengajuan berhasil dikirim!');
-
-        // Gunakan redirect()->route() agar lebih aman
-        return redirect()->to('trade-in-history');
+            // Cek apakah route ini benar ada di web.php kamu?
+            return redirect()->to('/trade-in-history');
+        } catch (\Throwable $e) { // Throwable akan menangkap Exception DAN Error fatal
+            session()->flash('error', 'Terjadi kesalahan sistem');
+        }
     }
     public function updatedSelectedTargetBrand()
     {

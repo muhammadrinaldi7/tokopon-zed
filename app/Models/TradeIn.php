@@ -35,7 +35,7 @@ class TradeIn extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         // Foto fisik dari user
-        $this->addMediaCollection('customer_unit_photos');
+        $this->addMediaCollection('phone_condition');
         // Foto fisik dari bukti admin
         $this->addMediaCollection('admin_inspection_photos');
     }

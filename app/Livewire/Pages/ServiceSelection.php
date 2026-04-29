@@ -18,6 +18,10 @@ class ServiceSelection extends Component
     {
         return redirect()->route('trade-in');
     }
+    public function navigateToSellPhone()
+    {
+        return redirect()->route('sell-phone');
+    }
     public function render()
     {
         return view('livewire.pages.service-selection');

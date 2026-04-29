@@ -1,5 +1,10 @@
 <section class="max-w-6xl mx-auto p-4 md:p-10">
     {{-- Tambahkan wire:submit agar tombol kirim berfungsi --}}
+    @if (session()->has('error'))
+        <div class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-xl font-bold text-sm">
+            {{ session('error') }}
+        </div>
+    @endif
     <form wire:submit.prevent="submit">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
             <div>
@@ -78,15 +83,51 @@
                                 <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
                             @enderror
                         </div>
+                        {{-- Ganti input RAM dan Storage lama dengan ini --}}
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-neutral-700 ml-1">RAM</label>
-                            <input type="text" wire:model="old_phone_ram" placeholder="Contoh: 6GB"
-                                class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all">
+                            <div class="relative">
+                                <select wire:model="old_phone_ram"
+                                    class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all appearance-none cursor-pointer font-medium text-neutral-700">
+                                    <option value="">Pilih RAM</option>
+                                    @foreach (['2GB', '3GB', '4GB', '6GB', '8GB', '12GB', '16GB'] as $ram)
+                                        <option value="{{ $ram }}">{{ $ram }}</option>
+                                    @endforeach
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-neutral-500">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+                            @error('old_phone_ram')
+                                <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
+                            @enderror
                         </div>
+
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-neutral-700 ml-1">Kapasitas (Storage)</label>
-                            <input type="text" wire:model="old_phone_storage" placeholder="Contoh: 128GB"
-                                class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all">
+                            <div class="relative">
+                                <select wire:model="old_phone_storage"
+                                    class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all appearance-none cursor-pointer font-medium text-neutral-700">
+                                    <option value="">Pilih Kapasitas</option>
+                                    @foreach (['32GB', '64GB', '128GB', '256GB', '512GB', '1TB'] as $storage)
+                                        <option value="{{ $storage }}">{{ $storage }}</option>
+                                    @endforeach
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-neutral-500">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+                            @error('old_phone_storage')
+                                <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -126,6 +167,9 @@
                                 </div>
                             </label>
                         @endforeach
+                        @error('old_phone_condition')
+                            <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -192,6 +236,9 @@
                             </label>
                         @endforeach
                     </div>
+                    @error('old_phone_sets')
+                        <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
+                    @enderror
 
                     <textarea wire:model="old_phone_additional_note" rows="3"
                         placeholder="Tulis catatan tambahan jika ada minus lain..."
@@ -211,6 +258,11 @@
                         <input type="file" wire:model="photos" multiple
                             class="text-sm text-neutral-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
 
+                        <div wire:loading wire:target="photos"
+                            class="mt-2 text-xs text-emerald-600 font-bold animate-pulse">
+                            Sedang memproses foto...
+                        </div>
+
                         <div class="flex flex-wrap gap-2 mt-4">
                             @if ($photos)
                                 @foreach ($photos as $photo)
@@ -220,6 +272,12 @@
                             @endif
                         </div>
                     </div>
+                    @error('photos')
+                        <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
+                    @enderror
+                    @error('photos.*')
+                        <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="bg-white rounded-3xl p-6 shadow-sm border border-neutral-100">
@@ -256,6 +314,12 @@
                             </select>
                         </div>
                     </div>
+                    @error('selectedProductId')
+                        <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
+                    @enderror
+                    @error('selectedTargetBrand')
+                        <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
+                    @enderror
 
                     {{-- Preview Produk yang Dipilih --}}
                     @if ($selectedProductId && ($currentProduct = App\Models\Product::find($selectedProductId)))

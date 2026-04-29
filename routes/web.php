@@ -2,6 +2,7 @@
 
 use App\Livewire\Pages\Buymobile;
 use App\Livewire\Pages\PhoneRepair;
+use App\Livewire\Pages\SellPhone;
 use App\Livewire\Pages\TradeIn;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +12,7 @@ Route::livewire('/', 'pages::home');
 Route::get('/buy-mobile', Buymobile::class)->name('buy-mobile');
 Route::get('/phone-repair', PhoneRepair::class)->name('phone-repair');
 Route::get('/trade-in/{product:slug?}', TradeIn::class)->name('trade-in');
+Route::get('/sell-phone', SellPhone::class)->name('sell-phone');
 Route::get('/products', \App\Livewire\Pages\ProductList::class)->name('products.index');
 Route::get('/products/{product:slug}', \App\Livewire\Pages\ProductDetail::class)->name('products.show');
 Route::get('/cart', \App\Livewire\Pages\CartPage::class)->name('cart');

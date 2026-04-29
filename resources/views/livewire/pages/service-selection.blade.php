@@ -86,7 +86,7 @@
             </div>
         </div>
         <div class="flex flex-col gap-2 md:gap-4 lg:gap-6 ">
-            <div
+            <div wire:click="navigateToSellPhone"
                 class="w-full h-full bg-violet-600 rounded-lg md:rounded-2xl relative flex overflow-hidden p-2 md:p-6 lg:p-8 group cursor-pointer">
                 <div class="absolute w-full right-0">
                     <img src="{{ asset('assets/png/sell1.png') }}" alt="phonerepair"

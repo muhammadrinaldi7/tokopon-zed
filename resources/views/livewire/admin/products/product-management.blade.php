@@ -73,7 +73,7 @@
                                     @endif
                                 </div>
                                 <div class="flex flex-col">
-                                    <button wire:click="viewDetail({{ $product->id }})"
+                                    <button wire:click="viewDetail({{ $product->slug }})"
                                         class="font-bold text-[#4E44DB] hover:text-[#3f36b8] hover:underline text-left transition-colors">
                                         {{ $product->name }}
                                     </button>
@@ -97,7 +97,7 @@
                         <td class="px-6 py-4">{{ $product->total_stock }} Unit</td>
                         <td class="px-6 py-4">Rp. {{ number_format($product->starting_price ?? 0, 0, ',', '.') }}</td>
                         <td class="px-6 py-4 text-right">
-                            <a href="{{ route('admin.products.variants', $product->id) }}" wire:navigate
+                            <a href="{{ route('admin.products.variants', $product->slug) }}" wire:navigate
                                 class="text-[#4E44DB] font-semibold text-xs border border-[#4E44DB] px-3 py-1.5 rounded-lg hover:bg-[#eff2ff] mr-2 transition inline-flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
