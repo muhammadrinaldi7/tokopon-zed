@@ -20,7 +20,7 @@
 
     <livewire:header />
     @auth
-        @unless(auth()->user()->hasRole('cs'))
+        @unless (auth()->user()->hasRole('cs'))
             <livewire:chatroom />
         @endunless
     @endauth
@@ -31,6 +31,7 @@
     <livewire:footer />
 
     <livewire:confirm-modal />
+    <livewire:toast-notification />
 
 </body>
 

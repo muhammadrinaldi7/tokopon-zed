@@ -23,6 +23,11 @@ class ProductVariant extends Model implements HasMedia
         return $this->belongsTo(ProductErzap::class, 'erzap_item_id', 'erzap_id');
     }
 
+    public function sellPhone()
+    {
+        return $this->belongsTo(SellPhone::class);
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('variant_image')

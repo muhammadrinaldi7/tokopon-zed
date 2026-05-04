@@ -11,12 +11,8 @@
 <body class="bg-gray-50 text-gray-900 font-sans antialiased overflow-hidden" x-data="{ sidebarOpen: false }">
     <div class="flex h-screen w-full relative">
         {{-- Overlay for mobile --}}
-        <div x-show="sidebarOpen" 
-             x-transition.opacity 
-             @click="sidebarOpen = false"
-             class="fixed inset-0 bg-gray-900/50 z-20 lg:hidden" 
-             style="display: none;"
-             x-cloak></div>
+        <div x-show="sidebarOpen" x-transition.opacity @click="sidebarOpen = false"
+            class="fixed inset-0 bg-gray-900/50 z-20 lg:hidden" style="display: none;" x-cloak></div>
 
         {{-- Sidebar --}}
         <livewire:admin-sidebar />
@@ -24,15 +20,16 @@
         {{-- Main Content --}}
         <div class="flex-1 flex flex-col h-screen overflow-hidden">
             <x-admin.topbar />
-            
+
             <main class="flex-1 overflow-y-auto px-4 lg:px-8 pb-8">
                 {{ $slot }}
             </main>
         </div>
     </div>
-    
+
     <livewire:confirm-modal />
     <x-toast />
+    <livewire:toast-notification />
 </body>
 
 </html>

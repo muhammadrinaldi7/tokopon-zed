@@ -70,13 +70,13 @@
                         <div class="space-y-2">
                             <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">Model /
                                 Seri</label>
-                            <input type="text" wire:model="old_phone_model" placeholder="Contoh: iPhone 13 Pro"
+                            <input type="text" wire:model.live="old_phone_model" placeholder="Contoh: iPhone 13 Pro"
                                 class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-violet-500 focus:bg-white outline-none transition-all font-bold text-neutral-700">
                         </div>
 
                         <div class="space-y-2">
                             <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">RAM</label>
-                            <select wire:model="old_phone_ram"
+                            <select wire:model.live="old_phone_ram"
                                 class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-violet-500 focus:bg-white outline-none transition-all font-bold text-neutral-700">
                                 <option value="">Pilih RAM</option>
                                 @foreach (['2GB', '3GB', '4GB', '6GB', '8GB', '12GB', '16GB'] as $ram)
@@ -88,7 +88,7 @@
                         <div class="space-y-2">
                             <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">Internal
                                 Storage</label>
-                            <select wire:model="old_phone_storage"
+                            <select wire:model.live="old_phone_storage"
                                 class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-violet-500 focus:bg-white outline-none transition-all font-bold text-neutral-700">
                                 <option value="">Pilih Kapasitas</option>
                                 @foreach (['32GB', '64GB', '128GB', '256GB', '512GB', '1TB'] as $rom)
@@ -99,7 +99,7 @@
                     </div>
 
                     {{-- Battery Health (Apple Special) --}}
-                    @if ($old_phone_brand === 'Apple')
+                    @if ($old_phone_brand === 'APPLE')
                         <div
                             class="mt-8 p-6 bg-violet-50 border-2 border-violet-100 rounded-[2rem] animate-in zoom-in duration-300">
                             <div class="flex items-center gap-3 mb-5">
@@ -180,6 +180,59 @@
                             <textarea wire:model="old_phone_additional_note" rows="3"
                                 placeholder="Jelaskan kondisi detail jika ada minus..."
                                 class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-3xl focus:border-violet-500 focus:bg-white outline-none transition-all font-medium text-neutral-700"></textarea>
+                        </div>
+
+                        <div class="space-y-3 pt-4">
+                            <label class="text-xs font-black text-neutral-500 uppercase ml-1">Upload Foto HP (Maks.
+                                5MB/Foto)</label>
+
+                            <div class="relative group">
+                                <input type="file" wire:model="photos" multiple accept="image/*"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                <div
+                                    class="w-full p-8 border-2 border-dashed border-violet-200 rounded-3xl bg-violet-50/50 group-hover:bg-violet-50 transition-colors flex flex-col items-center justify-center text-center">
+                                    <div
+                                        class="w-12 h-12 bg-violet-100 text-violet-600 rounded-2xl flex items-center justify-center mb-3">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <p class="font-bold text-violet-900 text-sm">Klik atau seret foto ke sini</p>
+                                    <p class="text-xs text-violet-600/70 mt-1">Bisa pilih lebih dari satu foto
+                                        sekaligus</p>
+                                </div>
+                            </div>
+
+                            <div wire:loading wire:target="photos"
+                                class="text-xs font-bold text-violet-600 mt-2 flex items-center gap-2">
+                                <svg class="animate-spin h-4 w-4 text-violet-600" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                        stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                Sedang mengunggah...
+                            </div>
+
+                            @if ($photos)
+                                <div class="grid grid-cols-3 md:grid-cols-4 gap-3 mt-4">
+                                    @foreach ($photos as $photo)
+                                        <div
+                                            class="relative aspect-square rounded-2xl overflow-hidden border border-neutral-200 shadow-sm">
+                                            <img src="{{ $photo->temporaryUrl() }}"
+                                                class="w-full h-full object-cover">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                            @error('photos.*')
+                                <span class="text-xs text-rose-500 font-bold block mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
