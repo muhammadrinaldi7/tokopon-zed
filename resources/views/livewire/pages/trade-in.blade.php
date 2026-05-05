@@ -1,21 +1,25 @@
-<section class="max-w-6xl mx-auto p-4 md:p-10">
-    {{-- Tambahkan wire:submit agar tombol kirim berfungsi --}}
-    @if (session()->has('error'))
+<section class="max-w-7xl mx-auto p-2 md:p-6">
+    <div class="flex gap-2 ">
+        <a href="/" class="bg-neutral-500 text-white px-3 flex justify-center items-center rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-8 rotate-180">
+                <path fill-rule="evenodd"
+                    d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+                    clip-rule="evenodd" />
+            </svg>
+        </a>
+        <div class="w-full flex gap-4 items-center bg-emerald-500 py-3 px-6 rounded-md">
+            <img src="{{ asset('assets/png/trade.png') }}" class="w-5 md:w-10 h-auto" alt="">
+            <h1 class="text-white text-xl md:text-4xl font-bold">Trade-in</h1>
+        </div>
+    </div>
+    {{-- @if (session()->has('error'))
         <div class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-xl font-bold text-sm">
             {{ session('error') }}
         </div>
-    @endif
+    @endif --}}
     <form wire:submit.prevent="submit">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 mt-10 gap-4">
             <div>
-                <a href="/" class="inline-flex items-center text-emerald-600 font-semibold mb-2 group"
-                    wire:navigate>
-                    <svg class="w-5 h-5 mr-1 transform group-hover:-translate-x-1 transition-transform" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                    Kembali
-                </a>
                 <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-neutral-800">
                     Trade-In <span class="text-emerald-500">Program</span>
                 </h1>
@@ -356,12 +360,9 @@
             </div>
 
             <div class="lg:col-span-4">
-                <div
-                    class="bg-emerald-600 rounded-[2.5rem] p-8 text-white sticky top-10 shadow-2xl shadow-emerald-200 overflow-hidden">
-                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-400 rounded-full blur-3xl opacity-50">
-                    </div>
+                <div class="bg-white text-neutral-900 rounded-[2.5rem] p-8 sticky top-20 shadow-md overflow-hidden">
 
-                    <h4 class="text-emerald-200 font-bold uppercase tracking-widest text-xs mb-4 relative z-10">
+                    <h4 class="text-emerald-500 font-bold uppercase tracking-widest text-xs mb-4 relative z-10">
                         Ringkasan</h4>
 
                     <div class="space-y-4 border-b border-emerald-500/50 pb-6 mb-6 relative z-10">
@@ -389,7 +390,7 @@
                     </ul>
 
                     <button type="submit" wire:loading.attr="disabled"
-                        class="w-full bg-white text-emerald-600 font-black py-4 rounded-2xl shadow-xl hover:bg-emerald-50 transition-all active:scale-95 flex items-center justify-center gap-2 relative z-10 group">
+                        class="w-full bg-emerald-500 text-white font-black py-4 rounded-xl hover:bg-emerald-600 shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 relative z-10 group">
                         <span wire:loading.remove>Kirim Pengajuan</span>
                         <span wire:loading>Memproses...</span>
                         <svg wire:loading.remove class="w-5 h-5 group-hover:translate-x-1 transition-transform"

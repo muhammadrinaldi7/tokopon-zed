@@ -1,11 +1,19 @@
-<section class="max-w-5xl mx-auto p-4 md:p-10">
-    <div class="mb-10">
-        <a href="/" class="flex items-center text-neutral-500 hover:text-orange-500 transition-colors mb-4">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+<section class="max-w-7xl mx-auto p-2 md:p-6">
+    <div class="flex gap-2 ">
+        <a href="/" class="bg-neutral-500 text-white px-3 flex justify-center items-center rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-8 rotate-180">
+                <path fill-rule="evenodd"
+                    d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+                    clip-rule="evenodd" />
             </svg>
-            Kembali
         </a>
+        <div class="w-full flex gap-4 items-center bg-orange-500 py-3 px-6 rounded-md">
+            <img src="{{ asset('assets/png/repair.png') }}" class="w-5 md:w-10 h-auto" alt="">
+            <h1 class="text-white text-xl md:text-4xl font-bold">Repair Service</h1>
+        </div>
+    </div>
+    <div class="mb-10 mt-10">
+
         <h1 class="text-3xl md:text-5xl font-black tracking-tighter">
             Repair <span class="text-orange-500">Service</span>
         </h1>
@@ -88,12 +96,10 @@
         </div>
 
         <div class="lg:col-span-1">
-            <div class="bg-neutral-900 text-white rounded-3xl p-6 sticky top-10 shadow-xl overflow-hidden">
-                <div class="absolute -top-10 -right-10 w-32 h-32 bg-orange-500/20 rounded-full blur-3xl"></div>
-
+            <div class="bg-white text-neutral-900 rounded-3xl p-6 sticky top-20 shadow-xl overflow-hidden">
                 <h3 class="text-xl font-bold mb-6 italic tracking-tight">Summary Repair</h3>
 
-                <div class="space-y-4 border-b border-neutral-700 pb-6">
+                <div class="space-y-4 border-b border-neutral-100 pb-6">
                     <div class="flex justify-between text-sm">
                         <span class="text-neutral-400">Perangkat</span>
                         <span class="font-bold">iPhone 13 Pro</span>
