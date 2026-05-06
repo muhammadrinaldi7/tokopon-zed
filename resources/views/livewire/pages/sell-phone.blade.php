@@ -1,4 +1,4 @@
-<div class="max-w-7xl mx-auto p-2  md:p-6 min-h-screen " x-data="{ step: 1 }" x-cloak>
+<div class="max-w-7xl mx-auto p-2  md:p-6 min-h-screen" x-data="{ step: 1 }" x-cloak>
     {{-- Header Navigation --}}
     <div class="flex gap-2">
         <a href="/"
@@ -86,22 +86,33 @@
                 <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider mb-4 block">Pilih Merk
                     Perangkat</h1>
                 {{-- Menggunakan grid 3 kolom di mobile, dan 4/5 kolom di layar besar agar card logonya pas --}}
-                <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
+                {{-- 1. x-data dipindah ke pembungkus utama agar animasinya barengan --}}
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4" x-data="{ show: false }"
+                    x-init="setTimeout(() => show = true, 100)">
+
                     @foreach ($brands as $brand)
                         <label class="relative cursor-pointer group">
                             <input type="radio" wire:model.live="old_phone_brand" value="{{ $brand->name }}"
                                 class="peer hidden">
                             <div
-                                class="bg-white py-5 px-3 border-2 border-transparent rounded-2xl text-center transition-all peer-checked:border-violet-600 peer-checked:bg-violet-50 hover:shadow-md shadow-sm flex items-center justify-center">
+                                class="bg-white h-auto overflow-hidden rounded-lg text-center transition-all peer-checked:bg-violet-100 hover:shadow-lg shadow-md flex items-center justify-center">
 
                                 @php
-                                    // Jika brand Apple, pakai 'iphone'. Jika bukan, pakai nama brand (huruf kecil)
-                                    $imageName =
+                                    // Tentukan nama dasar dulu (iphone atau nama brand)
+                                    $baseName =
                                         strtolower($brand->name) === 'apple' ? 'iphone' : strtolower($brand->name);
+
+                                    // Tambahkan kata 'header' di belakangnya
+                                    $imageName = $baseName . 'header';
                                 @endphp
 
-                                <img src="{{ asset('assets/brand/' . $imageName . '.png') }}" alt="{{ $brand->name }}"
-                                    class="h-8 md:h-10 w-auto object-contain transition-opacity">
+                                {{-- PERBAIKAN ANIMASI DI SINI --}}
+                                <img x-show="show" x-cloak
+                                    x-transition:enter="transition transform ease-out duration-1000 delay-500"
+                                    x-transition:enter-start="opacity-0 translate-y-full"
+                                    x-transition:enter-end="opacity-100 translate-y-0"
+                                    src="{{ asset('assets/brand/' . $imageName . '.png') }}" alt="{{ $brand->name }}"
+                                    class="object-contain">
 
                             </div>
                         </label>
@@ -113,89 +124,91 @@
             </div>
 
             {{-- Detail Inputs (Hanya muncul jika brand sudah dipilih) --}}
-            @if ($old_phone_brand)
-                <div class="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2 md:col-span-2">
-                            <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">Model /
-                                Seri</label>
-                            <input type="text" wire:model.live="old_phone_model" placeholder="Contoh: iPhone 13 Pro"
-                                class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-violet-500 outline-none transition-all font-bold text-neutral-700">
-                            @error('old_phone_model')
-                                <span class="text-xs text-rose-500 font-bold block mt-1">{{ $message }}</span>
-                            @enderror
-                        </div>
+            <div x-show="$wire.old_phone_brand" x-cloak x-transition:enter="transition ease-out duration-500"
+                x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
+                class="space-y-6">
 
-                        @if (strtolower($old_phone_brand) !== 'apple')
-                            <div class="space-y-2">
-                                <label
-                                    class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">RAM</label>
-                                <select wire:model.live="old_phone_ram"
-                                    class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-violet-500 outline-none transition-all font-bold text-neutral-700 appearance-none cursor-pointer">
-                                    <option value="">Pilih RAM</option>
-                                    @foreach (['2GB', '3GB', '4GB', '6GB', '8GB', '12GB', '16GB'] as $ram)
-                                        <option value="{{ $ram }}">{{ $ram }}</option>
-                                    @endforeach
-                                </select>
-                                @error('old_phone_ram')
-                                    <span class="text-xs text-rose-500 font-bold block mt-1">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        @endif
-
-                        <div class="space-y-2">
-                            <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">Internal
-                                Storage</h1>
-                            <select wire:model.live="old_phone_storage"
-                                class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-violet-500 outline-none transition-all font-bold text-neutral-700 appearance-none cursor-pointer">
-                                <option value="">Pilih Kapasitas</option>
-                                @foreach (['32GB', '64GB', '128GB', '256GB', '512GB', '1TB'] as $rom)
-                                    <option value="{{ $rom }}">{{ $rom }}</option>
-                                @endforeach
-                            </select>
-                            @error('old_phone_storage')
-                                <span class="text-xs text-rose-500 font-bold block mt-1">{{ $message }}</span>
-                            @enderror
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2 md:col-span-2">
+                        <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">Model /
+                            Seri</label>
+                        <input type="text" wire:model.live="old_phone_model" placeholder="Contoh: iPhone 13 Pro"
+                            class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-violet-500 outline-none transition-all font-bold text-neutral-700">
+                        @error('old_phone_model')
+                            <span class="text-xs text-rose-500 font-bold block mt-1">{{ $message }}</span>
+                        @enderror
                     </div>
 
-                    {{-- Battery Health (Apple Special) --}}
-                    @if (strtolower($old_phone_brand) === 'apple')
-                        <div
-                            class="mt-4 p-6 bg-violet-50 border-2 border-violet-100 rounded-3xl animate-in zoom-in duration-300">
-                            <div class="flex items-center gap-3 mb-5">
-                                <div class="p-2 bg-violet-600 rounded-lg text-white">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2.5" stroke-linecap="round"
-                                            stroke-linejoin="round" />
-                                    </svg>
-                                </div>
-                                <h1 class="text-sm font-black text-violet-900 uppercase">Kesehatan Baterai
-                                    (BH)</h1>
-                            </div>
-                            <div class="grid grid-cols-3 gap-3">
-                                @foreach (['95', '90', '85'] as $bh)
-                                    <label class="relative cursor-pointer group">
-                                        {{-- TAMBAHKAN .live DI SINI --}}
-                                        <input type="radio" wire:model.live="old_phone_battery_health"
-                                            value="{{ $bh }}" class="peer hidden">
-                                        <div
-                                            class="p-4 bg-white border-2 border-transparent rounded-2xl text-center transition-all peer-checked:border-violet-600 peer-checked:bg-violet-600 peer-checked:text-white hover:border-violet-200 shadow-sm">
-                                            <span class="block text-lg font-black">{{ $bh }}%</span>
-                                        </div>
-                                    </label>
-                                @endforeach
-                            </div>
-                            <input type="number" wire:model.live="old_phone_battery_health"
-                                placeholder="Atau ketik angka spesifik..."
-                                class="w-full mt-4 p-3 bg-white/60 border-2 border-dashed border-violet-200 rounded-xl text-center text-sm font-bold text-violet-700 focus:border-violet-600 focus:bg-white outline-none transition-all">
-                            @error('old_phone_battery_health')
-                                <span class="text-xs text-rose-500 font-bold block mt-1">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    @endif
+                    {{-- Untuk RAM, kita gunakan x-show agar tidak dihapus dari DOM saat pindah ke Apple --}}
+                    <div x-show="$wire.old_phone_brand && $wire.old_phone_brand.toLowerCase() !== 'apple'" x-cloak
+                        class="space-y-2">
+                        <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">RAM</label>
+                        <select wire:model.live="old_phone_ram"
+                            class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-violet-500 outline-none transition-all font-bold text-neutral-700 appearance-none cursor-pointer">
+                            <option value="">Pilih RAM</option>
+                            @foreach (['2GB', '3GB', '4GB', '6GB', '8GB', '12GB', '16GB'] as $ram)
+                                <option value="{{ $ram }}">{{ $ram }}</option>
+                            @endforeach
+                        </select>
+                        @error('old_phone_ram')
+                            <span class="text-xs text-rose-500 font-bold block mt-1">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="space-y-2">
+                        <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">Internal Storage
+                        </h1>
+                        <select wire:model.live="old_phone_storage"
+                            class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-violet-500 outline-none transition-all font-bold text-neutral-700 appearance-none cursor-pointer">
+                            <option value="">Pilih Kapasitas</option>
+                            @foreach (['32GB', '64GB', '128GB', '256GB', '512GB', '1TB'] as $rom)
+                                <option value="{{ $rom }}">{{ $rom }}</option>
+                            @endforeach
+                        </select>
+                        @error('old_phone_storage')
+                            <span class="text-xs text-rose-500 font-bold block mt-1">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
-            @endif
+
+                {{-- Battery Health (Apple Special) menggunakan x-show --}}
+                <div x-show="$wire.old_phone_brand && $wire.old_phone_brand.toLowerCase() === 'apple'" x-cloak
+                    x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    class="mt-4 p-6 bg-violet-50 border-2 border-violet-100 rounded-3xl">
+
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="p-2 bg-violet-600 rounded-lg text-white">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        <h1 class="text-sm font-black text-violet-900 uppercase">Kesehatan Baterai (BH)</h1>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3">
+                        @foreach (['95', '90', '85'] as $bh)
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" wire:model.live="old_phone_battery_health"
+                                    value="{{ $bh }}" class="peer hidden">
+                                <div
+                                    class="p-4 bg-white border-2 border-transparent rounded-2xl text-center transition-all peer-checked:border-violet-600 peer-checked:bg-violet-600 peer-checked:text-white hover:border-violet-200 shadow-sm">
+                                    <span class="block text-lg font-black">{{ $bh }}%</span>
+                                </div>
+                            </label>
+                        @endforeach
+                    </div>
+
+                    <input type="number" wire:model.live="old_phone_battery_health"
+                        placeholder="Atau ketik angka spesifik..."
+                        class="w-full mt-4 p-3 bg-white/60 border-2 border-dashed border-violet-200 rounded-xl text-center text-sm font-bold text-violet-700 focus:border-violet-600 focus:bg-white outline-none transition-all">
+
+                    @error('old_phone_battery_health')
+                        <span class="text-xs text-rose-500 font-bold block mt-1">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
             {{-- Evaluasi Validasi Step 1 --}}
             @php
                 $isStep1Valid = false;

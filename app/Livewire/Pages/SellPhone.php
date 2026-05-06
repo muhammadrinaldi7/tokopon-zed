@@ -69,17 +69,19 @@ class SellPhone extends Component
 
         $this->validate();
 
-        $minusDesc = "Kondisi Fisik: " . ($this->old_phone_condition ?? 'Tidak disebutkan') . "\n";
-        $minusDesc .= "Kelengkapan: " . (!empty($this->old_phone_sets) ? implode(', ', $this->old_phone_sets) : 'Batangan') . "\n";
+        // 1. Susun Kelengkapan
+        $kelengkapan = !empty($this->old_phone_sets) ? implode(', ', $this->old_phone_sets) : 'Batangan';
 
-        // Pengecekan case-insensitive untuk Apple
-        if (strtolower($this->old_phone_brand) === 'apple' && $this->old_phone_battery_health) {
-            $minusDesc .= "Battery Health: " . $this->old_phone_battery_health . "%\n";
-        }
+        // 2. Susun teks Battery Health (Pengecekan case-insensitive untuk Apple)
+        $bhText = (strtolower($this->old_phone_brand) === 'apple' && $this->old_phone_battery_health)
+            ? "BH: {$this->old_phone_battery_health}%. "
+            : "";
 
-        if ($this->old_phone_additional_note) {
-            $minusDesc .= "Catatan: " . $this->old_phone_additional_note;
-        }
+        // 3. Susun teks Catatan (Jika ada)
+        $catatanText = $this->old_phone_additional_note ? ". Catatan: {$this->old_phone_additional_note}" : "";
+
+        // 4. Gabungkan semuanya dengan pemisah titik
+        $minusDesc = "Kondisi: {$this->old_phone_condition}. {$bhText}Kelengkapan: {$kelengkapan}{$catatanText}";
 
         $sellPhone = SellPhoneModel::create([
             'user_id' => Auth::id(),
@@ -119,7 +121,7 @@ class SellPhone extends Component
     public function render()
     {
         return view('livewire.pages.sell-phone', [
-            'brands' => Brand::orderBy('name')->get()
+            'brands' => Brand::orderBy('id', 'asc')->get(),
         ]);
     }
 }

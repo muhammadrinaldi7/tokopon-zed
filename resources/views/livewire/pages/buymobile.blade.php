@@ -13,6 +13,7 @@
         </div>
     </div>
     <div class="flex gap-2 mt-4">
+        {{-- Tombol Reset / All Brands --}}
         <div wire:click="setBrand(null)"
             class="cursor-pointer px-3 flex justify-center items-center rounded-md border transition-all 
             {{ is_null($selectedBrand) ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-200' : 'bg-neutral-100 text-neutral-400 border-neutral-200' }}">
@@ -21,13 +22,22 @@
                     d="M6 12a.75.75 0 0 1-.75-.75v-7.5a.75.75 0 1 1 1.5 0v7.5A.75.75 0 0 1 6 12ZM18 12a.75.75 0 0 1-.75-.75v-7.5a.75.75 0 0 1 1.5 0v7.5A.75.75 0 0 1 18 12ZM6.75 20.25v-1.5a.75.75 0 0 0-1.5 0v1.5a.75.75 0 0 0 1.5 0ZM18.75 18.75v1.5a.75.75 0 0 1-1.5 0v-1.5a.75.75 0 0 1 1.5 0ZM12.75 5.25v-1.5a.75.75 0 0 0-1.5 0v1.5a.75.75 0 0 0 1.5 0ZM12 21a.75.75 0 0 1-.75-.75v-7.5a.75.75 0 0 1 1.5 0v7.5A.75.75 0 0 1 12 21ZM3.75 15a2.25 2.25 0 1 0 4.5 0 2.25 2.25 0 0 0-4.5 0ZM12 11.25a2.25 2.25 0 1 1 0-4.5 2.25 2.25 0 0 1 0 4.5ZM15.75 15a2.25 2.25 0 1 0 4.5 0 2.25 2.25 0 0 0-4.5 0Z" />
             </svg>
         </div>
+
+        {{-- List Brands --}}
         <div class="flex overflow-x-auto gap-2 md:gap-4 no-scrollbar">
             @foreach ($brands as $brand)
-                <div wire:click="setBrand('{{ $brand['slug'] }}')"
-                    class="flex-none cursor-pointer bg-white px-4 py-3 rounded-md border w-25 md:w-40 flex items-center justify-center transition-all hover:border-blue-400 
-                    {{ $selectedBrand == $brand['slug'] ? 'border-blue-600 ring-2 ring-blue-100 shadow-md' : 'border-neutral-200' }}">
-                    <img src="{{ asset('assets/brand/' . $brand['image']) }}" class="w-20 md:w-30 h-auto object-contain"
-                        alt="{{ $brand['name'] }}">
+                @php
+                    // Logika gambar: kalau Apple pakai 'iphone', sisanya pakai nama brand (huruf kecil)
+                    $imageName = strtolower($brand->name) === 'apple' ? 'iphone' : strtolower($brand->name);
+                @endphp
+
+                <div wire:click="setBrand('{{ $brand->name }}')"
+                    class="flex-none cursor-pointer bg-white rounded-md border w-25 md:w-35 flex items-center justify-center transition-all hover:border-blue-400 
+                    {{ $selectedBrand === $brand->name ? 'border-blue-600 ring-2 ring-blue-100 shadow-md' : 'border-neutral-200' }}">
+
+                    {{-- Panggil gambar secara dinamis --}}
+                    <img src="{{ asset('assets/brand/' . $imageName . '.png') }}" class=""
+                        alt="{{ $brand->name }}">
                 </div>
             @endforeach
         </div>
