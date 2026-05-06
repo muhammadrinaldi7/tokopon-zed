@@ -22,10 +22,43 @@ class SellPhone extends Component
     public $old_phone_battery_health;
     public $photos = [];
 
-    protected $rules = [
-        'old_phone_brand' => 'required',
-        'old_phone_model' => 'required',
-        'photos.*' => 'image|max:5120', // Max 5MB per image
+    protected function rules()
+    {
+        return [
+            'old_phone_brand'           => 'required|string',
+            'old_phone_model'           => 'required|string|max:255',
+            // Wajib diisi KECUALI brand adalah Apple/APPLE
+            'old_phone_ram'             => 'required_unless:old_phone_brand,Apple,APPLE|nullable|string',
+            'old_phone_storage'         => 'required|string',
+            'old_phone_condition'       => 'required|string',
+            'old_phone_sets'            => 'required|array',
+            'old_phone_additional_note' => 'nullable|string|max:1000',
+
+            // Wajib diisi JIKA brand adalah Apple/APPLE, dan harus berupa angka 1-100
+            'old_phone_battery_health'  => 'required_if:old_phone_brand,Apple,APPLE|nullable|numeric|min:1|max:100',
+
+            // Validasi file foto (wajib ada minimal 1, maksimal 5 file)
+            'photos'                    => 'required|array|min:1|max:5',
+            'photos.*'                  => 'image|max:5120', // Maks 5MB per gambar
+        ];
+    }
+
+    // Custom pesan error bahasa Indonesia
+    protected $messages = [
+        'old_phone_brand.required'          => 'Merk HP wajib dipilih.',
+        'old_phone_model.required'          => 'Model/Seri HP wajib diisi.',
+        // Ubah pesan error untuk RAM menggunakan .required_unless
+        'old_phone_ram.required_unless'     => 'Kapasitas RAM wajib dipilih untuk perangkat Android.',
+        'old_phone_storage.required'        => 'Kapasitas Storage wajib dipilih.',
+        'old_phone_condition.required'      => 'Kondisi fisik wajib dipilih.',
+        'old_phone_sets.required'           => 'Kelengkapan wajib diisi.',
+        'old_phone_battery_health.required_if' => 'Kesehatan Baterai (BH) wajib diisi untuk perangkat Apple.',
+        'old_phone_battery_health.min'      => 'Kesehatan Baterai minimal 1%.',
+        'old_phone_battery_health.max'      => 'Kesehatan Baterai maksimal 100%.',
+        'photos.required'                   => 'Wajib mengunggah minimal 1 foto HP.',
+        'photos.max'                        => 'Maksimal hanya boleh mengunggah 5 foto.',
+        'photos.*.image'                    => 'File harus berupa gambar.',
+        'photos.*.max'                      => 'Ukuran foto maksimal 5MB per file.',
     ];
 
     public function submit()
@@ -39,7 +72,8 @@ class SellPhone extends Component
         $minusDesc = "Kondisi Fisik: " . ($this->old_phone_condition ?? 'Tidak disebutkan') . "\n";
         $minusDesc .= "Kelengkapan: " . (!empty($this->old_phone_sets) ? implode(', ', $this->old_phone_sets) : 'Batangan') . "\n";
 
-        if ($this->old_phone_brand === 'Apple' && $this->old_phone_battery_health) {
+        // Pengecekan case-insensitive untuk Apple
+        if (strtolower($this->old_phone_brand) === 'apple' && $this->old_phone_battery_health) {
             $minusDesc .= "Battery Health: " . $this->old_phone_battery_health . "%\n";
         }
 
