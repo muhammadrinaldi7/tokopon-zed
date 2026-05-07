@@ -26,47 +26,60 @@
         </div>
     </div>
 
-    {{-- Stepper Indicator (Visual Progress) --}}
-    <div class="mb-10 w-full max-w-7xl mx-auto px-4">
-        <div class="flex justify-between items-center relative">
+    {{-- Stepper Indicator (Visual Progress) - Violet Version --}}
+    <div class="mb-14 w-full max-w-7xl mx-auto  mt-4">
+        <div class="flex justify-between items-start relative">
             <!-- Progress Line Background -->
-            <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-neutral-200 rounded-full z-0">
+            {{-- Posisi top disetel 20px agar tepat memotong tengah lingkaran --}}
+            <div
+                class="absolute left-0 top-[20px] transform -translate-y-1/2 w-full h-1 bg-neutral-200 rounded-full z-0">
             </div>
+
             <!-- Progress Line Active -->
-            <div class="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-violet-600 rounded-full z-0 transition-all duration-500 ease-in-out"
+            <div class="absolute left-0 top-[20px] transform -translate-y-1/2 h-1 bg-violet-600 rounded-full z-0 transition-all duration-500 ease-in-out"
                 :style="'width: ' + ((step - 1) * 50) + '%'"></div>
 
             <!-- Step 1 Dot -->
-            <div class="relative z-10 flex flex-col items-center cursor-pointer" @click="step = 1">
-                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300"
+            <div class="relative z-10 flex flex-col items-center cursor-pointer group" @click="step = 1">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 shrink-0"
                     :class="step >= 1 ? 'bg-violet-600 text-white shadow-lg shadow-violet-200 ring-4 ring-violet-50' :
                         'bg-white text-neutral-400 border-2 border-neutral-200'">
                     1
                 </div>
-                <span class="mt-2 text-xs font-bold absolute -bottom-6 w-24 text-center"
-                    :class="step >= 1 ? 'text-violet-700' : 'text-neutral-400'">Spesifikasi</span>
+                {{-- Teks sekarang fleksibel dan wrap otomatis --}}
+                <span
+                    class="mt-3 text-[10px] md:text-xs font-bold text-center leading-tight transition-colors duration-300 w-auto"
+                    :class="step >= 1 ? 'text-violet-700' : 'text-neutral-400'">
+                    Spesifikasi
+                </span>
             </div>
 
             <!-- Step 2 Dot -->
-            <div class="relative z-10 flex flex-col items-center cursor-pointer" @click="if(step > 2) step = 2">
-                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300"
+            <div class="relative z-10 flex flex-col items-center cursor-pointer group" @click="if(step > 2) step = 2">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 shrink-0"
                     :class="step >= 2 ? 'bg-violet-600 text-white shadow-lg shadow-violet-200 ring-4 ring-violet-50' :
                         'bg-white text-neutral-400 border-2 border-neutral-200'">
                     2
                 </div>
-                <span class="mt-2 text-xs font-bold absolute -bottom-6 w-24 text-center"
-                    :class="step >= 2 ? 'text-violet-700' : 'text-neutral-400'">Kondisi</span>
+                <span
+                    class="mt-3 text-[10px] md:text-xs font-bold text-center leading-tight transition-colors duration-300 w-auto"
+                    :class="step >= 2 ? 'text-violet-700' : 'text-neutral-400'">
+                    Kondisi
+                </span>
             </div>
 
             <!-- Step 3 Dot -->
-            <div class="relative z-10 flex flex-col items-center">
-                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300"
+            <div class="relative z-10 flex flex-col items-center group">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 shrink-0"
                     :class="step >= 3 ? 'bg-violet-600 text-white shadow-lg shadow-violet-200 ring-4 ring-violet-50' :
                         'bg-white text-neutral-400 border-2 border-neutral-200'">
                     3
                 </div>
-                <span class="mt-2 text-xs font-bold absolute -bottom-6 w-24 text-center"
-                    :class="step >= 3 ? 'text-violet-700' : 'text-neutral-400'">Ringkasan</span>
+                <span
+                    class="mt-3 text-[10px] md:text-xs font-bold text-center leading-tight transition-colors duration-300 w-sauto"
+                    :class="step >= 3 ? 'text-violet-700' : 'text-neutral-400'">
+                    Ringkasan
+                </span>
             </div>
         </div>
     </div>
@@ -78,8 +91,6 @@
         <div x-show="step === 1" x-transition:enter="transition ease-out duration-300 delay-100"
             x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0"
             class="space-y-8">
-
-            {{-- <h3 class="text-lg md:text-xl uppercase font-black text-neutral-800 px-1">Spesifikasi Perangkat</h3> --}}
 
             {{-- Brand Selection Cards (with Logo) --}}
             <div>

@@ -1,405 +1,639 @@
-<section class="max-w-7xl mx-auto p-2 md:p-6">
-    <div class="flex gap-2 ">
-        <a href="/" class="bg-neutral-500 text-white px-3 flex justify-center items-center rounded-md">
+<section class="max-w-7xl mx-auto p-2 md:p-6" x-data="{ step: 1 }" x-cloak>
+    {{-- Header Navigation --}}
+    <div class="flex gap-2">
+        <a href="/"
+            class="bg-neutral-500 text-white px-3 flex justify-center items-center rounded-md hover:bg-neutral-600 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-8 rotate-180">
                 <path fill-rule="evenodd"
                     d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
                     clip-rule="evenodd" />
             </svg>
         </a>
-        <div class="w-full flex gap-4 items-center bg-emerald-500 py-3 px-6 rounded-md">
-            <img src="{{ asset('assets/png/trade.png') }}" class="w-5 md:w-10 h-auto" alt="">
+        <div class="w-full flex gap-4 items-center bg-emerald-500 py-3 px-6 rounded-md shadow-sm">
+            <img src="{{ asset('assets/png/trade.png') }}" class="w-5 md:w-10 h-auto" alt="Trade In">
             <h1 class="text-white text-xl md:text-4xl font-bold">Trade-in</h1>
         </div>
     </div>
-    {{-- @if (session()->has('error'))
+    @if (session()->has('error'))
         <div class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-xl font-bold text-sm">
             {{ session('error') }}
         </div>
-    @endif --}}
-    <form wire:submit.prevent="submit">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 mt-10 gap-4">
-            <div>
-                <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-neutral-800">
-                    Trade-In <span class="text-emerald-500">Program</span>
-                </h1>
-                <p class="text-neutral-500 text-lg mt-2">Tukarkan HP lama kamu dengan penawaran harga terbaik.</p>
+    @endif
+    {{-- Title Section --}}
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 mt-10 gap-4">
+        <div>
+            <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-neutral-800">
+                Trade-In <span class="text-emerald-500">Program</span>
+            </h1>
+            <p class="text-neutral-500 text-sm md:text-lg mt-2 font-medium">Tukarkan HP lama kamu dengan penawaran harga
+                terbaik.
+            </p>
+        </div>
+        <div
+            class="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-2xl text-sm font-bold flex items-center h-fit border border-emerald-200 shadow-sm">
+            <span class="relative flex h-3 w-3 mr-2">
+                <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+            Proses Cepat 15 Menit
+        </div>
+    </div>
+
+    {{-- Stepper Indicator (Visual Progress) --}}
+    <div class="mb-14 w-full max-w-7xl mx-auto mt-4">
+        <div class="flex justify-between items-start relative"> {{-- Ganti items-center jadi items-start --}}
+            <!-- Progress Line Background -->
+            {{-- Top kita ubah ke 20px (setengah dari tinggi lingkaran w-10/40px) agar garis pas di tengah lingkaran --}}
+            <div
+                class="absolute left-0 top-[20px] transform -translate-y-1/2 w-full h-1 bg-neutral-200 rounded-full z-0">
             </div>
 
-            <div
-                class="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-2xl text-sm font-bold flex items-center h-fit border border-emerald-200">
-                <span class="relative flex h-3 w-3 mr-2">
-                    <span
-                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            <!-- Progress Line Active -->
+            <div class="absolute left-0 top-[20px] transform -translate-y-1/2 h-1 bg-emerald-500 rounded-full z-0 transition-all duration-500 ease-in-out"
+                :style="'width: ' + ((step - 1) * 50) + '%'"></div>
+
+            <!-- Step 1 Dot -->
+            <div class="relative z-10 flex flex-col items-center cursor-pointer group" @click="step = 1">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 shrink-0"
+                    :class="step >= 1 ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200 ring-4 ring-emerald-50' :
+                        'bg-white text-neutral-400 border-2 border-neutral-200'">
+                    1
+                </div>
+                {{-- Hilangkan class absolute, gunakan mt-3 --}}
+                <span
+                    class="mt-3 text-[10px] md:text-xs font-bold text-center leading-tight transition-colors duration-300"
+                    :class="step >= 1 ? 'text-emerald-700' : 'text-neutral-400'">
+                    HP Lama
                 </span>
-                Proses Cepat 15 Menit
+            </div>
+
+            <!-- Step 2 Dot -->
+            <div class="relative z-10 flex flex-col items-center cursor-pointer group" @click="if(step > 2) step = 2">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 shrink-0"
+                    :class="step >= 2 ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200 ring-4 ring-emerald-50' :
+                        'bg-white text-neutral-400 border-2 border-neutral-200'">
+                    2
+                </div>
+                <span
+                    class="mt-3 text-[10px] md:text-xs font-bold text-center leading-tight transition-colors duration-300"
+                    :class="step >= 2 ? 'text-emerald-700' : 'text-neutral-400'">
+                    Kondisi
+                </span>
+            </div>
+
+            <!-- Step 3 Dot -->
+            <div class="relative z-10 flex flex-col items-center group">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 shrink-0"
+                    :class="step >= 3 ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200 ring-4 ring-emerald-50' :
+                        'bg-white text-neutral-400 border-2 border-neutral-200'">
+                    3
+                </div>
+                <span
+                    class="mt-3 text-[10px] md:text-xs font-bold text-center leading-tight transition-colors duration-300"
+                    :class="step >= 3 ? 'text-emerald-700' : 'text-neutral-400'">
+                    HP Incaran
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <form wire:submit.prevent="submit" class="max-w-7xl mx-auto">
+
+        {{-- ==========================================
+             STEP 1: Informasi HP Lama
+             ========================================== --}}
+        <div x-show="step === 1" x-transition:enter="transition ease-out duration-300 delay-100"
+            x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0"
+            class="space-y-8 mt-4">
+
+            {{-- Brand Selection Cards (with Logo) --}}
+            <div>
+                <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider mb-4 block">1. Pilih Merk
+                    HP Lama</h1>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4" x-data="{ show: false }"
+                    x-init="setTimeout(() => show = true, 100)">
+
+                    @foreach ($brands as $brand)
+                        <label class="relative cursor-pointer group">
+                            <input type="radio" wire:model.live="old_phone_brand" value="{{ $brand->name }}"
+                                class="peer hidden">
+                            <div
+                                class="bg-white h-auto  overflow-hidden rounded-2xl text-center transition-all peer-checked:bg-emerald-100 hover:shadow-lg shadow-sm flex items-center justify-center">
+
+                                @php
+                                    // Tentukan nama dasar dulu (iphone atau nama brand)
+                                    $baseName =
+                                        strtolower($brand->name) === 'apple' ? 'iphone' : strtolower($brand->name);
+                                    // Tambahkan kata 'header' di belakangnya
+                                    $imageName = $baseName . 'header';
+                                @endphp
+
+                                <img x-show="show" x-cloak
+                                    x-transition:enter="transition transform ease-out duration-1000 delay-500"
+                                    x-transition:enter-start="opacity-0 translate-y-full"
+                                    x-transition:enter-end="opacity-100 translate-y-0"
+                                    src="{{ asset('assets/brand/' . $imageName . '.png') }}" alt="{{ $brand->name }}"
+                                    class="object-contain ">
+
+                            </div>
+                        </label>
+                    @endforeach
+                </div>
+                @error('old_phone_brand')
+                    <span class="text-rose-500 text-xs font-bold block mt-2 ml-1">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- Detail Inputs (Hanya muncul jika brand sudah dipilih) --}}
+            <div x-show="$wire.old_phone_brand" x-cloak x-transition:enter="transition ease-out duration-500"
+                x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
+                class="space-y-6">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {{-- Model --}}
+                    <div class="space-y-2 md:col-span-2">
+                        <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">2. Model /
+                            Seri</label>
+                        <input type="text" wire:model.live="old_phone_model" placeholder="Contoh: iPhone 12 Pro Max"
+                            class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-emerald-500 outline-none transition-all font-bold text-neutral-700">
+                        @error('old_phone_model')
+                            <span class="text-rose-500 text-xs font-bold ml-1">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    {{-- RAM (Disembunyikan jika Apple menggunakan Alpine) --}}
+                    <div x-show="$wire.old_phone_brand && $wire.old_phone_brand.toLowerCase() !== 'apple'" x-cloak
+                        class="space-y-2">
+                        <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">RAM</label>
+                        <select wire:model.live="old_phone_ram"
+                            class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-emerald-500 outline-none transition-all appearance-none font-bold text-neutral-700 cursor-pointer">
+                            <option value="">Pilih RAM</option>
+                            @foreach (['2GB', '3GB', '4GB', '6GB', '8GB', '12GB', '16GB'] as $ram)
+                                <option value="{{ $ram }}">{{ $ram }}</option>
+                            @endforeach
+                        </select>
+                        @error('old_phone_ram')
+                            <span class="text-rose-500 text-xs font-bold ml-1">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    {{-- Storage --}}
+                    <div class="space-y-2">
+                        <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">Kapasitas
+                            (Storage)</label>
+                        <select wire:model.live="old_phone_storage"
+                            class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-emerald-500 outline-none transition-all appearance-none font-bold text-neutral-700 cursor-pointer">
+                            <option value="">Pilih Kapasitas</option>
+                            @foreach (['32GB', '64GB', '128GB', '256GB', '512GB', '1TB'] as $storage)
+                                <option value="{{ $storage }}">{{ $storage }}</option>
+                            @endforeach
+                        </select>
+                        @error('old_phone_storage')
+                            <span class="text-rose-500 text-xs font-bold ml-1">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                {{-- Battery Health Khusus Apple --}}
+                <div x-show="$wire.old_phone_brand && $wire.old_phone_brand.toLowerCase() === 'apple'" x-cloak
+                    x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    class="mt-6 p-6 bg-emerald-50 border-2 border-emerald-100 rounded-3xl shadow-sm">
+
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="p-2 bg-emerald-500 rounded-xl text-white shadow-md shadow-emerald-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <label class="text-sm font-black text-neutral-800 uppercase tracking-wider">Kesehatan
+                                Baterai (BH)</label>
+                            <p class="text-[10px] text-emerald-600 font-bold uppercase">Estimasi kesehatan baterai
+                                iPhone</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3">
+                        @foreach (['95', '90', '85'] as $val)
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" wire:model.live="old_phone_battery_health"
+                                    value="{{ $val }}" class="peer hidden">
+                                <div
+                                    class="p-4 bg-white border-2 border-transparent rounded-2xl text-center transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-500 peer-checked:text-white hover:border-emerald-200 shadow-sm">
+                                    <span class="block text-lg font-black">{{ $val }}%</span>
+                                </div>
+                            </label>
+                        @endforeach
+                    </div>
+
+                    <div class="mt-4">
+                        <input type="number" wire:model.live="old_phone_battery_health"
+                            placeholder="Atau ketik angka spesifik..."
+                            class="w-full p-4 bg-white border-2 border-dashed border-emerald-200 rounded-2xl text-sm focus:border-emerald-500 outline-none transition-all text-center font-bold text-neutral-700 shadow-sm">
+                    </div>
+                    @error('old_phone_battery_health')
+                        <span class="text-rose-500 text-xs font-bold mt-2 ml-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            {{-- Evaluasi Validasi Step 1 --}}
+            @php
+                $isStep1Valid = false;
+                if ($old_phone_brand && $old_phone_model && $old_phone_storage) {
+                    if (strtolower($old_phone_brand) === 'apple') {
+                        $isStep1Valid = !empty($old_phone_battery_health);
+                    } else {
+                        $isStep1Valid = !empty($old_phone_ram);
+                    }
+                }
+            @endphp
+
+            <div class="flex justify-end pt-6 pb-10">
+                <button type="button" @click="step = 2" {{ $isStep1Valid ? '' : 'disabled' }}
+                    class="px-8 py-4 rounded-2xl font-black transition-all flex items-center gap-2 shadow-lg active:scale-95
+                    {{ $isStep1Valid ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-900/20' : 'bg-neutral-200 text-neutral-400 cursor-not-allowed pointer-events-none' }}">
+                    Lanjut Kondisi Fisik
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </button>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div class="lg:col-span-8 space-y-6">
+        {{-- ==========================================
+             STEP 2: Kondisi & Kelengkapan
+             ========================================== --}}
+        <div x-show="step === 2" x-transition:enter="transition ease-out duration-300 delay-100"
+            x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0"
+            style="display: none;" class="space-y-8 mt-4">
 
-                <div class="bg-white rounded-3xl p-6 shadow-sm border border-neutral-100">
-                    <div class="flex items-center mb-6">
-                        <div
-                            class="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center font-bold shadow-lg shadow-emerald-200">
-                            1</div>
-                        <h3 class="text-xl font-bold ml-4 text-neutral-800">Informasi HP Lama</h3>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-neutral-700 ml-1">Merk HP</label>
-
-                            <div class="relative">
-                                <select wire:model.live="old_phone_brand"
-                                    class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all appearance-none cursor-pointer">
-                                    <option value="">Pilih Merk HP</option>
-
-                                    {{-- Looping data brands dari database --}}
-                                    @foreach ($brands as $brand)
-                                        <option value="{{ $brand->name }}">{{ $brand->name }}</option>
-                                    @endforeach
-
-                                    <option value="Lainnya">Lainnya</option>
-                                </select>
-
-                                {{-- Icon Panah Bawah agar select terlihat lebih bagus --}}
-                                <div
-                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-neutral-500">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
+            {{-- Kondisi Fisik --}}
+            <div>
+                <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider mb-4 block">
+                    3. Kondisi Fisik
+                </h1>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    @php
+                        $conditions = [
+                            ['title' => 'Mulus', 'desc' => 'Seperti baru, tidak ada lecet'],
+                            ['title' => 'Lecet Wajar', 'desc' => 'Ada goresan halus di body'],
+                            ['title' => 'Minus', 'desc' => 'Layar retak / fungsi error'],
+                        ];
+                    @endphp
+                    @foreach ($conditions as $cond)
+                        <label class="relative cursor-pointer group">
+                            <input type="radio" wire:model.live="old_phone_condition" value="{{ $cond['title'] }}"
+                                class="peer hidden">
+                            <div
+                                class="h-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-50 hover:shadow-md text-center">
+                                <p class="font-bold text-neutral-800">{{ $cond['title'] }}</p>
+                                <p class="text-xs text-neutral-500 mt-1 leading-tight">{{ $cond['desc'] }}</p>
                             </div>
-
-                            @error('old_phone_brand')
-                                <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-neutral-700 ml-1">Model / Seri</label>
-                            <input type="text" wire:model="old_phone_model" placeholder="Contoh: iPhone 12 Pro Max"
-                                class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all">
-                            @error('old_phone_model')
-                                <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        {{-- Ganti input RAM dan Storage lama dengan ini --}}
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-neutral-700 ml-1">RAM</label>
-                            <div class="relative">
-                                <select wire:model="old_phone_ram"
-                                    class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all appearance-none cursor-pointer font-medium text-neutral-700">
-                                    <option value="">Pilih RAM</option>
-                                    @foreach (['2GB', '3GB', '4GB', '6GB', '8GB', '12GB', '16GB'] as $ram)
-                                        <option value="{{ $ram }}">{{ $ram }}</option>
-                                    @endforeach
-                                </select>
-                                <div
-                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-neutral-500">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
-                            </div>
-                            @error('old_phone_ram')
-                                <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-neutral-700 ml-1">Kapasitas (Storage)</label>
-                            <div class="relative">
-                                <select wire:model="old_phone_storage"
-                                    class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all appearance-none cursor-pointer font-medium text-neutral-700">
-                                    <option value="">Pilih Kapasitas</option>
-                                    @foreach (['32GB', '64GB', '128GB', '256GB', '512GB', '1TB'] as $storage)
-                                        <option value="{{ $storage }}">{{ $storage }}</option>
-                                    @endforeach
-                                </select>
-                                <div
-                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-neutral-500">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
-                            </div>
-                            @error('old_phone_storage')
-                                <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
+                        </label>
+                    @endforeach
                 </div>
+                @error('old_phone_condition')
+                    <span class="text-rose-500 text-xs font-bold block mt-2 ml-1">{{ $message }}</span>
+                @enderror
+            </div>
 
-                <div class="bg-white rounded-3xl p-6 shadow-sm border border-neutral-100">
-                    <div class="flex items-center mb-6">
-                        <div
-                            class="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center font-bold shadow-lg shadow-emerald-200">
-                            2</div>
-                        <h3 class="text-xl font-bold ml-4 text-neutral-800">Bagaimana Kondisi HP-nya?</h3>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        @php
-                            $conditions = [
-                                ['title' => 'Mulus', 'desc' => 'Seperti baru, tidak ada lecet'],
-                                ['title' => 'Lecet Wajar', 'desc' => 'Ada goresan halus di body'],
-                                ['title' => 'Minus', 'desc' => 'Layar retak / fungsi error'],
-                            ];
-                        @endphp
-                        @foreach ($conditions as $cond)
-                            <label class="relative cursor-pointer group">
-                                <input type="radio" wire:model="old_phone_condition" value="{{ $cond['title'] }}"
-                                    class="peer hidden">
-                                <div
-                                    class="h-full p-4 border-2 border-neutral-100 rounded-2xl transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-50 group-hover:border-emerald-200">
-                                    <p class="font-bold text-neutral-800">{{ $cond['title'] }}</p>
-                                    <p class="text-xs text-neutral-500 mt-1 leading-tight">{{ $cond['desc'] }}</p>
-                                </div>
-                                <div
-                                    class="absolute top-3 right-3 opacity-0 peer-checked:opacity-100 transition-opacity">
-                                    <svg class="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                </div>
-                            </label>
-                        @endforeach
-                        @error('old_phone_condition')
-                            <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
-                        @enderror
-                    </div>
+            {{-- Kelengkapan --}}
+            <div>
+                <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider mb-4 block">
+                    4. Kelengkapan Tambahan
+                </h1>
+                <div class="flex flex-wrap gap-2">
+                    @foreach (['Kotak (Box)', 'Charger Ori', 'Nota Beli'] as $item)
+                        <label class="cursor-pointer">
+                            <input type="checkbox" wire:model.live="old_phone_sets" value="{{ $item }}"
+                                class="peer hidden">
+                            <div
+                                class="px-5 py-3 rounded-full bg-white shadow-sm border-2 border-transparent text-xs font-bold text-neutral-500 transition-all peer-checked:bg-neutral-800 peer-checked:text-white hover:border-neutral-200">
+                                {{ $item }}
+                            </div>
+                        </label>
+                    @endforeach
                 </div>
+                @error('old_phone_sets')
+                    <span class="text-rose-500 text-xs font-bold block mt-2 ml-1">{{ $message }}</span>
+                @enderror
+            </div>
 
-                {{-- Input Battery Health Khusus Apple --}}
-                @if ($old_phone_brand === 'Apple')
+            {{-- Catatan --}}
+            <div>
+                <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider mb-4 block">
+                    5. Catatan (Minus dll)
+                </h1>
+                <textarea wire:model.live="old_phone_additional_note" rows="3"
+                    placeholder="Tuliskan jika ada minus atau kendala spesifik..."
+                    class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-emerald-500 outline-none transition-all font-medium text-neutral-700"></textarea>
+            </div>
+
+            {{-- Upload Foto --}}
+            <div>
+                <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider mb-4 block">
+                    6. Foto Unit (Maks 5MB)
+                </h1>
+                <div class="relative group">
+                    <input type="file" wire:model.live="photos" multiple accept="image/*"
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                     <div
-                        class="mt-6 p-6 bg-emerald-50 border-2 border-emerald-100 rounded-4xl animate-in fade-in slide-in-from-top-4 duration-300">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="p-2 bg-emerald-500 rounded-xl text-white shadow-lg shadow-emerald-200">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <label class="text-sm font-black text-neutral-800 uppercase tracking-wider">Battery
-                                    Health</label>
-                                <p class="text-[10px] text-emerald-600 font-bold uppercase">Estimasi kesehatan baterai
-                                    iPhone</p>
-                            </div>
+                        class="w-full p-8 bg-white shadow-sm border-2 border-dashed border-emerald-200 rounded-3xl hover:bg-emerald-50 transition-colors flex flex-col items-center justify-center text-center">
+                        <div
+                            class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
                         </div>
+                        <p class="font-bold text-emerald-900 text-sm">Klik atau seret foto ke sini</p>
+                        <p class="text-xs text-emerald-600/70 mt-1">Sertakan foto depan & belakang HP</p>
+                    </div>
+                </div>
 
-                        <div class="grid grid-cols-3 gap-3">
-                            @foreach (['95', '90', '85'] as $val)
-                                <label class="relative cursor-pointer group">
-                                    <input type="radio" wire:model="old_phone_battery_health"
-                                        value="{{ $val }}" class="peer hidden">
-                                    <div
-                                        class="p-4 bg-white border-2 border-transparent rounded-2xl text-center transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-500 peer-checked:text-white hover:border-emerald-200 shadow-sm">
-                                        <span class="block text-lg font-black">{{ $val }}%</span>
-                                        <span class="block text-[10px] opacity-70 font-bold uppercase">Sehat</span>
-                                    </div>
-                                </label>
-                            @endforeach
-                        </div>
+                <div wire:loading wire:target="photos"
+                    class="text-xs font-bold text-emerald-600 mt-3 flex items-center gap-2">
+                    <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    Memproses foto...
+                </div>
 
-                        {{-- Input Manual jika ingin angka spesifik --}}
-                        <div class="mt-4">
-                            <input type="number" wire:model="old_phone_battery_health"
-                                placeholder="Atau masukkan angka lain..."
-                                class="w-full p-3 bg-white/50 border-2 border-dashed border-emerald-200 rounded-xl text-sm focus:border-emerald-500 focus:bg-white outline-none transition-all text-center font-bold text-neutral-600">
-                        </div>
-
-                        @error('old_phone_battery_health')
-                            <span class="text-red-500 text-xs mt-2 ml-1 block font-bold">{{ $message }}</span>
-                        @enderror
+                @if ($photos)
+                    <div class="flex gap-3 mt-4 overflow-x-auto pb-2">
+                        @foreach ($photos as $photo)
+                            <img src="{{ $photo->temporaryUrl() }}"
+                                class="w-20 h-20 object-cover rounded-xl border border-neutral-200 shadow-sm shrink-0 bg-white p-1">
+                        @endforeach
                     </div>
                 @endif
-                <div class="bg-white rounded-3xl p-6 shadow-sm border border-neutral-100">
-                    <div class="flex items-center mb-6">
-                        <div
-                            class="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center font-bold shadow-lg shadow-emerald-200">
-                            3</div>
-                        <h3 class="text-lg font-bold ml-4 text-neutral-800">Kelengkapan & Catatan</h3>
+                @error('photos.*')
+                    <span class="text-rose-500 text-xs font-bold block mt-1 ml-1">{{ $message }}</span>
+                @enderror
+                @error('photos')
+                    <span class="text-rose-500 text-xs font-bold block mt-1 ml-1">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- Evaluasi Step 2 --}}
+            @php
+                $isStep2Valid = false;
+                if ($old_phone_condition && !empty($photos)) {
+                    $isStep2Valid = true;
+                }
+            @endphp
+
+            <div class="flex justify-between items-center pt-6 pb-10">
+                <button type="button" @click="step = 1"
+                    class="text-neutral-500 hover:text-neutral-800 font-bold px-6 py-4 transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Kembali
+                </button>
+                <button type="button" @click="step = 3" {{ $isStep2Valid ? '' : 'disabled' }}
+                    class="px-8 py-4 rounded-2xl font-black transition-all flex items-center gap-2 shadow-lg active:scale-95
+                    {{ $isStep2Valid ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-900/20' : 'bg-neutral-200 text-neutral-400 cursor-not-allowed pointer-events-none' }}">
+                    Pilih Target
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+
+        {{-- ==========================================
+     STEP 3: Pilih HP Incaran & Submit
+     ========================================== --}}
+        <div x-show="step === 3" x-transition:enter="transition ease-out duration-300 delay-100"
+            x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0"
+            style="display: none;" class="space-y-8 mt-4">
+
+            {{-- Pemilihan Target --}}
+            <div class="space-y-6">
+                <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider block">7. Pilih HP
+                    Incaranmu</h1>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {{-- Select Brand Incaran --}}
+                    <div class="space-y-2">
+                        <label class="text-xs font-black text-neutral-400 uppercase ml-1 tracking-widest">Brand</label>
+                        <select wire:model.live="selectedTargetBrand"
+                            class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-emerald-500 outline-none transition-all appearance-none font-bold text-neutral-700 cursor-pointer">
+                            <option value="">Pilih Brand</option>
+                            @foreach ($brands as $brand)
+                                <option value="{{ $brand->name }}">{{ $brand->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
-                    <div class="flex flex-wrap gap-3 mb-6">
-                        @foreach (['Kotak (Box)', 'Charger Original', 'Nota Pembelian'] as $item)
-                            <label
-                                class="flex items-center px-4 py-2 bg-neutral-100 rounded-full cursor-pointer hover:bg-neutral-200 transition-colors">
-                                <input type="checkbox" wire:model="old_phone_sets" value="{{ $item }}"
-                                    class="rounded text-emerald-500 focus:ring-emerald-500 mr-2">
-                                <span class="text-sm font-medium text-neutral-700">{{ $item }}</span>
-                            </label>
-                        @endforeach
+                    {{-- Select Model Incaran --}}
+                    <div class="space-y-2">
+                        <label class="text-xs font-black text-neutral-400 uppercase ml-1 tracking-widest">Model
+                            HP</label>
+                        <select wire:model.live="selectedProductId" @disabled(!$selectedTargetBrand)
+                            class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-emerald-500 outline-none transition-all appearance-none font-bold text-neutral-700 disabled:opacity-50 cursor-pointer">
+                            <option value="">Pilih Seri / Model</option>
+                            @foreach ($products as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                    @error('old_phone_sets')
-                        <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
-                    @enderror
+                </div>
+                @error('selectedProductId')
+                    <span class="text-rose-500 text-xs font-bold block ml-1">{{ $message }}</span>
+                @enderror
+            </div>
 
-                    <textarea wire:model="old_phone_additional_note" rows="3"
-                        placeholder="Tulis catatan tambahan jika ada minus lain..."
-                        class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all"></textarea>
+            {{-- Rincian Akhir (Summary) --}}
+            <div class="space-y-6 mt-10">
+                <div class="flex items-center justify-between ml-1">
+                    <h1 class="text-xs font-black text-neutral-500 uppercase tracking-widest">8. Ringkasan Pengajuan
+                    </h1>
+                    <span
+                        class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded">Final
+                        Check</span>
                 </div>
 
-                <div class="bg-white rounded-3xl p-6 shadow-sm border border-neutral-100">
-                    <div class="flex items-center mb-4">
-                        <div
-                            class="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center font-bold shadow-lg shadow-emerald-200">
-                            4</div>
-                        <h3 class="text-xl font-bold ml-4 text-neutral-800">Upload Foto Unit</h3>
-                    </div>
-                    <p class="text-xs text-neutral-500 mb-4 ml-14 italic">*Upload minimal 2 foto (Depan & Belakang)</p>
+                <div class="relative group">
+                    {{-- Main Card - Putih Polos --}}
+                    <div class="bg-white rounded-2xl shadow-sm border border-neutral-100 overflow-hidden">
+                        <div class="grid grid-cols-1 lg:grid-cols-11 items-center">
 
-                    <div class="ml-14">
-                        <input type="file" wire:model="photos" multiple
-                            class="text-sm text-neutral-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                            {{-- Sisi Kiri: HP Lama --}}
+                            <div class="lg:col-span-5 p-8 md:p-10">
+                                <div class="flex items-center gap-5">
+                                    {{-- Thumbnail Foto Unit dari Pengguna --}}
+                                    @if (!empty($photos))
+                                        <div
+                                            class="w-20 h-20 bg-neutral-50 rounded-2xl p-1.5 border border-neutral-100 shrink-0 flex items-center justify-center overflow-hidden">
+                                            {{-- Mengambil foto pertama yang diupload --}}
+                                            <img src="{{ $photos[0]->temporaryUrl() }}"
+                                                class="w-full h-full object-cover rounded-xl">
+                                        </div>
+                                    @else
+                                        {{-- Fallback jika foto belum terisi/error --}}
+                                        <div
+                                            class="w-20 h-20 bg-neutral-50 rounded-2xl border border-neutral-100 shrink-0 flex items-center justify-center text-neutral-300">
+                                            <svg class="w-8 h-8" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 00-2 2z" />
+                                            </svg>
+                                        </div>
+                                    @endif
 
-                        <div wire:loading wire:target="photos"
-                            class="mt-2 text-xs text-emerald-600 font-bold animate-pulse">
-                            Sedang memproses foto...
-                        </div>
+                                    <div class="space-y-1 flex-1">
+                                        <div class="flex flex-col">
+                                            <span
+                                                class="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-0.5">Unit
+                                                Lama Anda</span>
+                                            <span
+                                                class="text-xs font-black text-emerald-600 uppercase italic tracking-tighter">{{ $old_phone_brand }}</span>
+                                        </div>
 
-                        <div class="flex flex-wrap gap-2 mt-4">
-                            @if ($photos)
-                                @foreach ($photos as $photo)
-                                    <img src="{{ $photo->temporaryUrl() }}"
-                                        class="w-20 h-20 object-cover rounded-xl border">
-                                @endforeach
-                            @endif
-                        </div>
-                    </div>
-                    @error('photos')
-                        <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
-                    @enderror
-                    @error('photos.*')
-                        <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
-                    @enderror
-                </div>
+                                        <h2 class="text-xl md:text-2xl font-bold text-neutral-800 leading-tight">
+                                            {{ $old_phone_model ?: 'Model belum diisi' }}
+                                        </h2>
 
-                <div class="bg-white rounded-3xl p-6 shadow-sm border border-neutral-100">
-                    <div class="flex items-center mb-6">
-                        <div
-                            class="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center font-bold shadow-lg shadow-emerald-200">
-                            5
-                        </div>
-                        <h3 class="text-xl font-bold ml-4 text-neutral-800">Pilih HP Incaranmu</h3>
-                    </div>
+                                        <p class="text-neutral-400 font-medium text-[10px] uppercase tracking-wide">
+                                            {{ $old_phone_storage }} @if ($old_phone_ram)
+                                                — {{ $old_phone_ram }}
+                                            @endif
+                                        </p>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        {{-- Select Brand Incaran --}}
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-neutral-700 ml-1">Pilih Brand</label>
-                            <select wire:model.live="selectedTargetBrand"
-                                class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all appearance-none cursor-pointer">
-                                <option value="">Pilih Brand Incaran</option>
-                                @foreach ($brands as $brand)
-                                    <option value="{{ $brand->name }}">{{ $brand->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                                        <div class="flex flex-wrap gap-2 pt-1">
+                                            @if ($old_phone_condition)
+                                                <span
+                                                    class="px-2 py-0.5 bg-neutral-50 border border-neutral-100 text-neutral-600 text-[9px] font-black rounded uppercase">
+                                                    {{ $old_phone_condition }}
+                                                </span>
+                                            @endif
 
-                        {{-- Select Model Berdasarkan Brand --}}
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-neutral-700 ml-1">Pilih Model</label>
-                            <select wire:model.live="selectedProductId" @disabled(!$selectedTargetBrand)
-                                class="w-full p-4 bg-neutral-50 border-2 border-transparent rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all appearance-none cursor-pointer disabled:opacity-50">
-                                <option value="">Pilih Model HP</option>
-                                @foreach ($products as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    @error('selectedProductId')
-                        <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
-                    @enderror
-                    @error('selectedTargetBrand')
-                        <span class="text-red-500 text-xs ml-1">{{ $message }}</span>
-                    @enderror
-
-                    {{-- Preview Produk yang Dipilih --}}
-                    @if ($selectedProductId && ($currentProduct = App\Models\Product::find($selectedProductId)))
-                        <div class="animate-in zoom-in duration-300">
-                            <div
-                                class="flex flex-col md:flex-row items-center gap-6 p-6 bg-emerald-50 rounded-3xl border-2 border-emerald-100">
-                                <div
-                                    class="w-32 h-32 md:w-40 md:h-40 bg-white rounded-2xl p-4 shadow-sm flex items-center justify-center">
-                                    <img src="{{ $currentProduct->getFirstMediaUrl('cover') }}"
-                                        alt="{{ $currentProduct->name }}"
-                                        class="max-w-full max-h-full object-contain">
+                                            @if ($old_phone_battery_health)
+                                                <span
+                                                    class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[9px] font-black rounded">
+                                                    BH: {{ $old_phone_battery_health }}%
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="text-center md:text-left">
-                                    <span
-                                        class="px-3 py-1 bg-emerald-500 text-white text-[10px] font-black rounded-full uppercase tracking-widest">Pilihan
-                                        Kamu</span>
-                                    <h4 class="text-2xl font-black text-neutral-800 mt-2">{{ $currentProduct->name }}
-                                    </h4>
-                                    <p class="text-emerald-600 font-black text-xl mt-1">
-                                        Rp {{ number_format($currentProduct->starting_price, 0, ',', '.') }}
-                                    </p>
-                                    <p class="text-neutral-500 text-xs mt-2 italic">*Harga yang tertera adalah harga
-                                        mulai dari (estimasi).</p>
+                            </div>
+
+                            {{-- Tengah: Divider Sederhana --}}
+                            <div class="lg:col-span-1 flex lg:flex-col items-center justify-center py-4 lg:py-0">
+                                <div class="h-px w-full lg:w-px lg:h-20 bg-neutral-100"></div>
+                                <div
+                                    class="w-10 h-10 bg-white border border-neutral-100 rounded-full shadow-sm flex items-center justify-center z-10 -mx-5 lg:mx-0 lg:-my-5 text-emerald-500">
+                                    <svg class="w-5 h-5 rotate-90 lg:rotate-0" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                    </svg>
+                                </div>
+                                <div class="h-px w-full lg:w-px lg:h-20 bg-neutral-100"></div>
+                            </div>
+
+                            {{-- Sisi Kanan: HP Incaran --}}
+                            <div class="lg:col-span-5 p-8 md:p-10">
+                                @php
+                                    $target = $selectedProductId
+                                        ? \App\Models\Product::with('brand')->find($selectedProductId)
+                                        : null;
+                                @endphp
+
+                                <div class="flex items-center gap-5">
+                                    @if ($target)
+                                        {{-- Thumbnail Produk --}}
+                                        <div
+                                            class="w-20 h-20 bg-neutral-50 rounded-2xl p-2 border border-neutral-100 shrink-0 flex items-center justify-center">
+                                            <img src="{{ $target->getFirstMediaUrl('cover') }}"
+                                                class="max-w-full max-h-full object-contain">
+                                        </div>
+                                        <div class="space-y-1">
+                                            <span
+                                                class="text-[10px] font-black text-emerald-600 uppercase italic tracking-tighter">{{ $target->brand->name }}</span>
+                                            <h2 class="text-xl md:text-2xl font-bold text-neutral-800 leading-tight">
+                                                {{ $target->name }}</h2>
+                                            <p class="text-emerald-500 font-bold text-sm">Rp
+                                                {{ number_format($target->starting_price, 0, ',', '.') }}*</p>
+                                        </div>
+                                    @else
+                                        <div
+                                            class="w-20 h-20 bg-neutral-50 rounded-2xl border-2 border-dashed border-neutral-100 shrink-0 flex items-center justify-center text-neutral-200">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                            </svg>
+                                        </div>
+                                        <div class="space-y-1 text-neutral-300 italic">
+                                            <span
+                                                class="text-[10px] font-black uppercase tracking-widest">Incaran</span>
+                                            <h2 class="text-xl font-medium">Belum memilih...</h2>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
-                    @else
-                        <div class="text-center py-10 border-2 border-dashed border-neutral-100 rounded-3xl">
-                            <p class="text-neutral-400 text-sm italic">Silakan pilih brand dan model HP untuk melihat
-                                detail.</p>
+
+                        {{-- Footer Info - Putih Polos dengan border atas tipis --}}
+                        <div class="bg-neutral-50/50 p-6 flex items-start gap-4 border-t border-neutral-100">
+                            <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-0.5" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <div class="text-left">
+                                <p class="text-[11px] md:text-xs text-neutral-500 leading-relaxed font-medium">
+                                    Taksiran harga di atas adalah <span
+                                        class="text-neutral-800 font-bold underline decoration-emerald-200 underline-offset-4">estimasi
+                                        awal</span>. Finalisasi harga akan dilakukan setelah tim admin melakukan
+                                    inspeksi fisik terhadap unit lama yang kami terima.
+                                </p>
+                            </div>
                         </div>
-                    @endif
+                    </div>
                 </div>
             </div>
 
-            <div class="lg:col-span-4">
-                <div class="bg-white text-neutral-900 rounded-[2.5rem] p-8 sticky top-20 shadow-md overflow-hidden">
-
-                    <h4 class="text-emerald-500 font-bold uppercase tracking-widest text-xs mb-4 relative z-10">
-                        Ringkasan</h4>
-
-                    <div class="space-y-4 border-b border-emerald-500/50 pb-6 mb-6 relative z-10">
-                        <div class="flex justify-between text-sm opacity-90">
-                            <span>HP Incaran</span>
-                            <span class="font-bold text-right italic uppercase">
-                                @if ($selectedProductId)
-                                    {{ \App\Models\Product::find($selectedProductId)?->name ?? 'Belum memilih' }}
-                                @else
-                                    Belum memilih
-                                @endif
-                            </span>
-                        </div>
-                    </div>
-
-                    <ul class="space-y-4 mb-8 text-xs relative z-10">
-                        <li class="flex items-start">
-                            <svg class="w-4 h-4 mr-2 text-emerald-300 shrink-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
-                            <span>Proses penaksiran harga akan dilakukan oleh tim kami setelah form dikirim.</span>
-                        </li>
-                    </ul>
-
-                    <button type="submit" wire:loading.attr="disabled"
-                        class="w-full bg-emerald-500 text-white font-black py-4 rounded-xl hover:bg-emerald-600 shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 relative z-10 group">
-                        <span wire:loading.remove>Kirim Pengajuan</span>
-                        <span wire:loading>Memproses...</span>
-                        <svg wire:loading.remove class="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                    </button>
-                </div>
+            {{-- Tombol Navigasi --}}
+            @php $isStep3Valid = $selectedTargetBrand && $selectedProductId; @endphp
+            <div class="flex justify-between items-center pt-6 pb-12">
+                <button type="button" @click="step = 2"
+                    class="text-neutral-500 hover:text-neutral-800 font-bold px-6 py-4 transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Kembali
+                </button>
+                <button type="button" wire:click="submit" wire:loading.attr="disabled"
+                    {{ $isStep3Valid ? '' : 'disabled' }}
+                    class="px-10 py-4 rounded-2xl font-black transition-all flex items-center gap-3 shadow-lg active:scale-95 group
+            {{ $isStep3Valid ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-900/20' : 'bg-neutral-200 text-neutral-400 cursor-not-allowed pointer-events-none' }}">
+                    <span wire:loading.remove>Kirim Pengajuan</span>
+                    <span wire:loading>Sedang Mengirim...</span>
+                    <svg wire:loading.remove class="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                </button>
             </div>
         </div>
     </form>

@@ -48,16 +48,17 @@ class TradeIn extends Component
 
     public function submit()
     {
+        $isApple = strtolower($this->old_phone_brand) === 'apple';
         // Validasi
         $this->validate([
             'selectedProductId' => 'required',
             'old_phone_brand' => 'required',
             'old_phone_model' => 'required',
             'old_phone_condition' => 'required',
-            'old_phone_ram' => 'required',
+            'old_phone_ram' => $isApple ? 'nullable' : 'required',
             'old_phone_storage' => 'required',
             'old_phone_sets' => 'required|array|min:1', // Pastikan kelengkapan dipilih
-            'old_phone_battery_health' => $this->old_phone_brand === 'Apple' ? 'required|integer|min:1|max:100' : 'nullable',
+            'old_phone_battery_health' => $isApple ? 'required|integer|min:1|max:100' : 'nullable',
             'photos' => 'required|array|min:2',
         ], [
             // Custom message agar user lebih paham (Opsional)
