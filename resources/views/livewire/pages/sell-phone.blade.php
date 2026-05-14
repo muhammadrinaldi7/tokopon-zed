@@ -16,12 +16,13 @@
     </div>
 
     {{-- Title Section --}}
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 mt-10 text-center md:text-left">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 mt-10 text-left">
         <div class="space-y-2 mx-auto md:mx-0">
-            <h1 class="text-4xl md:text-5xl font-black text-neutral-900 tracking-tight">
+            <h1 class="text-3xl md:text-5xl font-black text-neutral-900 tracking-tight">
                 Jual HP <span class="text-violet-600">Instan.</span>
             </h1>
-            <p class="text-neutral-500 font-medium max-w-md">Ubah gadget lamamu menjadi uang tunai dengan proses yang
+            <p class="text-neutral-500 text-sm md:text-base  font-medium max-w-md">Ubah gadget lamamu menjadi uang tunai
+                dengan proses yang
                 cepat dan transparan.</p>
         </div>
     </div>
