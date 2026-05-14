@@ -255,6 +255,11 @@
                         @endphp
 
                         @foreach ($groupedRules as $category => $rules)
+                            {{-- Sembunyikan kategori Baterai Health jika brand bukan Apple (ID 1) --}}
+                            @if (str_contains(strtolower($category), 'baterai') && $selected_brand_id != 1)
+                                @continue
+                            @endif
+
                             <div class="space-y-3 mb-6">
                                 <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider block">
                                     {{ $category }}
@@ -269,8 +274,6 @@
                                                     wire:model.live="selected_rules.{{ $rule['key'] }}"
                                                     class="peer hidden">
                                             @else
-                                                {{-- Untuk Radio, wire:model harus diarahkan ke property yang sama per kategori --}}
-                                                {{-- Contoh: selected_rules.layar atau selected_rules.fisik --}}
                                                 <input type="radio" name="{{ $category }}"
                                                     value="{{ $rule['key'] }}"
                                                     wire:model.live="selected_rules.{{ $category }}"

@@ -41,7 +41,7 @@ class TierIndex extends Component
     public function create()
     {
         $this->resetForm();
-        $this->addCategory(); // Mulai dengan 1 kategori kosong
+        $this->defaultCategory(); // Mulai dengan kategori default
         $this->isEditMode  = false;
         $this->isModalOpen = true;
     }
@@ -94,10 +94,11 @@ class TierIndex extends Component
             ]
         );
 
-        $this->dispatch('toast',
-            title:   'Berhasil',
+        $this->dispatch(
+            'toast',
+            title: 'Berhasil',
             message: $this->isEditMode ? 'Tier berhasil diperbarui.' : 'Tier berhasil ditambahkan.',
-            type:    'success'
+            type: 'success'
         );
 
         $this->closeModal();
@@ -115,6 +116,35 @@ class TierIndex extends Component
     // JSON Rules Editor Helpers
     // ──────────────────────────────────────────────
 
+    public function defaultCategory()
+    {
+        $this->ruleCategories[] = [
+            'category' => 'Layar',
+            'items'    => [
+                ['name' => '', 'type' => 'fixed', 'value' => 0],
+            ],
+        ];
+        $this->ruleCategories[] = [
+            'category' => 'Fisik',
+            'items'    => [
+                ['name' => '', 'type' => 'fixed', 'value' => 0],
+            ],
+        ];
+        $this->ruleCategories[] = [
+            'category' => 'Kelengkapan',
+            'items'    => [
+                ['name' => '', 'type' => 'fixed', 'value' => 0],
+            ],
+        ];
+        $this->ruleCategories[] = [
+            'category' => 'Baterai Health',
+            'items'    => [
+                ['name' => '95%+', 'type' => 'fixed', 'value' => 0],
+                ['name' => '85-94%', 'type' => 'fixed', 'value' => 0],
+                ['name' => '<85%', 'type' => 'fixed', 'value' => 0],
+            ],
+        ];
+    }
     public function addCategory()
     {
         $this->ruleCategories[] = [
