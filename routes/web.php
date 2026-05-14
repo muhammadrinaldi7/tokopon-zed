@@ -58,6 +58,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('/sell-phones', App\Livewire\Admin\SellPhone\Index::class)->name('sell-phones.index');
     Route::get('/sell-phones/{sellPhone}', App\Livewire\Admin\SellPhone\Show::class)->name('sell-phones.show');
+
+    Route::prefix('buyback')->name('buyback.')->group(function () {
+        Route::get('/devices', App\Livewire\Admin\Buyback\DeviceIndex::class)->name('index');
+        Route::get('/devices/create', App\Livewire\Admin\Buyback\DeviceForm::class)->name('create');
+        Route::get('/tiers', App\Livewire\Admin\Buyback\TierIndex::class)->name('tiers');
+    });
 });
 
 // ─── CS Chat Route (requires auth + admin middleware + cs role) ──

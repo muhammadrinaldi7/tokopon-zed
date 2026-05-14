@@ -23,24 +23,43 @@ class Show extends Component
     public $secondCondition = 'Bekas';
     public $existingProductId = null;
 
+    // Revision
+    public $isRevising = false;
+    public $revisedAppraisedValue = 0;
+
     public function mount(SellPhone $sellPhone)
     {
-        $this->sellPhone = $sellPhone->load(['user']);
+        $this->sellPhone = $sellPhone->load(['user', 'buybackDevice.tier']);
         $this->appraisedValue = $this->sellPhone->appraised_value ?? 0;
     }
 
     public function submitAppraisal()
     {
         $this->validate([
-            'appraisedValue' => 'required|numeric|min:1000',
+            'appraisedValue' => 'required|numeric|min:1000'
         ]);
 
         $this->sellPhone->update([
             'appraised_value' => $this->appraisedValue,
-            'status' => 'OFFERED'
+            'status' => 'OFFERED',
         ]);
 
-        $this->dispatch('toast', title: 'Berhasil', message: 'Taksiran harga berhasil dikirim ke Pengguna.', type: 'success');
+        $this->dispatch('show-toast', type: 'success', message: 'Penawaran berhasil disimpan dan dikirim ke pengguna.');
+    }
+
+    public function submitRevision()
+    {
+        $this->validate([
+            'revisedAppraisedValue' => 'required|numeric|min:1000'
+        ]);
+
+        $this->sellPhone->update([
+            'appraised_value' => $this->revisedAppraisedValue,
+            'status' => 'REVISED_OFFER',
+        ]);
+
+        $this->isRevising = false;
+        $this->dispatch('show-toast', type: 'success', message: 'Revisi penawaran berhasil dikirim ke pengguna.');
     }
 
     public function markAsPaid()

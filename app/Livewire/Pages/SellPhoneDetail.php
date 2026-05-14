@@ -23,14 +23,18 @@ class SellPhoneDetail extends Component
 
     public function acceptOffer()
     {
-        if ($this->sellPhone->status !== 'OFFERED') return;
-        $this->sellPhone->update(['status' => 'WAITING_FOR_DEVICE']);
-        $this->dispatch('show-toast', type: 'success', message: 'Penawaran Diterima! Silakan kirimkan unit HP Anda ke toko kami.');
+        if ($this->sellPhone->status === 'OFFERED') {
+            $this->sellPhone->update(['status' => 'WAITING_FOR_DEVICE']);
+            $this->dispatch('show-toast', type: 'success', message: 'Penawaran Diterima! Silakan kirimkan unit HP Anda ke toko kami.');
+        } elseif ($this->sellPhone->status === 'REVISED_OFFER') {
+            $this->sellPhone->update(['status' => 'PAYING']);
+            $this->dispatch('show-toast', type: 'success', message: 'Revisi disetujui! Dana akan segera dicairkan.');
+        }
     }
 
     public function cancel()
     {
-        if (!in_array($this->sellPhone->status, ['PENDING', 'OFFERED'])) return;
+        if (!in_array($this->sellPhone->status, ['PENDING', 'OFFERED', 'REVISED_OFFER'])) return;
         $this->sellPhone->update(['status' => 'CANCELLED']);
         $this->dispatch('show-toast', type: 'info', message: 'Pengajuan Jual HP dibatalkan.');
     }

@@ -34,70 +34,38 @@ class Show extends Component
 
     public function mount(TradeIn $tradeIn)
     {
-        $this->tradeIn = $tradeIn->load(['user', 'targetProduct', 'media', 'unitOptions.variant']);
+        $this->tradeIn = $tradeIn->load(['user', 'targetProduct', 'media', 'unitOptions.variant', 'buybackDevice.tier']);
         $this->appraisedValue = $this->tradeIn->appraised_value ?? 0;
         
-        $this->selectedVariants = $this->tradeIn->unitOptions->pluck('product_variant_id')->toArray();
+        $this->selectedVariants = $this->tradeIn->product_variant_id ? [$this->tradeIn->product_variant_id] : [];
     }
 
-    public function submitAppraisal()
-    {
-        $this->validate([
-            'appraisedValue' => 'required|numeric|min:0',
-            'selectedVariants' => 'required|array|min:1|max:3',
-        ], [
-            'selectedVariants.max' => 'Pilih maksimal 3 unit varian/IMEI yang akan ditawarkan.'
-        ]);
-
-        DB::transaction(function () {
-            // Update trade in value
-            $this->tradeIn->update([
-                'appraised_value' => $this->appraisedValue,
-                'status' => 'OFFERED'
-            ]);
-
-            // Sync Options
-            $this->tradeIn->unitOptions()->delete();
-            
-            foreach($this->selectedVariants as $variantId) {
-                TradeInUnitOption::create([
-                    'trade_in_id' => $this->tradeIn->id,
-                    'product_variant_id' => $variantId
-                ]);
-            }
-        });
-
-        $this->tradeIn->refresh();
-        $this->dispatch('toast', title: 'Berhasil', message: 'Taksiran harga dan penawaran varian berhasil dikirim ke Pengguna.', type: 'success');
-    }
+    // submitAppraisal dihapus karena harga sudah fix dan admin langsung assign unit saat inspeksi
     
     public function toggleVariant($variantId)
     {
-        if (in_array($variantId, $this->selectedVariants)) {
-            $this->selectedVariants = array_diff($this->selectedVariants, [$variantId]);
-        } else {
-            if(count($this->selectedVariants) >= 3) {
-                $this->dispatch('toast', title: 'Peringatan', message: 'Maksimal menawarkan 3 opsi.', type: 'warning');
-                return;
-            }
-            $this->selectedVariants[] = $variantId;
-        }
+        $this->selectedVariants = [$variantId];
     }
 
     public function markAsPhysicallyVerified(XenditService $xendit)
     {
-        if ($this->tradeIn->status !== 'INSPECTING') return;
+        if (!in_array($this->tradeIn->status, ['WAITING_FOR_DEVICE', 'INSPECTING'])) return;
 
-        $selectedOption = $this->tradeIn->unitOptions()->where('is_selected', true)->first();
-        if (!$selectedOption) {
-            $this->dispatch('toast', title: 'Gagal', message: 'Tidak ada varian yang dipilih.', type: 'error');
+        if (empty($this->selectedVariants)) {
+            $this->dispatch('toast', title: 'Gagal', message: 'Silakan pilih 1 unit produk untuk diberikan ke pengguna.', type: 'error');
             return;
         }
 
-        DB::transaction(function () use ($xendit, $selectedOption) {
-            $variant = $selectedOption->variant;
+        DB::transaction(function () use ($xendit) {
+            $variantId = $this->selectedVariants[0];
+            $variant = \App\Models\ProductVariant::find($variantId);
             $topupAmount = max(0, $variant->price - (float) $this->tradeIn->appraised_value);
             
+            // Assign unit ke trade in
+            $this->tradeIn->update([
+                'product_variant_id' => $variant->id
+            ]);
+
             // Build temporary Order
             $order = Order::create([
                 'user_id' => $this->tradeIn->user_id,
@@ -118,7 +86,7 @@ class Show extends Component
                 'subtotal' => $variant->price
             ]);
             
-            // Deduct Stock immediately? Yes, because it's specifically chosen for them.
+            // Deduct Stock immediately
             $variant->decrement('stock', 1);
 
             // Jika ada selisih, buat Invoice Xendit

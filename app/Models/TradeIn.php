@@ -22,6 +22,11 @@ class TradeIn extends Model implements HasMedia
         return $this->belongsTo(Product::class, 'target_product_id');
     }
 
+    public function buybackDevice()
+    {
+        return $this->belongsTo(BuybackDevice::class, 'buyback_device_id');
+    }
+
     public function order()
     {
         return $this->belongsTo(Order::class);

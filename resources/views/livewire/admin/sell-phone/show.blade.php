@@ -46,6 +46,15 @@
                             {{ $sellPhone->minus_desc ?: 'Tidak ada catatan.' }}
                         </div>
                     </div>
+
+                    @if($sellPhone->buybackDevice)
+                    <div class="col-span-2 mt-2">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Master Harga Dasar</p>
+                        <div class="p-3 bg-blue-50 border border-blue-100 rounded-lg text-sm text-blue-900 font-medium">
+                            Base Price: <span class="font-bold text-lg">Rp {{ number_format($sellPhone->buybackDevice->base_price, 0, ',', '.') }}</span>
+                        </div>
+                    </div>
+                    @endif
                     
                     @php $photos = $sellPhone->getMedia('photos'); @endphp
                     @if($photos->count() > 0)
@@ -88,45 +97,79 @@
 
         {{-- Kolom Kanan: Aksi --}}
         <div class="space-y-6">
-            {{-- Form Penaksiran Harga --}}
+            {{-- Form Penaksiran Harga / Harga Akhir --}}
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-bold text-lg text-gray-900 border-b border-gray-100 pb-3 mb-4">Taksiran Harga Admin</h3>
+                <h3 class="font-bold text-lg text-gray-900 border-b border-gray-100 pb-3 mb-4">Harga Akhir / Penawaran</h3>
                 
                 @if($sellPhone->appraised_value)
                     <div class="mb-4 p-4 bg-emerald-50 border border-emerald-100 rounded-xl text-center">
-                        <p class="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Nilai Ditawarkan</p>
+                        <p class="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Nilai Disepakati / Penawaran</p>
                         <p class="text-2xl font-black text-emerald-700">Rp {{ number_format($sellPhone->appraised_value, 0, ',', '.') }}</p>
+                        <p class="text-xs text-emerald-600 mt-2">Dihitung otomatis dari Base Price & Rules.</p>
                     </div>
-                @endif
-
-                @if(!in_array($sellPhone->status, ['COMPLETED', 'CANCELLED']))
-                    <form wire:submit="submitAppraisal" class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Update Penawaran Harga (Rp)</label>
-                            <input type="number" wire:model="appraisedValue" class="w-full rounded-lg border-gray-200 focus:ring-[#4E44DB] focus:border-[#4E44DB]">
-                        </div>
-                        <button type="submit" class="w-full bg-[#4E44DB] text-white py-2.5 rounded-lg font-bold hover:bg-[#3f36b8] transition">
-                            Simpan Penawaran
-                        </button>
-                    </form>
                 @endif
             </div>
 
             {{-- Aksi Lainnya --}}
-            @if(!in_array($sellPhone->status, ['COMPLETED', 'CANCELLED']))
+            @if(in_array($sellPhone->status, ['PENDING', 'OFFERED', 'WAITING_FOR_DEVICE', 'INSPECTING']))
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h3 class="font-bold text-lg text-gray-900 border-b border-gray-100 pb-3 mb-4">Aksi Transaksi</h3>
                 
-                <div class="space-y-3">
-                    <button type="button" wire:click="markAsPaid" wire:confirm="Apakah Anda yakin sudah mentransfer pelunasan ke pelanggan dan menerima unit fisik secara lengkap?" class="w-full bg-emerald-500 text-white py-2.5 rounded-lg font-bold hover:bg-emerald-600 transition flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        Tandai Selesai / Lunas
-                    </button>
+                @if($sellPhone->status === 'INSPECTING')
+                    @if(!$isRevising)
+                        <div class="space-y-3">
+                            <p class="text-sm text-gray-600 mb-4">Fisik HP telah tiba. Silakan cocokan kondisi fisik asli dengan deskripsi awal. Apakah kondisinya sesuai?</p>
+                            
+                            <button type="button" wire:click="markAsPaid" wire:confirm="Sesuai! Anda akan mentransfer uang ke pelanggan dan menandai lunas?" class="w-full bg-emerald-500 text-white py-2.5 rounded-lg font-bold hover:bg-emerald-600 transition flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                Fisik Sesuai (Lanjutkan Pembayaran)
+                            </button>
 
-                    <button type="button" wire:click="reject" wire:confirm="Yakin ingin menolak penawaran ini?" class="w-full bg-white border-2 border-rose-100 text-rose-600 py-2.5 rounded-lg font-bold hover:bg-rose-50 transition">
-                        Tolak / Batalkan
-                    </button>
-                </div>
+                            <button type="button" wire:click="$set('isRevising', true)" class="w-full bg-amber-500 text-white py-2.5 rounded-lg font-bold hover:bg-amber-600 transition flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                Fisik Tidak Sesuai (Revisi Harga)
+                            </button>
+
+                            <button type="button" wire:click="reject" wire:confirm="Yakin menolak transaksi ini mentah-mentah dan mengembalikan unit ke pelanggan?" class="w-full bg-white border-2 border-rose-100 text-rose-600 py-2.5 rounded-lg font-bold hover:bg-rose-50 transition mt-2">
+                                Tolak Mentah-mentah
+                            </button>
+                        </div>
+                    @else
+                        <form wire:submit="submitRevision" class="space-y-4 bg-amber-50 p-4 rounded-xl border border-amber-100">
+                            <h4 class="font-bold text-amber-900">Revisi Nilai Penawaran</h4>
+                            <p class="text-xs text-amber-700">Karena kita tidak menambahkan form alasan, pelanggan akan otomatis diberitahu bahwa fisik tidak sesuai ekspektasi.</p>
+                            <div>
+                                <label class="block text-sm font-bold text-amber-900 mb-1">Harga Penawaran Baru (Rp)</label>
+                                <input type="number" wire:model="revisedAppraisedValue" class="w-full rounded-lg border-amber-200 focus:ring-amber-500 focus:border-amber-500 bg-white">
+                                @error('revisedAppraisedValue') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="button" wire:click="$set('isRevising', false)" class="flex-1 bg-white border border-gray-200 text-gray-600 py-2.5 rounded-lg font-bold hover:bg-gray-50 transition">
+                                    Batal
+                                </button>
+                                <button type="submit" class="flex-1 bg-amber-500 text-white py-2.5 rounded-lg font-bold hover:bg-amber-600 transition shadow-md shadow-amber-500/20">
+                                    Kirim Revisi
+                                </button>
+                            </div>
+                        </form>
+                    @endif
+                @elseif($sellPhone->status === 'REVISED_OFFER')
+                    <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                        <p class="font-bold text-amber-900 text-sm">Menunggu Respon Pelanggan</p>
+                        <p class="text-xs text-amber-700 mt-1">Anda baru saja mengajukan revisi harga sebesar <strong>Rp {{ number_format($sellPhone->appraised_value, 0, ',', '.') }}</strong>. Menunggu klien untuk menyetujui atau menolak.</p>
+                    </div>
+                @else
+                    <div class="space-y-3">
+                        <button type="button" wire:click="markAsPaid" wire:confirm="Sesuai skenario, pastikan Anda sudah mengecek fisik HP pelanggan langsung. Yakin menandai transaksi ini Lunas?" class="w-full bg-emerald-500 text-white py-2.5 rounded-lg font-bold hover:bg-emerald-600 transition flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            Tandai Selesai / Lunas Secara Langsung
+                        </button>
+
+                        <button type="button" wire:click="reject" wire:confirm="Yakin ingin menolak penawaran ini?" class="w-full bg-white border-2 border-rose-100 text-rose-600 py-2.5 rounded-lg font-bold hover:bg-rose-50 transition">
+                            Tolak / Batalkan
+                        </button>
+                    </div>
+                @endif
             </div>
             @endif
 

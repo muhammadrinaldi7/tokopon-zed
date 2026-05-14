@@ -16,17 +16,23 @@ class TradeIn extends Component
     public $selectedProductId;
     public $selectedTargetBrand = null;
 
-    // Properti Form
-    public $old_phone_brand;
-    public $old_phone_model;
-    public $old_phone_ram;
-    public $old_phone_storage;
+    // Properti HP Lama (Fixed Price)
+    public $selected_brand_id;
+    public $selected_model_name;
+    public $buyback_device_id;
 
-    // Properti yang akan digabung nanti
-    public $old_phone_condition; // Radio
-    public $old_phone_sets = []; // Checkbox
-    public $old_phone_additional_note; // Catatan manual tambahan
-    public $old_phone_battery_health;
+    // For calculation
+    public $device_rules = [];
+    public $selected_rules = [];
+    public $final_price = 0;
+
+    // Fallback notes & UI state
+    public $old_phone_additional_note;
+
+    // Temporary properties for UI dropdowns
+    public $available_models = [];
+    public $available_storages = [];
+    public $buyback_device = null;
     public $photos = [];
 
     /**
@@ -46,43 +52,135 @@ class TradeIn extends Component
         }
     }
 
+    public function updatedSelectedBrandId()
+    {
+        $this->selected_model_name = null;
+        $this->buyback_device_id = null;
+        $this->available_storages = [];
+        $this->buyback_device = null;
+
+        if ($this->selected_brand_id) {
+            $this->available_models = \App\Models\BuybackDevice::where('brand_id', $this->selected_brand_id)
+                ->where('is_active', true)
+                ->select('model_name')
+                ->distinct()
+                ->pluck('model_name')
+                ->toArray();
+        } else {
+            $this->available_models = [];
+        }
+    }
+
+    public function updatedSelectedModelName()
+    {
+        $this->buyback_device_id = null;
+        $this->buyback_device = null;
+
+        if ($this->selected_brand_id && $this->selected_model_name) {
+            $this->available_storages = \App\Models\BuybackDevice::where('brand_id', $this->selected_brand_id)
+                ->where('model_name', $this->selected_model_name)
+                ->where('is_active', true)
+                ->get();
+        } else {
+            $this->available_storages = [];
+        }
+    }
+
+    public function updatedBuybackDeviceId()
+    {
+        if ($this->buyback_device_id) {
+            $this->buyback_device = \App\Models\BuybackDevice::with('tier')->find($this->buyback_device_id);
+            $this->device_rules = $this->buyback_device ? $this->buyback_device->getFlatRules() : [];
+            $this->selected_rules = [];
+            $this->calculatePrice();
+        } else {
+            $this->buyback_device = null;
+            $this->device_rules = [];
+            $this->final_price = 0;
+        }
+    }
+
+    public function updatedSelectedRules()
+    {
+        $this->calculatePrice();
+    }
+
+    public function calculatePrice()
+    {
+        if (!$this->buyback_device) return;
+
+        $price = $this->buyback_device->base_price;
+
+        $rulesByKey = collect($this->device_rules)->keyBy('key');
+
+        foreach ($this->selected_rules as $ruleKey => $isChecked) {
+            if ($isChecked) {
+                $rule = $rulesByKey->get($ruleKey);
+                if ($rule) {
+                    $type = $rule['type'];
+                    $val = $rule['value'];
+
+                    if ($type === 'fixed') {
+                        $price -= $val;
+                    } elseif ($type === 'percentage') {
+                        $price -= ($this->buyback_device->base_price * ($val / 100));
+                    }
+                }
+            }
+        }
+
+        $this->final_price = max(0, $price); // Ensure price doesn't go below 0
+    }
+
     public function submit()
     {
-        $isApple = strtolower($this->old_phone_brand) === 'apple';
         // Validasi
         $this->validate([
             'selectedProductId' => 'required',
-            'old_phone_brand' => 'required',
-            'old_phone_model' => 'required',
-            'old_phone_condition' => 'required',
-            'old_phone_ram' => $isApple ? 'nullable' : 'required',
-            'old_phone_storage' => 'required',
-            'old_phone_sets' => 'required|array|min:1', // Pastikan kelengkapan dipilih
-            'old_phone_battery_health' => $isApple ? 'required|integer|min:1|max:100' : 'nullable',
+            'buyback_device_id' => 'required|exists:buyback_devices,id',
+            'old_phone_additional_note' => 'nullable|string|max:1000',
             'photos' => 'required|array|min:2',
+            'photos.*' => 'image|max:5120',
         ], [
-            // Custom message agar user lebih paham (Opsional)
             'required' => 'Bidang ini wajib diisi.',
             'photos.min' => 'Wajib upload minimal 2 foto.',
-            'old_phone_sets.required' => 'Pilih minimal satu kelengkapan.',
+            'buyback_device_id.required' => 'Perangkat HP Lama wajib dipilih secara lengkap.',
         ]);
 
         try {
             // --- PROSES DATA ---
-            $kelengkapan = implode(', ', $this->old_phone_sets);
-            $bhText = ($this->old_phone_brand === 'Apple') ? "BH: {$this->old_phone_battery_health}%. " : "";
-            $deskripsiLengkap = "Kondisi: {$this->old_phone_condition}. {$bhText}Kelengkapan: " . ($kelengkapan ?: 'Tidak ada') . ". Catatan: {$this->old_phone_additional_note}";
+            $device = \App\Models\BuybackDevice::with('brand')->find($this->buyback_device_id);
+
+            // Susun teks minus berdasarkan rules yang dicentang
+            $checkedRulesNames = [];
+            if ($this->buyback_device && !empty($this->device_rules)) {
+                $rulesByKey = collect($this->device_rules)->keyBy('key');
+                foreach ($this->selected_rules as $ruleKey => $isChecked) {
+                    if ($isChecked) {
+                        $rule = $rulesByKey->get($ruleKey);
+                        if ($rule) {
+                            $checkedRulesNames[] = $rule['name'];
+                        }
+                    }
+                }
+            }
+
+            $kondisi = !empty($checkedRulesNames) ? implode(', ', $checkedRulesNames) : 'Mulus 100%';
+            $catatanText = $this->old_phone_additional_note ? ". Catatan Lain: {$this->old_phone_additional_note}" : "";
+            $minusDesc = "Kondisi / Minus: {$kondisi}{$catatanText}";
 
             // 1. Simpan Model
             $tradeIn = TradeInModel::create([
                 'user_id' => Auth::id(),
                 'target_product_id' => $this->selectedProductId,
-                'old_phone_brand' => $this->old_phone_brand,
-                'old_phone_model' => $this->old_phone_model,
-                'old_phone_ram' => $this->old_phone_ram,
-                'old_phone_storage' => $this->old_phone_storage,
-                'old_phone_minus_desc' => $deskripsiLengkap,
-                'status' => 'PENDING',
+                'buyback_device_id' => $device->id,
+                'phone_brand' => $device->brand->name,
+                'phone_model' => $device->model_name,
+                'phone_ram' => $device->ram,
+                'phone_storage' => $device->storage,
+                'minus_desc' => $minusDesc,
+                'appraised_value' => $this->final_price,
+                'status' => 'WAITING_FOR_DEVICE',
             ]);
 
             // 2. Simpan Foto (Pake looping file temporary)
@@ -125,7 +223,7 @@ class TradeIn extends Component
 
         return view('livewire.pages.trade-in', [
             'products' => $targetProducts->get(),
-            'brands' => Brand::all(),
+            'brands' => \App\Models\Brand::whereIn('id', \App\Models\BuybackDevice::where('is_active', true)->select('brand_id')->distinct())->orderBy('name')->get(),
         ]);
     }
 }
