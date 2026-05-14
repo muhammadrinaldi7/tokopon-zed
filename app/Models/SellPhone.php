@@ -11,6 +11,7 @@ class SellPhone extends Model implements HasMedia
     use InteractsWithMedia;
     protected $fillable = [
         'user_id',
+        'buyback_device_id',
         'phone_brand',
         'phone_model',
         'phone_ram',
@@ -23,6 +24,11 @@ class SellPhone extends Model implements HasMedia
         'bank_account_number',
         'bank_account_name'
     ];
+
+    public function buybackDevice()
+    {
+        return $this->belongsTo(BuybackDevice::class);
+    }
 
     public function user()
     {

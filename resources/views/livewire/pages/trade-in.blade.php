@@ -117,16 +117,13 @@
 
                     @foreach ($brands as $brand)
                         <label class="relative cursor-pointer group">
-                            <input type="radio" wire:model.live="old_phone_brand" value="{{ $brand->name }}"
+                            <input type="radio" wire:model.live="selected_brand_id" value="{{ $brand->id }}"
                                 class="peer hidden">
                             <div
-                                class="bg-white h-auto  overflow-hidden rounded-2xl text-center transition-all peer-checked:bg-emerald-100 hover:shadow-lg shadow-sm flex items-center justify-center">
+                                class="bg-white h-auto overflow-hidden rounded-2xl text-center transition-all peer-checked:bg-emerald-100 hover:shadow-lg shadow-sm flex items-center justify-center">
 
                                 @php
-                                    // Tentukan nama dasar dulu (iphone atau nama brand)
-                                    $baseName =
-                                        strtolower($brand->name) === 'apple' ? 'iphone' : strtolower($brand->name);
-                                    // Tambahkan kata 'header' di belakangnya
+                                    $baseName = strtolower($brand->name) === 'apple' ? 'iphone' : strtolower($brand->name);
                                     $imageName = $baseName . 'header';
                                 @endphp
 
@@ -141,116 +138,54 @@
                         </label>
                     @endforeach
                 </div>
-                @error('old_phone_brand')
+                @error('selected_brand_id')
                     <span class="text-rose-500 text-xs font-bold block mt-2 ml-1">{{ $message }}</span>
                 @enderror
             </div>
 
             {{-- Detail Inputs (Hanya muncul jika brand sudah dipilih) --}}
-            <div x-show="$wire.old_phone_brand" x-cloak x-transition:enter="transition ease-out duration-500"
+            <div x-show="$wire.selected_brand_id" x-cloak x-transition:enter="transition ease-out duration-500"
                 x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
                 class="space-y-6">
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {{-- Model --}}
                     <div class="space-y-2 md:col-span-2">
-                        <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">2. Model /
-                            Seri</label>
-                        <input type="text" wire:model.live="old_phone_model" placeholder="Contoh: iPhone 12 Pro Max"
-                            class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-emerald-500 outline-none transition-all font-bold text-neutral-700">
-                        @error('old_phone_model')
-                            <span class="text-rose-500 text-xs font-bold ml-1">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    {{-- RAM (Disembunyikan jika Apple menggunakan Alpine) --}}
-                    <div x-show="$wire.old_phone_brand && $wire.old_phone_brand.toLowerCase() !== 'apple'" x-cloak
-                        class="space-y-2">
-                        <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">RAM</label>
-                        <select wire:model.live="old_phone_ram"
-                            class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-emerald-500 outline-none transition-all appearance-none font-bold text-neutral-700 cursor-pointer">
-                            <option value="">Pilih RAM</option>
-                            @foreach (['2GB', '3GB', '4GB', '6GB', '8GB', '12GB', '16GB'] as $ram)
-                                <option value="{{ $ram }}">{{ $ram }}</option>
+                        <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">2. Model / Seri</label>
+                        <select wire:model.live="selected_model_name"
+                            class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-emerald-500 outline-none transition-all font-bold text-neutral-700 appearance-none cursor-pointer">
+                            <option value="">Pilih Model HP</option>
+                            @foreach ($available_models as $model)
+                                <option value="{{ $model }}">{{ $model }}</option>
                             @endforeach
                         </select>
-                        @error('old_phone_ram')
+                        @error('selected_model_name')
                             <span class="text-rose-500 text-xs font-bold ml-1">{{ $message }}</span>
                         @enderror
                     </div>
 
-                    {{-- Storage --}}
-                    <div class="space-y-2">
-                        <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">Kapasitas
-                            (Storage)</label>
-                        <select wire:model.live="old_phone_storage"
-                            class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-emerald-500 outline-none transition-all appearance-none font-bold text-neutral-700 cursor-pointer">
+                    {{-- Storage/RAM --}}
+                    <div x-show="$wire.selected_model_name" x-cloak class="space-y-2 md:col-span-2">
+                        <label class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider">Kapasitas (RAM / Storage)</label>
+                        <select wire:model.live="buyback_device_id"
+                            class="w-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl focus:border-emerald-500 outline-none transition-all font-bold text-neutral-700 appearance-none cursor-pointer">
                             <option value="">Pilih Kapasitas</option>
-                            @foreach (['32GB', '64GB', '128GB', '256GB', '512GB', '1TB'] as $storage)
-                                <option value="{{ $storage }}">{{ $storage }}</option>
+                            @foreach ($available_storages as $device)
+                                <option value="{{ $device->id }}">
+                                    {{ $device->ram ? $device->ram . ' / ' : '' }}{{ $device->storage }}
+                                </option>
                             @endforeach
                         </select>
-                        @error('old_phone_storage')
+                        @error('buyback_device_id')
                             <span class="text-rose-500 text-xs font-bold ml-1">{{ $message }}</span>
                         @enderror
                     </div>
-                </div>
-
-                {{-- Battery Health Khusus Apple --}}
-                <div x-show="$wire.old_phone_brand && $wire.old_phone_brand.toLowerCase() === 'apple'" x-cloak
-                    x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95"
-                    x-transition:enter-end="opacity-100 scale-100"
-                    class="mt-6 p-6 bg-emerald-50 border-2 border-emerald-100 rounded-3xl shadow-sm">
-
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="p-2 bg-emerald-500 rounded-xl text-white shadow-md shadow-emerald-200">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <label class="text-sm font-black text-neutral-800 uppercase tracking-wider">Kesehatan
-                                Baterai (BH)</label>
-                            <p class="text-[10px] text-emerald-600 font-bold uppercase">Estimasi kesehatan baterai
-                                iPhone</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-3 gap-3">
-                        @foreach (['95', '90', '85'] as $val)
-                            <label class="relative cursor-pointer group">
-                                <input type="radio" wire:model.live="old_phone_battery_health"
-                                    value="{{ $val }}" class="peer hidden">
-                                <div
-                                    class="p-4 bg-white border-2 border-transparent rounded-2xl text-center transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-500 peer-checked:text-white hover:border-emerald-200 shadow-sm">
-                                    <span class="block text-lg font-black">{{ $val }}%</span>
-                                </div>
-                            </label>
-                        @endforeach
-                    </div>
-
-                    <div class="mt-4">
-                        <input type="number" wire:model.live="old_phone_battery_health"
-                            placeholder="Atau ketik angka spesifik..."
-                            class="w-full p-4 bg-white border-2 border-dashed border-emerald-200 rounded-2xl text-sm focus:border-emerald-500 outline-none transition-all text-center font-bold text-neutral-700 shadow-sm">
-                    </div>
-                    @error('old_phone_battery_health')
-                        <span class="text-rose-500 text-xs font-bold mt-2 ml-1 block">{{ $message }}</span>
-                    @enderror
                 </div>
             </div>
 
             {{-- Evaluasi Validasi Step 1 --}}
             @php
-                $isStep1Valid = false;
-                if ($old_phone_brand && $old_phone_model && $old_phone_storage) {
-                    if (strtolower($old_phone_brand) === 'apple') {
-                        $isStep1Valid = !empty($old_phone_battery_health);
-                    } else {
-                        $isStep1Valid = !empty($old_phone_ram);
-                    }
-                }
+                $isStep1Valid = !empty($buyback_device_id);
             @endphp
 
             <div class="flex justify-end pt-6 pb-10">
@@ -273,56 +208,42 @@
             x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0"
             style="display: none;" class="space-y-8 mt-4">
 
-            {{-- Kondisi Fisik --}}
+            {{-- Kondisi Fisik & Aturan Pengurangan --}}
             <div>
                 <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider mb-4 block">
                     3. Kondisi Fisik
                 </h1>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    @php
-                        $conditions = [
-                            ['title' => 'Mulus', 'desc' => 'Seperti baru, tidak ada lecet'],
-                            ['title' => 'Lecet Wajar', 'desc' => 'Ada goresan halus di body'],
-                            ['title' => 'Minus', 'desc' => 'Layar retak / fungsi error'],
-                        ];
-                    @endphp
-                    @foreach ($conditions as $cond)
-                        <label class="relative cursor-pointer group">
-                            <input type="radio" wire:model.live="old_phone_condition" value="{{ $cond['title'] }}"
-                                class="peer hidden">
-                            <div
-                                class="h-full p-4 bg-white shadow-sm border-2 border-transparent rounded-2xl transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-50 hover:shadow-md text-center">
-                                <p class="font-bold text-neutral-800">{{ $cond['title'] }}</p>
-                                <p class="text-xs text-neutral-500 mt-1 leading-tight">{{ $cond['desc'] }}</p>
-                            </div>
-                        </label>
-                    @endforeach
-                </div>
-                @error('old_phone_condition')
-                    <span class="text-rose-500 text-xs font-bold block mt-2 ml-1">{{ $message }}</span>
-                @enderror
-            </div>
 
-            {{-- Kelengkapan --}}
-            <div>
-                <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider mb-4 block">
-                    4. Kelengkapan Tambahan
-                </h1>
-                <div class="flex flex-wrap gap-2">
-                    @foreach (['Kotak (Box)', 'Charger Ori', 'Nota Beli'] as $item)
-                        <label class="cursor-pointer">
-                            <input type="checkbox" wire:model.live="old_phone_sets" value="{{ $item }}"
-                                class="peer hidden">
-                            <div
-                                class="px-5 py-3 rounded-full bg-white shadow-sm border-2 border-transparent text-xs font-bold text-neutral-500 transition-all peer-checked:bg-neutral-800 peer-checked:text-white hover:border-neutral-200">
-                                {{ $item }}
+                @if($buyback_device && count($device_rules) > 0)
+                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl mb-6">
+                        <p class="text-sm font-bold text-emerald-900 mb-2">Harga Dasar (Mulus 100%): Rp {{ number_format($buyback_device->base_price, 0, ',', '.') }}</p>
+                        <p class="text-xs text-emerald-700">Silakan centang opsi di bawah ini jika terdapat minus pada perangkat Anda. Harga akan dikalkulasi secara otomatis.</p>
+                    </div>
+
+                    @php
+                        $groupedRules = collect($device_rules)->groupBy('category');
+                    @endphp
+
+                    @foreach($groupedRules as $category => $rules)
+                        <div class="space-y-3 mb-4">
+                            <h2 class="text-[10px] font-black text-neutral-400 uppercase tracking-wider block ml-1">{{ $category }}</h2>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                @foreach($rules as $rule)
+                                    <label class="cursor-pointer block">
+                                        <input type="checkbox" wire:model.live="selected_rules.{{ $rule['key'] }}" class="peer hidden">
+                                        <div class="py-4 px-3 bg-white shadow-sm border-2 border-transparent rounded-2xl text-center text-sm font-bold text-neutral-600 transition-all peer-checked:border-emerald-600 peer-checked:bg-emerald-50 peer-checked:text-emerald-700 hover:border-emerald-200 flex items-center justify-center min-h-[4rem]">
+                                            {{ $rule['name'] }}
+                                        </div>
+                                    </label>
+                                @endforeach
                             </div>
-                        </label>
+                        </div>
                     @endforeach
-                </div>
-                @error('old_phone_sets')
-                    <span class="text-rose-500 text-xs font-bold block mt-2 ml-1">{{ $message }}</span>
-                @enderror
+                @else
+                    <div class="p-6 bg-neutral-50 rounded-2xl text-center border border-neutral-200">
+                        <p class="text-sm font-medium text-neutral-500">Silakan pilih perangkat pada langkah sebelumnya untuk memuat formulir kondisi.</p>
+                    </div>
+                @endif
             </div>
 
             {{-- Catatan --}}
@@ -387,10 +308,7 @@
 
             {{-- Evaluasi Step 2 --}}
             @php
-                $isStep2Valid = false;
-                if ($old_phone_condition && !empty($photos)) {
-                    $isStep2Valid = true;
-                }
+                $isStep2Valid = !empty($photos) && count($photos) >= 1;
             @endphp
 
             <div class="flex justify-between items-center pt-6 pb-10">
@@ -502,34 +420,26 @@
                                                 class="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-0.5">Unit
                                                 Lama Anda</span>
                                             <span
-                                                class="text-xs font-black text-emerald-600 uppercase italic tracking-tighter">{{ $old_phone_brand }}</span>
+                                                class="text-xs font-black text-emerald-600 uppercase italic tracking-tighter">{{ $buyback_device->brand->name ?? '-' }}</span>
                                         </div>
 
                                         <h2 class="text-xl md:text-2xl font-bold text-neutral-800 leading-tight">
-                                            {{ $old_phone_model ?: 'Model belum diisi' }}
+                                            {{ $buyback_device->model_name ?? '-' }}
                                         </h2>
 
                                         <p class="text-neutral-400 font-medium text-[10px] uppercase tracking-wide">
-                                            {{ $old_phone_storage }} @if ($old_phone_ram)
-                                                — {{ $old_phone_ram }}
-                                            @endif
+                                            {{ $buyback_device ? ($buyback_device->ram ? $buyback_device->ram . ' / ' : '') . $buyback_device->storage : '-' }}
                                         </p>
-
-                                        <div class="flex flex-wrap gap-2 pt-1">
-                                            @if ($old_phone_condition)
-                                                <span
-                                                    class="px-2 py-0.5 bg-neutral-50 border border-neutral-100 text-neutral-600 text-[9px] font-black rounded uppercase">
-                                                    {{ $old_phone_condition }}
-                                                </span>
-                                            @endif
-
-                                            @if ($old_phone_battery_health)
-                                                <span
-                                                    class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[9px] font-black rounded">
-                                                    BH: {{ $old_phone_battery_health }}%
-                                                </span>
-                                            @endif
-                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6 bg-emerald-50 rounded-xl p-4 border border-emerald-100 flex items-center justify-between gap-4">
+                                    <div class="text-xs">
+                                        <p class="font-black text-emerald-900">Estimasi Harga Jual Anda</p>
+                                        <p class="text-emerald-700 font-medium">Berdasarkan kondisi yang dicentang.</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xl md:text-2xl font-black text-emerald-600">Rp {{ number_format($final_price, 0, ',', '.') }}</p>
                                     </div>
                                 </div>
                             </div>

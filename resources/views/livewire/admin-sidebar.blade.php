@@ -152,6 +152,34 @@
                 </svg>
                 Pembelian HP
             </a>
+
+            <div x-data="{ openBuyback: {{ request()->routeIs('admin.buyback.*') ? 'true' : 'false' }} }">
+                <button @click="openBuyback = !openBuyback" type="button"
+                    class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm transition-colors cursor-pointer {{ request()->routeIs('admin.buyback.*') ? $activeClass : $inactiveClass }}">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 {{ request()->routeIs('admin.buyback.*') ? $activeIconClass : $inactiveIconClass }}"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Master Harga Buyback
+                    </div>
+                    <svg :class="{ 'rotate-180': openBuyback }" class="w-4 h-4 transition-transform duration-200"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <div x-show="openBuyback" style="display: none;" class="pl-12 mt-1 mb-2 space-y-1">
+                    <a href="{{ route('admin.buyback.index') }}" wire:navigate
+                        class="block px-4 py-2 rounded-xl text-xs transition-colors cursor-pointer {{ request()->routeIs('admin.buyback.index', 'admin.buyback.create') ? 'bg-[#4E44DB]/10 text-[#4E44DB] font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800 font-medium' }}">
+                        Daftar Perangkat
+                    </a>
+                    <a href="{{ route('admin.buyback.tiers') }}" wire:navigate
+                        class="block px-4 py-2 rounded-xl text-xs transition-colors cursor-pointer {{ request()->routeIs('admin.buyback.tiers') ? 'bg-[#4E44DB]/10 text-[#4E44DB] font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800 font-medium' }}">
+                        Buyback Tiers
+                    </a>
+                </div>
+            </div>
         @endhasanyrole
 
         @hasanyrole('admin|super admin')
