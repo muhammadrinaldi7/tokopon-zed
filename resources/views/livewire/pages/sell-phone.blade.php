@@ -118,7 +118,7 @@
                                 <img x-show="show" x-cloak
                                     x-transition:enter="transition transform ease-out duration-1000 delay-500"
                                     x-transition:enter-start="opacity-0 translate-y-full"
-                                    x-transition:enter-end="opacity-100 translate-y-0"
+                                    x-transition:enter-end="opacity-100 "
                                     src="{{ asset('assets/brand/' . $imageName . '.png') }}" alt="{{ $brand->name }}"
                                     class="object-contain">
 
@@ -255,17 +255,28 @@
                         @endphp
 
                         @foreach ($groupedRules as $category => $rules)
-                            <div class="space-y-3">
+                            <div class="space-y-3 mb-6">
                                 <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider block">
-                                    {{ $category }}</h1>
+                                    {{ $category }}
+                                </h1>
+
                                 <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                                     @foreach ($rules as $rule)
                                         <label class="cursor-pointer block">
-                                            <input type="checkbox"
-                                                wire:model.live="selected_rules.{{ $rule['key'] }}"
-                                                class="peer hidden">
-                                            {{-- Debug: Tampilkan key rule untuk debugging --}}
-                                            <span class="text-xs text-red-500 font-bold">{{ $rule['key'] }}</span>
+                                            {{-- LOGIKA PEMISAHAN: Jika kategori 'kelengkapan' pakai checkbox, jika tidak pakai radio --}}
+                                            @if (str_contains(strtolower($category), 'kelengkapan'))
+                                                <input type="checkbox"
+                                                    wire:model.live="selected_rules.{{ $rule['key'] }}"
+                                                    class="peer hidden">
+                                            @else
+                                                {{-- Untuk Radio, wire:model harus diarahkan ke property yang sama per kategori --}}
+                                                {{-- Contoh: selected_rules.layar atau selected_rules.fisik --}}
+                                                <input type="radio" name="{{ $category }}"
+                                                    value="{{ $rule['key'] }}"
+                                                    wire:model.live="selected_rules.{{ $category }}"
+                                                    class="peer hidden">
+                                            @endif
+
                                             <div
                                                 class="py-4 px-3 bg-white shadow-sm border-2 border-transparent rounded-2xl text-center text-sm font-bold text-neutral-600 transition-all peer-checked:border-violet-600 peer-checked:bg-violet-50 peer-checked:text-violet-700 hover:border-violet-200 flex items-center justify-center min-h-[4rem]">
                                                 {{ $rule['name'] }}

@@ -93,117 +93,140 @@ class SellPhone extends Component
 
         // Convert flat rules array to key-based collection for easy lookup
         $rulesByKey = collect($this->device_rules)->keyBy('key');
-        foreach ($this->selected_rules as $ruleKey => $isChecked) {
-            // dd($ruleKey, $isChecked);
-            if ($isChecked) {
-                $rule = $rulesByKey->get($ruleKey);
-                // dd($rule);
+
+        foreach ($this->selected_rules as $key => $value) {
+            $ruleId = null;
+            if (is_bool($value) && $value) {
+                // Checkbox checked
+                $ruleId = $key;
+            } elseif (is_string($value) && !empty($value)) {
+                // Radio button selected
+                $ruleId = $value;
+            }
+
+            if ($ruleId) {
+                $rule = $rulesByKey->get($ruleId);
+
                 if ($rule) {
-                    // dd($rule);
                     $type = $rule['type'];
                     $val = $rule['value'];
 
-                    if ($type == 'fixed') {
-                        $price -= $val;
+                    // Hitung nominal perubahan (fixed atau persentase)
+                    $adjustment = ($type == 'fixed')
+                        ? $val
+                        : ($this->buyback_device->base_price * ($val / 100));
+
+                    // CEK DISINI: Jika key mengandung kata 'kelengkapan', maka ditambah (+)
+                    // Selain itu (seperti layar/fisik), maka dikurangi (-)
+                    if (str_contains($ruleId, 'kelengkapan')) {
+                        $price += $adjustment;
                     } else {
-                        $price -= ($this->buyback_device->base_price * ($val / 100));
+                        $price -= $adjustment;
                     }
                 }
             }
         }
 
-        $this->final_price = max(0, $price); // Ensure price doesn't go below 0
+        $this->final_price = max(0, $price); // Pastikan harga tidak minus
     }
 
     protected function rules()
     {
         return [
-            'old_phone_brand'           => 'required|string',
-            'old_phone_model'           => 'required|string|max:255',
-            // Wajib diisi KECUALI brand adalah Apple/APPLE
-            'old_phone_ram'             => 'required_unless:old_phone_brand,Apple,APPLE|nullable|string',
-            'old_phone_storage'         => 'required|string',
-            'old_phone_condition'       => 'required|string',
-            'old_phone_sets'            => 'required|array',
-            'old_phone_additional_note' => 'nullable|string|max:1000',
-
-            // Wajib diisi JIKA brand adalah Apple/APPLE, dan harus berupa angka 1-100
-            'old_phone_battery_health'  => 'required_if:old_phone_brand,Apple,APPLE|nullable|numeric|min:1|max:100',
-
-            // Validasi file foto (wajib ada minimal 1, maksimal 5 file)
+            'buyback_device_id'         => 'required|exists:buyback_devices,id',
+            'selected_rules'            => 'required|array|min:1',
             'photos'                    => 'required|array|min:1|max:5',
-            'photos.*'                  => 'image|max:5120', // Maks 5MB per gambar
+            'photos.*'                  => 'image|max:5120',
+            'old_phone_additional_note' => 'nullable|string|max:1000',
+            // 'old_phone_battery_health'  => 'required_if:buyback_device->brand->name,Apple,APPLE|nullable|numeric|min:1|max:100',
+            // Jika kamu masih memakai BH atau RAM secara manual, tambahkan di sini. 
+            // Tapi jika sudah include di selected_rules, ini sudah cukup.
         ];
     }
 
-    // Custom pesan error bahasa Indonesia
     protected $messages = [
-        'old_phone_brand.required'          => 'Merk HP wajib dipilih.',
-        'old_phone_model.required'          => 'Model/Seri HP wajib diisi.',
-        // Ubah pesan error untuk RAM menggunakan .required_unless
-        'old_phone_ram.required_unless'     => 'Kapasitas RAM wajib dipilih untuk perangkat Android.',
-        'old_phone_storage.required'        => 'Kapasitas Storage wajib dipilih.',
-        'old_phone_condition.required'      => 'Kondisi fisik wajib dipilih.',
-        'old_phone_sets.required'           => 'Kelengkapan wajib diisi.',
-        'old_phone_battery_health.required_if' => 'Kesehatan Baterai (BH) wajib diisi untuk perangkat Apple.',
-        'old_phone_battery_health.min'      => 'Kesehatan Baterai minimal 1%.',
-        'old_phone_battery_health.max'      => 'Kesehatan Baterai maksimal 100%.',
-        'photos.required'                   => 'Wajib mengunggah minimal 1 foto HP.',
-        'photos.max'                        => 'Maksimal hanya boleh mengunggah 5 foto.',
-        'photos.*.image'                    => 'File harus berupa gambar.',
-        'photos.*.max'                      => 'Ukuran foto maksimal 5MB per file.',
+        'buyback_device_id.required'    => 'Silakan pilih model dan kapasitas penyimpanan terlebih dahulu.',
+        'buyback_device_id.exists'      => 'Perangkat tidak ditemukan.',
+        'selected_rules.required'       => 'Silakan pilih kondisi perangkat Anda.',
+        'selected_rules.min'            => 'Setidaknya satu kondisi harus dipilih.',
+        'photos.required'               => 'Wajib mengunggah minimal 1 foto HP.',
+        'photos.min'                    => 'Wajib mengunggah minimal 1 foto HP.',
+        'photos.max'                    => 'Maksimal hanya boleh mengunggah 5 foto.',
+        'photos.*.image'                => 'File harus berupa gambar.',
+        'photos.*.max'                  => 'Ukuran foto maksimal 5MB per file.',
+        'old_phone_additional_note.max' => 'Catatan tambahan maksimal 1000 karakter.',
     ];
 
     public function submit()
     {
+        // Cek Autentikasi
         if (!Auth::check()) {
-            return redirect()->to('/login'); // Redirect directly to login path if route name is not standard
+            return redirect()->to('/login');
         }
 
+        // Jalankan Validasi
         $this->validate();
 
-        // 1. Dapatkan device dari DB untuk info base
+        // 1. Ambil data device terbaru dari database
         $device = \App\Models\BuybackDevice::with('brand')->find($this->buyback_device_id);
 
-        // 2. Susun teks minus berdasarkan rules yang dicentang
+        if (!$device) {
+            $this->dispatch('show-toast', type: 'error', message: 'Data perangkat tidak valid.');
+            return;
+        }
+
+        // 2. Identifikasi semua kondisi/minus yang dipilih (Checkbox & Radio)
         $checkedRulesNames = [];
-        if ($this->buyback_device && !empty($this->device_rules)) {
-            $rulesByKey = collect($this->device_rules)->keyBy('key');
-            foreach ($this->selected_rules as $ruleKey => $isChecked) {
-                if ($isChecked) {
-                    $rule = $rulesByKey->get($ruleKey);
-                    if ($rule) {
-                        $checkedRulesNames[] = $rule['name'];
-                    }
+        $rulesByKey = collect($this->device_rules)->keyBy('key');
+
+        foreach ($this->selected_rules as $key => $value) {
+            $ruleId = null;
+
+            // Logic pendeteksian key (sesuai yang kita bahas tadi)
+            if (is_bool($value) && $value) {
+                $ruleId = $key; // Checkbox (Kelengkapan)
+            } elseif (is_string($value) && !empty($value)) {
+                $ruleId = $value; // Radio (Layar/Fisik)
+            }
+
+            if ($ruleId) {
+                $rule = $rulesByKey->get($ruleId);
+                if ($rule) {
+                    $checkedRulesNames[] = $rule['name'];
                 }
             }
         }
 
-        $kondisi = !empty($checkedRulesNames) ? implode(', ', $checkedRulesNames) : 'Mulus 100%';
-        $catatanText = $this->old_phone_additional_note ? ". Catatan Lain: {$this->old_phone_additional_note}" : "";
-        $minusDesc = "Kondisi / Minus: {$kondisi}{$catatanText}";
+        // 3. Susun Deskripsi Minus
+        $kondisi = !empty($checkedRulesNames) ? implode(', ', $checkedRulesNames) : 'Mulus / Normal';
+        $catatanText = $this->old_phone_additional_note ? ". Catatan Tambahan: {$this->old_phone_additional_note}" : "";
+        $minusDesc = "Kondisi: {$kondisi}{$catatanText}";
 
-        $sellPhone = SellPhoneModel::create([
-            'user_id' => Auth::id(),
+        // 4. Simpan ke Database
+        $sellPhone = \App\Models\SellPhone::create([
+            'user_id'           => Auth::id(),
             'buyback_device_id' => $device->id,
-            'phone_brand' => $device->brand->name,
-            'phone_model' => $device->model_name,
-            'phone_ram' => $device->ram,
-            'phone_storage' => $device->storage,
-            'minus_desc' => $minusDesc,
-            'appraised_value' => $this->final_price,
-            'status' => 'WAITING_FOR_DEVICE', // Langsung setuju karena harga sudah fixed
+            'phone_brand'       => $device->brand->name,
+            'phone_model'       => $device->model_name,
+            'phone_ram'         => $device->ram,
+            'phone_storage'     => $device->storage,
+            'minus_desc'        => $minusDesc,
+            'appraised_value'   => $this->final_price,
+            'status'            => 'WAITING_FOR_DEVICE',
         ]);
 
+        // 5. Upload Media (Spatie Media Library)
         if (!empty($this->photos)) {
             foreach ($this->photos as $photo) {
-                $sellPhone->addMedia($photo)->toMediaCollection('photos');
+                $sellPhone->addMedia($photo->getRealPath())
+                    ->usingFileName($photo->getClientOriginalName())
+                    ->toMediaCollection('photos');
             }
         }
 
-        $this->dispatch('show-toast', type: 'success', message: 'Penawaran disetujui! Silakan kirim perangkat Anda ke toko kami.');
+        $this->dispatch('show-toast', type: 'success', message: 'Penawaran disetujui! Silakan kirim perangkat Anda.');
 
-        // Reset form
+        // 6. Reset form ke keadaan semula
         $this->reset([
             'selected_brand_id',
             'selected_model_name',
@@ -211,10 +234,13 @@ class SellPhone extends Component
             'selected_rules',
             'final_price',
             'old_phone_additional_note',
-            'photos'
+            'photos',
+            'available_models',
+            'available_storages',
+            'buyback_device'
         ]);
 
-        return $this->redirect(route('sell-phone-history'));
+        return $this->redirect(route('sell-phone-history'), navigate: true);
     }
 
     #[Layout('layouts.app', ['title' => 'Sell Mobile Phone'])]
