@@ -8,7 +8,7 @@
             </p>
         </div>
         <button wire:click="create"
-            class="bg-gradient-to-r from-[#4E44DB] to-[#7C74F0] text-white px-5 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-[#4E44DB]/40 hover:-translate-y-0.5 transition-all flex items-center gap-2">
+            class="bg-gradient-to-r from-[#1c69d4] to-[#7C74F0] text-white px-5 py-2.5 rounded-lg font-bold hover:shadow-sm hover:shadow-[#1c69d4]/40 hover:-translate-y-0.5 transition-all flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
@@ -20,26 +20,26 @@
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         @forelse ($tiers as $tier)
             <div
-                class="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-indigo-900/5 transition-all duration-300 overflow-hidden flex flex-col group">
+                class="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-sm hover:shadow-indigo-900/5 transition-all duration-300 overflow-hidden flex flex-col group">
 
                 {{-- Card Header --}}
                 <div class="bg-gray-50/50 p-6 border-b border-gray-100 relative overflow-hidden">
                     {{-- Decorative blur --}}
                     <div
-                        class="absolute -top-10 -right-10 w-32 h-32 bg-[#4E44DB]/5 rounded-full blur-2xl group-hover:bg-[#4E44DB]/10 transition-colors">
+                        class="absolute -top-10 -right-10 w-32 h-32 bg-[#1c69d4]/5 rounded-full blur-2xl group-hover:bg-[#1c69d4]/10 transition-colors">
                     </div>
 
                     <div class="flex items-start justify-between relative z-10">
                         <div>
                             <span
                                 class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-gray-200 text-gray-500 rounded-lg text-[10px] font-black uppercase tracking-widest mb-3 shadow-sm">
-                                <span class="w-1.5 h-1.5 rounded-full bg-[#4E44DB]"></span> Tier
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#1c69d4]"></span> Tier
                             </span>
                             <h2 class="text-2xl font-black text-gray-900">{{ $tier->name }}</h2>
                         </div>
                         <div
-                            class="bg-white border border-gray-100 shadow-sm text-gray-700 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5">
-                            <svg class="w-4 h-4 text-[#4E44DB]" fill="none" viewBox="0 0 24 24"
+                            class="bg-white border border-gray-100 shadow-sm text-gray-700 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-[#1c69d4]" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div
-                        class="mt-4 flex items-center gap-2 text-sm text-gray-600 bg-white p-3 rounded-xl border border-gray-100 shadow-sm relative z-10">
+                        class="mt-4 flex items-center gap-2 text-sm text-gray-600 bg-white p-3 rounded-lg border border-gray-100 shadow-sm relative z-10">
                         <div class="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -74,7 +74,7 @@
                                 <div class="grid grid-cols-1 gap-2">
                                     @foreach ($items as $item)
                                         <div
-                                            class="flex items-center justify-between p-3 bg-gray-50/50 hover:bg-gray-50 border border-gray-100 rounded-xl transition-colors">
+                                            class="flex items-center justify-between p-3 bg-gray-50/50 hover:bg-gray-50 border border-gray-100 rounded-lg transition-colors">
                                             <span class="text-sm font-semibold text-gray-700 flex items-center gap-2">
                                                 <div
                                                     class="w-1.5 h-1.5 rounded-full {{ $item['type'] === 'fixed' ? 'bg-amber-400' : 'bg-indigo-400' }}">
@@ -82,7 +82,7 @@
                                                 {{ $item['name'] }}
                                             </span>
                                             <span
-                                                class="font-black px-2.5 py-1 rounded-lg text-xs {{ $item['type'] === 'fixed' ? 'bg-amber-50 text-amber-700' : 'bg-indigo-50 text-indigo-700' }}">
+                                                class="font-black px-2.5 py-1 rounded-lg text-xs {{ $item['type'] === 'fixed' ? 'bg-amber-50 text-amber-700' : 'bg-[#eff6ff] text-indigo-700' }}">
                                                 @if ($item['type'] === 'fixed')
                                                     - Rp {{ number_format($item['value'], 0, ',', '.') }}
                                                 @else
@@ -96,8 +96,8 @@
                         @endforeach
                     @else
                         <div
-                            class="flex flex-col items-center justify-center py-8 text-gray-400 h-full border-2 border-dashed border-gray-100 rounded-2xl">
-                            <div class="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center mb-3">
+                            class="flex flex-col items-center justify-center py-8 text-gray-400 h-full border-2 border-dashed border-gray-100 rounded-lg">
+                            <div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center mb-3">
                                 <svg class="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -114,7 +114,7 @@
                 <div class="border-t border-gray-100 px-6 py-4 flex items-center justify-between bg-gray-50/50">
                     <button wire:click="delete({{ $tier->id }})"
                         wire:confirm="Hapus tier '{{ $tier->name }}'? HP yang terhubung akan kehilangan tier-nya."
-                        class="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition"
+                        class="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
                         title="Hapus Tier">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -122,7 +122,7 @@
                         </svg>
                     </button>
                     <button wire:click="edit({{ $tier->id }})"
-                        class="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-gray-900 hover:bg-[#4E44DB] shadow-md shadow-gray-900/10 hover:shadow-[#4E44DB]/30 rounded-xl transition-all">
+                        class="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-gray-900 hover:bg-[#1c69d4] shadow-sm shadow-gray-900/10 hover:shadow-[#1c69d4]/30 rounded-lg transition-all">
                         Edit Aturan
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -134,7 +134,7 @@
         @empty
             <div
                 class="col-span-1 md:col-span-2 xl:col-span-3 py-24 text-center border-2 border-dashed border-gray-200 rounded-3xl bg-gray-50">
-                <div class="w-20 h-20 bg-white shadow-sm rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <div class="w-20 h-20 bg-white shadow-sm rounded-lg flex items-center justify-center mx-auto mb-5">
                     <svg class="w-10 h-10 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -144,7 +144,7 @@
                 <p class="text-gray-500 mt-2 max-w-md mx-auto">Mulai dengan membuat tier harga untuk mengelompokkan HP
                     dan aturan potongannya.</p>
                 <button wire:click="create"
-                    class="mt-6 bg-[#4E44DB] text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-[#4E44DB]/40 transition inline-flex items-center gap-2">
+                    class="mt-6 bg-[#1c69d4] text-white px-6 py-3 rounded-lg font-bold hover:shadow-sm hover:shadow-[#1c69d4]/40 transition inline-flex items-center gap-2">
                     Buat Tier Pertama
                 </button>
             </div>
@@ -156,13 +156,13 @@
         <div class="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm pt-10 pb-6 px-4 overflow-y-auto"
             wire:click.self="closeModal">
             <div
-                class="bg-gray-50 rounded-[2rem] shadow-2xl w-full max-w-3xl mx-auto overflow-hidden ring-1 ring-white/10">
+                class="bg-gray-50 rounded-[2rem] shadow-sm w-full max-w-3xl mx-auto overflow-hidden ring-1 ring-white/10">
 
                 {{-- Modal Header --}}
                 <div class="bg-white px-8 py-6 flex items-center justify-between border-b border-gray-100">
                     <div>
                         <span
-                            class="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-black uppercase tracking-wider mb-2">Tier
+                            class="inline-block px-3 py-1 bg-[#eff6ff] text-#1c69d4 rounded-lg text-xs font-black uppercase tracking-wider mb-2">Tier
                             Editor</span>
                         <h2 class="text-2xl font-black text-gray-900">
                             {{ $isEditMode ? 'Edit Aturan: ' . $name : 'Buat Tier Baru' }}
@@ -180,10 +180,10 @@
                 <form wire:submit.prevent="store" class="p-8 space-y-8">
 
                     {{-- Info Dasar Tier --}}
-                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                    <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                         <h3
                             class="text-sm font-black text-gray-900 uppercase tracking-wide mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24"
+                            <svg class="w-5 h-5 text-#1c69d4" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -194,7 +194,7 @@
                             <div class="md:col-span-1">
                                 <label class="block text-xs font-bold text-gray-500 uppercase mb-1.5">Nama Tier</label>
                                 <input type="text" wire:model="name" placeholder="cth: Flagship High"
-                                    class="w-full bg-gray-50 border-transparent rounded-xl py-3 px-4 focus:bg-white focus:border-[#4E44DB] focus:ring-2 focus:ring-[#4E44DB]/20 transition-all font-semibold text-gray-900">
+                                    class="w-full bg-gray-50 border-transparent rounded-lg py-3 px-4 focus:bg-white focus:border-[#1c69d4] focus:ring-2 focus:ring-[#1c69d4]/20 transition-all font-semibold text-gray-900">
                                 @error('name')
                                     <span class="text-xs font-bold text-rose-500 mt-1.5 block">{{ $message }}</span>
                                 @enderror
@@ -203,7 +203,7 @@
                                 <label class="block text-xs font-bold text-gray-500 uppercase mb-1.5">Harga Min
                                     (Rp)</label>
                                 <input type="number" wire:model="min_price" placeholder="0"
-                                    class="w-full bg-gray-50 border-transparent rounded-xl py-3 px-4 focus:bg-white focus:border-[#4E44DB] focus:ring-2 focus:ring-[#4E44DB]/20 transition-all font-semibold text-gray-900">
+                                    class="w-full bg-gray-50 border-transparent rounded-lg py-3 px-4 focus:bg-white focus:border-[#1c69d4] focus:ring-2 focus:ring-[#1c69d4]/20 transition-all font-semibold text-gray-900">
                                 @error('min_price')
                                     <span class="text-xs font-bold text-rose-500 mt-1.5 block">{{ $message }}</span>
                                 @enderror
@@ -212,7 +212,7 @@
                                 <label class="block text-xs font-bold text-gray-500 uppercase mb-1.5">Harga Max
                                     (Rp)</label>
                                 <input type="number" wire:model="max_price" placeholder="0"
-                                    class="w-full bg-gray-50 border-transparent rounded-xl py-3 px-4 focus:bg-white focus:border-[#4E44DB] focus:ring-2 focus:ring-[#4E44DB]/20 transition-all font-semibold text-gray-900">
+                                    class="w-full bg-gray-50 border-transparent rounded-lg py-3 px-4 focus:bg-white focus:border-[#1c69d4] focus:ring-2 focus:ring-[#1c69d4]/20 transition-all font-semibold text-gray-900">
                                 @error('max_price')
                                     <span class="text-xs font-bold text-rose-500 mt-1.5 block">{{ $message }}</span>
                                 @enderror
@@ -237,7 +237,7 @@
                                     dan tentukan besaran potongannya.</p>
                             </div>
                             <button type="button" wire:click="addCategory"
-                                class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-[#4E44DB] bg-white border border-[#4E44DB]/20 hover:bg-[#4E44DB]/5 hover:border-[#4E44DB]/40 rounded-xl transition-all shadow-sm">
+                                class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-[#1c69d4] bg-white border border-[#1c69d4]/20 hover:bg-[#1c69d4]/5 hover:border-[#1c69d4]/40 rounded-lg transition-all shadow-sm">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                         d="M12 4v16m8-8H4" />
@@ -249,7 +249,7 @@
                         <div class="space-y-5">
                             @foreach ($ruleCategories as $catIndex => $catData)
                                 <div
-                                    class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden group">
+                                    class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden group">
 
                                     {{-- Category Header --}}
                                     <div
@@ -283,14 +283,14 @@
                                                     <input type="text"
                                                         wire:model="ruleCategories.{{ $catIndex }}.items.{{ $itemIndex }}.name"
                                                         placeholder="Nama Kondisi Minus (cth: Retak Rambut)"
-                                                        class="w-full bg-gray-50 border-transparent rounded-xl py-2.5 px-4 text-sm font-semibold focus:bg-white focus:border-[#4E44DB] focus:ring-2 focus:ring-[#4E44DB]/20 transition-all">
+                                                        class="w-full bg-gray-50 border-transparent rounded-lg py-2.5 px-4 text-sm font-semibold focus:bg-white focus:border-[#1c69d4] focus:ring-2 focus:ring-[#1c69d4]/20 transition-all">
                                                 </div>
 
                                                 {{-- Tipe & Nilai potongan --}}
                                                 <div class="flex items-center gap-2 w-full md:w-auto">
                                                     <select
                                                         wire:model="ruleCategories.{{ $catIndex }}.items.{{ $itemIndex }}.type"
-                                                        class="bg-gray-50 border-transparent rounded-xl py-2.5 px-3 text-sm font-semibold focus:bg-white focus:border-[#4E44DB] focus:ring-2 focus:ring-[#4E44DB]/20 transition-all w-32 shrink-0">
+                                                        class="bg-gray-50 border-transparent rounded-lg py-2.5 px-3 text-sm font-semibold focus:bg-white focus:border-[#1c69d4] focus:ring-2 focus:ring-[#1c69d4]/20 transition-all w-32 shrink-0">
                                                         <option value="fixed">Nominal (Rp)</option>
                                                         <option value="percentage">Persen (%)</option>
                                                     </select>
@@ -299,12 +299,12 @@
                                                         <input type="number"
                                                             wire:model="ruleCategories.{{ $catIndex }}.items.{{ $itemIndex }}.value"
                                                             placeholder="0"
-                                                            class="w-full bg-amber-50/50 border-transparent text-amber-900 rounded-xl py-2.5 px-4 font-bold focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all text-sm">
+                                                            class="w-full bg-amber-50/50 border-transparent text-amber-900 rounded-lg py-2.5 px-4 font-bold focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all text-sm">
                                                     </div>
 
                                                     <button type="button"
                                                         wire:click="removeItem({{ $catIndex }}, {{ $itemIndex }})"
-                                                        class="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition md:opacity-0 group-hover/item:opacity-100"
+                                                        class="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition md:opacity-0 group-hover/item:opacity-100"
                                                         title="Hapus Kondisi">
                                                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24"
                                                             stroke="currentColor">
@@ -317,7 +317,7 @@
                                         @endforeach
 
                                         <button type="button" wire:click="addItem({{ $catIndex }})"
-                                            class="w-full mt-2 py-3 border-2 border-dashed border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 rounded-xl flex items-center justify-center gap-2 text-sm font-bold text-gray-500 hover:text-indigo-600 transition-colors">
+                                            class="w-full mt-2 py-3 border-2 border-dashed border-gray-200 hover:border-indigo-300 hover:bg-[#eff6ff]/50 rounded-lg flex items-center justify-center gap-2 text-sm font-bold text-gray-500 hover:text-#1c69d4 transition-colors">
                                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24"
                                                 stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -331,11 +331,11 @@
 
                             @if (count($ruleCategories) === 0)
                                 <div
-                                    class="text-center py-8 bg-white rounded-2xl border-2 border-dashed border-gray-200">
+                                    class="text-center py-8 bg-white rounded-lg border-2 border-dashed border-gray-200">
                                     <p class="text-sm font-bold text-gray-400 mb-4">Mulai dengan menambahkan kategori
                                         baru.</p>
                                     <button type="button" wire:click="addCategory"
-                                        class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-gray-900 hover:bg-[#4E44DB] rounded-xl transition-all shadow-md">
+                                        class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-gray-900 hover:bg-[#1c69d4] rounded-lg transition-all shadow-sm">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -351,11 +351,11 @@
                     {{-- Actions --}}
                     <div class="pt-6 border-t border-gray-200 flex gap-4">
                         <button type="button" wire:click="closeModal"
-                            class="px-8 py-3 rounded-xl font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 transition w-full md:w-auto text-center">
+                            class="px-8 py-3 rounded-lg font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 transition w-full md:w-auto text-center">
                             Batal
                         </button>
                         <button type="submit"
-                            class="flex-1 px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-[#4E44DB] to-[#7C74F0] hover:shadow-lg hover:shadow-[#4E44DB]/40 hover:-translate-y-0.5 transition-all text-center">
+                            class="flex-1 px-8 py-3 rounded-lg font-bold text-white bg-gradient-to-r from-[#1c69d4] to-[#7C74F0] hover:shadow-sm hover:shadow-[#1c69d4]/40 hover:-translate-y-0.5 transition-all text-center">
                             Simpan Perubahan Tier
                         </button>
                     </div>

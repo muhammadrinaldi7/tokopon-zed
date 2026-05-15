@@ -7,15 +7,15 @@
         <div class="flex items-center gap-3">
             <button wire:click="syncTierDevice" wire:loading.attr="disabled"
                 wire:confirm="Anda yakin ingin menyesuaikan tier semua perangkat dengan aturan harga saat ini?"
-                class="bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold hover:bg-gray-50 hover:text-indigo-600 transition shadow-sm flex items-center gap-2">
+                class="bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-lg font-bold hover:bg-gray-50 hover:text-#1c69d4 transition shadow-sm flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
                 Sync Tier
-                <svg wire:loading wire:target="syncTierDevice" class="animate-spin -ml-1 mr-2 h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                <svg wire:loading wire:target="syncTierDevice" class="animate-spin -ml-1 mr-2 h-4 w-4 text-#1c69d4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
             </button>
             <a href="{{ route('admin.buyback.create') }}" wire:navigate
-                class="bg-[#4E44DB] text-white px-5 py-2.5 rounded-xl font-bold hover:bg-[#3f36b8] transition shadow-lg shadow-[#4E44DB]/30 flex items-center gap-2">
+                class="bg-[#1c69d4] text-white px-5 py-2.5 rounded-lg font-bold hover:bg-[#3f36b8] transition shadow-sm shadow-[#1c69d4]/30 flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
@@ -42,7 +42,7 @@
                         <tr class="hover:bg-gray-50/50 transition">
                             <td class="p-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center font-bold text-gray-400">
+                                    <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center font-bold text-gray-400">
                                         {{ substr($device->brand->name ?? '?', 0, 1) }}
                                     </div>
                                     <div>
@@ -61,7 +61,7 @@
                             </td>
                             <td class="p-4">
                                 @if($device->tier)
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-[#4E44DB]/10 text-[#4E44DB] rounded-lg text-xs font-bold">
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-[#1c69d4]/10 text-[#1c69d4] rounded-lg text-xs font-bold">
                                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                                         {{ $device->tier->name }}
                                     </span>
@@ -80,7 +80,7 @@
                                 @endif
                             </td>
                             <td class="p-4 text-right">
-                                <button class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="Edit">
+                                <button class="p-2 text-#1c69d4 hover:bg-[#eff6ff] rounded-lg transition" title="Edit">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                                 </button>
                             </td>

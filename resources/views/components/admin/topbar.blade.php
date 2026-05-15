@@ -1,6 +1,6 @@
-<header class="bg-transparent px-4 lg:px-8 py-4 lg:py-8 flex items-center justify-between">
-    <div class="flex items-center gap-3 lg:gap-0">
-        <!-- Hamburger Menu -->
+<header class="bg-transparent px-4 lg:px-8 py-2 lg:py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3 lg:gap-4">
+        <!-- Hamburger Menu (Mobile) -->
         <button @click="sidebarOpen = true"
             class="lg:hidden p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -9,8 +9,17 @@
             </svg>
         </button>
 
-        <h1 class="text-xl font-bold border-b-2 border-transparent inline-block text-gray-800 tracking-tight">
-            Halo, {{ explode(' ', auth()->user()->name ?? 'User')[0] }}! <span class="text-yellow-400">👋</span>
+        <!-- Toggle Menu (Desktop) -->
+        <button @click="sidebarCollapsed = !sidebarCollapsed"
+            class="hidden lg:block p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" />
+            </svg>
+        </button>
+
+        <h1 class="text-2xl font-bold border-b-2 border-transparent inline-block text-[#262626] tracking-tight">
+            Halo, {{ explode(' ', auth()->user()->name ?? 'User')[0] }}
         </h1>
     </div>
 

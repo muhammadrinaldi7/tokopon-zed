@@ -30,6 +30,7 @@
                     $statusLabels = [
                         'PENDING' => 'Menunggu Taksiran Admin',
                         'OFFERED' => 'Penawaran Tersedia',
+                        'REVISED_OFFER' => 'Tawaran Revisi',
                         'WAITING_FOR_DEVICE' => 'Menunggu Pengiriman Fisik',
                         'INSPECTING' => 'Fisik Diinspeksi Admin',
                         'PAYING' => 'Proses Pencairan Dana',
@@ -129,11 +130,11 @@
                 </div>
             @endif
 
-            @if ($sellPhone->status === 'OFFERED')
+            @if (in_array($sellPhone->status, ['OFFERED', 'REVISED_OFFER']))
                 <div class="bg-emerald-50 rounded-3xl p-8 text-center border border-emerald-200">
                     <h3 class="font-bold text-emerald-900 text-xl mb-2">Terima Penawaran Ini?</h3>
                     <p class="text-sm text-emerald-700 mb-6">Jika Anda setuju dengan nilai yang ditawarkan di atas, klik
-                        Terima untuk melanjutkan ke proses pengiriman fisik HP ke toko kami.</p>
+                        Terima untuk melanjutkan ke proses pencairan dana.</p>
                     <button wire:click="acceptOffer" wire:confirm="Setuju dengan penawaran dan siap mengirimkan unit?"
                         class="bg-emerald-500 text-white px-8 py-3.5 rounded-xl font-bold text-lg hover:bg-emerald-600 transition w-full shadow-lg shadow-emerald-500/25">
                         Ya, Saya Setuju!

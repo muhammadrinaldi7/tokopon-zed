@@ -13,10 +13,10 @@ use Livewire\Component;
 class Show extends Component
 {
     public SellPhone $sellPhone;
-    
+
     // Appraisal Form
     public $appraisedValue = 0;
-    
+
     // Convert to Second Product
     public $convertModal = false;
     public $sellPrice = 0;
@@ -29,7 +29,7 @@ class Show extends Component
 
     public function mount(SellPhone $sellPhone)
     {
-        $this->sellPhone = $sellPhone->load(['user', 'buybackDevice.tier']);
+        $this->sellPhone = $sellPhone->load(['user.bankAccounts', 'buybackDevice.tier']);
         $this->appraisedValue = $this->sellPhone->appraised_value ?? 0;
     }
 
@@ -67,7 +67,7 @@ class Show extends Component
         if ($this->sellPhone->status === 'COMPLETED' || $this->sellPhone->status === 'CANCELLED') return;
 
         $this->sellPhone->update(['status' => 'COMPLETED']);
-        
+
         $this->dispatch('toast', title: 'Lunas', message: 'Status penjualan HP ditandai sebagai Selesai / Lunas.', type: 'success');
     }
 
@@ -88,7 +88,7 @@ class Show extends Component
 
         DB::transaction(function () {
             $productName = $this->sellPhone->phone_brand . ' ' . $this->sellPhone->phone_model;
-            
+
             $product = null;
             if ($this->existingProductId) {
                 $product = \App\Models\Product::find($this->existingProductId);
@@ -97,7 +97,7 @@ class Show extends Component
                     ['name' => $productName, 'is_second' => true],
                     [
                         'slug' => Str::slug($productName . ' Second ' . rand(100, 999)),
-                        'brand_id' => null, 
+                        'brand_id' => null,
                         'category_id' => \App\Models\Category::first()?->id,
                         'description' => 'Produk unit seken / bekas pakai.',
                         'is_active' => true,

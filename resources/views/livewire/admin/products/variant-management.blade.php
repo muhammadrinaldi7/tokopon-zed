@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between">
         <div>
             <a href="{{ route('admin.products') }}"
-                class="text-sm font-medium text-gray-400 hover:text-[#4E44DB] transition">← Kembali ke Daftar Produk</a>
+                class="text-sm font-medium text-gray-400 hover:text-[#1c69d4] transition">← Kembali ke Daftar Produk</a>
             <h1 class="text-2xl font-bold text-gray-800 mt-2">Kelola Varian: {{ $product->name }}</h1>
         </div>
     </div>
@@ -12,10 +12,10 @@
         {{-- List Area --}}
         <div class="lg:col-span-3 space-y-4">
             @forelse($variants as $variant)
-                <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center justify-between">
+                <div class="bg-white rounded-lg p-5 shadow-sm border border-gray-100 flex items-center justify-between">
                     <div class="flex gap-4 items-center">
                         <div
-                            class="w-16 h-16 shrink-0 bg-gray-50 rounded-xl border border-gray-100 overflow-hidden flex items-center justify-center">
+                            class="w-16 h-16 shrink-0 bg-gray-50 rounded-lg border border-gray-100 overflow-hidden flex items-center justify-center">
                             @if ($url = $variant->getFirstMediaUrl('variant_image', 'thumb'))
                                 <img src="{{ $url }}" class="w-full h-full object-cover">
                             @else
@@ -60,7 +60,7 @@
                         </div>
                     </div>
                     <div class="text-right flex flex-col items-end">
-                        <div class="text-xl font-bold text-[#4E44DB]">Rp
+                        <div class="text-xl font-bold text-[#1c69d4]">Rp
                             {{ number_format($variant->price, 0, ',', '.') }}</div>
                         <div class="text-sm text-gray-500 font-medium my-1">Stok: {{ $variant->stock }}</div>
                         <div class="flex gap-2 mt-2">
@@ -72,7 +72,7 @@
                     </div>
                 </div>
             @empty
-                <div class="bg-white rounded-2xl p-10 shadow-sm border border-gray-100 text-center text-gray-400">
+                <div class="bg-white rounded-lg p-10 shadow-sm border border-gray-100 text-center text-gray-400">
                     <p>Produk ini belum memiliki variasi.<br>Silakan tambah varian di panel sebelah kanan.</p>
                 </div>
             @endforelse
@@ -80,7 +80,7 @@
 
         {{-- Form Area --}}
         <div class="lg:col-span-2">
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 sticky top-24">
+            <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100 sticky top-24">
                 <h2 class="font-bold text-gray-800 text-lg mb-5 border-b border-gray-100 pb-3">
                     {{ $isEditing ? 'Ubah Varian' : 'Tambah Varian Baru' }}
                 </h2>
@@ -88,16 +88,16 @@
                 <form wire:submit.prevent="saveVariant" class="space-y-4">
                     {{-- ERZAP AUTOCOMPLETE --}}
                     <div
-                        class="col-span-1 border border-[#4E44DB] border-opacity-30 bg-[#eff2ff] p-4 rounded-xl relative">
-                        <label class="block text-xs font-bold text-[#4E44DB] tracking-wide mb-1 uppercase">🔗 Hubungkan
+                        class="col-span-1 border border-[#1c69d4] border-opacity-30 bg-[#eff2ff] p-4 rounded-lg relative">
+                        <label class="block text-xs font-bold text-[#1c69d4] tracking-wide mb-1 uppercase">🔗 Hubungkan
                             ke Erzap</label>
-                        <p class="text-[11px] text-[#4E44DB] opacity-70 mb-2 leading-tight">Cari nama produk dari Erzap
+                        <p class="text-[11px] text-[#1c69d4] opacity-70 mb-2 leading-tight">Cari nama produk dari Erzap
                             untuk mengambil Harga & Stok secara otomatis.</p>
 
                         <div class="relative">
                             <input type="text" wire:model.live.debounce.300ms="searchErzap"
                                 placeholder="Ketik nama / kode erzap..."
-                                class="w-full text-[15px] rounded-xl border-gray-300 px-4 py-3 shadow-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] disabled:opacity-50 disabled:bg-gray-100 transition-all font-medium"
+                                class="w-full text-[15px] rounded-lg border-gray-300 px-4 py-3 shadow-sm focus:ring-4 focus:ring-[#1c69d4]/10 focus:border-[#1c69d4] disabled:opacity-50 disabled:bg-gray-100 transition-all font-medium"
                                 {{ $selectedErzapId ? 'disabled' : '' }}>
                             @if ($selectedErzapId)
                                 <button type="button" wire:click="clearErzap"
@@ -109,7 +109,7 @@
                         @if (!empty($searchResults) && !$selectedErzapId)
 
                             <div
-                                class="absolute z-10 w-full bg-white mt-1 border border-gray-200 rounded-lg shadow-xl max-h-48 overflow-y-auto">
+                                class="absolute z-10 w-full bg-white mt-1 border border-gray-200 rounded-lg shadow-sm max-h-48 overflow-y-auto">
                                 @forelse($searchResults as $res)
                                     @php
                                         $kode = $res->raw_data['kode'] ?? '';
@@ -124,7 +124,7 @@
                                         <div class="flex justify-between items-center mt-1">
                                             <span
                                                 class="text-xs text-gray-500 font-mono">{{ $kode ?: $res->erzap_id }}</span>
-                                            <span class="text-xs font-bold text-[#4E44DB]">Stok:
+                                            <span class="text-xs font-bold text-[#1c69d4]">Stok:
                                                 {{ $res->stock }}</span>
                                         </div>
                                     </div>
@@ -141,19 +141,19 @@
                             <label class="block text-xs font-bold text-gray-600 mb-1.5 ml-1">RAM <span
                                     class="text-gray-400 font-normal">(ops)</span></label>
                             <input type="text" wire:model="ram" placeholder="Cth: 8GB"
-                                class="w-full text-[14px] rounded-xl border-gray-300 px-4 py-2.5 shadow-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all">
+                                class="w-full text-[14px] rounded-lg border-gray-300 px-4 py-2.5 shadow-sm focus:ring-4 focus:ring-[#1c69d4]/10 focus:border-[#1c69d4] transition-all">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-600 mb-1.5 ml-1">Storage <span
                                     class="text-gray-400 font-normal">(ops)</span></label>
                             <input type="text" wire:model="storage" placeholder="Cth: 256GB"
-                                class="w-full text-[14px] rounded-xl border-gray-300 px-4 py-2.5 shadow-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all">
+                                class="w-full text-[14px] rounded-lg border-gray-300 px-4 py-2.5 shadow-sm focus:ring-4 focus:ring-[#1c69d4]/10 focus:border-[#1c69d4] transition-all">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-600 mb-1.5 ml-1">Warna <span
                                     class="text-gray-400 font-normal">(ops)</span></label>
                             <input type="text" wire:model="color" placeholder="Cth: Black"
-                                class="w-full text-[14px] rounded-xl border-gray-300 px-4 py-2.5 shadow-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all">
+                                class="w-full text-[14px] rounded-lg border-gray-300 px-4 py-2.5 shadow-sm focus:ring-4 focus:ring-[#1c69d4]/10 focus:border-[#1c69d4] transition-all">
                         </div>
                     </div>
 
@@ -161,7 +161,7 @@
                         <div>
                             <label class="block text-xs font-bold text-gray-600 mb-1.5 ml-1">Kondisi</label>
                             <select wire:model="condition"
-                                class="w-full text-[14px] rounded-xl border-gray-300 px-4 py-2.5 shadow-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all">
+                                class="w-full text-[14px] rounded-lg border-gray-300 px-4 py-2.5 shadow-sm focus:ring-4 focus:ring-[#1c69d4]/10 focus:border-[#1c69d4] transition-all">
                                 <option value="Baru">Baru</option>
                                 <option value="Bekas Like New">Bekas Like New</option>
                                 <option value="Bekas Tanda Pemakaian">Bekas Tanda Pemakaian</option>
@@ -171,7 +171,7 @@
                             <label class="block text-xs font-bold text-gray-600 mb-1.5 ml-1">SKU Internal <span
                                     class="text-gray-400 font-normal">(opsional)</span></label>
                             <input type="text" wire:model="sku"
-                                class="w-full text-[14px] rounded-xl border-gray-300 px-4 py-2.5 shadow-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all">
+                                class="w-full text-[14px] rounded-lg border-gray-300 px-4 py-2.5 shadow-sm focus:ring-4 focus:ring-[#1c69d4]/10 focus:border-[#1c69d4] transition-all">
                         </div>
                     </div>
 
@@ -180,7 +180,7 @@
                         <label class="block text-xs font-bold text-gray-600 mb-1.5 ml-1">Gambar Varian <span
                                 class="text-gray-400 font-normal">(opsional)</span></label>
                         <div
-                            class="flex items-center gap-4 border border-gray-300 rounded-xl px-4 py-3 bg-white shadow-sm focus-within:ring-4 focus-within:ring-[#4E44DB]/10 focus-within:border-[#4E44DB] transition-all">
+                            class="flex items-center gap-4 border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-sm focus-within:ring-4 focus-within:ring-[#1c69d4]/10 focus-within:border-[#1c69d4] transition-all">
                             @if ($variantImage)
                                 <img src="{{ $variantImage->temporaryUrl() }}"
                                     class="w-12 h-12 rounded object-cover border border-gray-200">
@@ -198,17 +198,17 @@
                                 </div>
                             @endif
                             <input type="file" wire:model="variantImage"
-                                class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:text-[#4E44DB] file:bg-[#eff2ff] hover:file:bg-[#e0e7ff] transition">
+                                class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:text-[#1c69d4] file:bg-[#eff2ff] hover:file:bg-[#e0e7ff] transition">
                         </div>
                     </div>
 
                     @if ($product->is_second)
-                        <div class="mt-4 p-4 border border-amber-200 bg-amber-50 rounded-xl">
+                        <div class="mt-4 p-4 border border-amber-200 bg-amber-50 rounded-lg">
                             <label class="block text-xs font-bold text-amber-800 mb-2">Harga Manual (Produk Bekas)</label>
                             <div class="relative">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-[15px]">Rp</span>
                                 <input type="number" wire:model="manualPrice" 
-                                    class="w-full text-[15px] pl-10 pr-4 py-2.5 rounded-xl border-gray-300 bg-white shadow-sm focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium text-gray-800"
+                                    class="w-full text-[15px] pl-10 pr-4 py-2.5 rounded-lg border-gray-300 bg-white shadow-sm focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition-all font-medium text-gray-800"
                                     min="0">
                             </div>
                             @error('manualPrice') <span class="text-xs text-rose-500 mt-1">{{ $message }}</span> @enderror
@@ -217,10 +217,10 @@
 
                     @if ($selectedErzapId)
                         <div
-                            class="p-4 bg-gray-50 rounded-xl border border-gray-100 flex justify-between items-center shadow-inner mt-2">
+                            class="p-4 bg-gray-50 rounded-lg border border-gray-100 flex justify-between items-center shadow-inner mt-2">
                             <div>
                                 <p class="text-xs text-gray-500 font-medium">Harga Sync:</p>
-                                <p class="text-lg font-bold {{ $product->is_second ? 'text-gray-400 line-through' : 'text-[#4E44DB]' }}">Rp
+                                <p class="text-lg font-bold {{ $product->is_second ? 'text-gray-400 line-through' : 'text-[#1c69d4]' }}">Rp
                                     {{ number_format($simulatedPrice, 0, ',', '.') }}</p>
                             </div>
                             <div class="text-right">
@@ -233,10 +233,10 @@
                     <div class="pt-5 flex gap-3">
                         @if ($isEditing)
                             <button type="button" wire:click="resetForm"
-                                class="flex-1 bg-white border border-gray-200 text-gray-600 py-3 rounded-2xl text-[15px] font-bold hover:bg-gray-50 transition active:scale-[0.98]">Batal</button>
+                                class="flex-1 bg-white border border-gray-200 text-gray-600 py-3 rounded-lg text-[15px] font-bold hover:bg-gray-50 transition active:scale-[0.98]">Batal</button>
                         @endif
                         <button type="submit"
-                            class="flex-1 bg-[#4E44DB] text-white py-3 rounded-2xl text-[15px] font-bold hover:bg-opacity-90 shadow-lg shadow-[#4E44DB]/30 transition active:scale-[0.98]">
+                            class="flex-1 bg-[#1c69d4] text-white py-3 rounded-lg text-[15px] font-bold hover:bg-opacity-90 shadow-sm shadow-[#1c69d4]/30 transition active:scale-[0.98]">
                             {{ $isEditing ? 'Simpan Perubahan' : 'Tambah Varian' }}
                         </button>
                     </div>

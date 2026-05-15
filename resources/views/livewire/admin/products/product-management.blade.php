@@ -2,16 +2,16 @@
     <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-gray-800">Manajemen Produk</h1>
         <button wire:click="create"
-            class="bg-[#4E44DB] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-opacity-90 transition">
+            class="bg-[#1c69d4] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-opacity-90 transition">
             Tambah Produk
         </button>
     </div>
 
     {{-- Filter Bar --}}
-    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-wrap gap-4 items-center">
+    <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100 flex flex-wrap gap-4 items-center">
         <div class="flex-1 min-w-[200px] relative">
             <input type="text" wire:model.live.debounce.500ms="search" placeholder="Cari nama produk..."
-                class="w-full pl-10 pr-4 py-2.5 rounded-xl border-gray-200 text-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all">
+                class="w-full pl-10 pr-4 py-2.5 rounded-lg border-gray-200 text-sm focus:ring-4 focus:ring-[#1c69d4]/10 focus:border-[#1c69d4] transition-all">
             <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -20,28 +20,28 @@
             </div>
         </div>
         <select wire:model.live="filterCategory"
-            class="rounded-xl border-gray-200 text-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all py-2.5 px-4 min-w-[150px]">
+            class="rounded-lg border-gray-200 text-sm focus:ring-4 focus:ring-[#1c69d4]/10 focus:border-[#1c69d4] transition-all py-2.5 px-4 min-w-[150px]">
             <option value="">Semua Kategori</option>
             @foreach ($categoriesList as $cat)
                 <option value="{{ $cat->id }}">{{ $cat->name }}</option>
             @endforeach
         </select>
         <select wire:model.live="filterBrand"
-            class="rounded-xl border-gray-200 text-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all py-2.5 px-4 min-w-[150px]">
+            class="rounded-lg border-gray-200 text-sm focus:ring-4 focus:ring-[#1c69d4]/10 focus:border-[#1c69d4] transition-all py-2.5 px-4 min-w-[150px]">
             <option value="">Semua Brand</option>
             @foreach ($brandsList as $b)
                 <option value="{{ $b->id }}">{{ $b->name }}</option>
             @endforeach
         </select>
         <select wire:model.live="filterCondition"
-            class="rounded-xl border-gray-200 text-sm focus:ring-4 focus:ring-[#4E44DB]/10 focus:border-[#4E44DB] transition-all py-2.5 px-4 min-w-[150px]">
+            class="rounded-lg border-gray-200 text-sm focus:ring-4 focus:ring-[#1c69d4]/10 focus:border-[#1c69d4] transition-all py-2.5 px-4 min-w-[150px]">
             <option value="">Semua Kondisi</option>
             <option value="new">Baru</option>
             <option value="second">Bekas</option>
         </select>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <table class="w-full text-left text-sm whitespace-nowrap">
             <thead class="bg-gray-50 text-gray-600 font-semibold border-b border-gray-100">
                 <tr>
@@ -74,7 +74,7 @@
                                 </div>
                                 <div class="flex flex-col">
                                     <button wire:click="viewDetail({{ $product->id }})"
-                                        class="font-bold text-[#4E44DB] hover:text-[#3f36b8] hover:underline text-left transition-colors">
+                                        class="font-bold text-[#1c69d4] hover:text-[#3f36b8] hover:underline text-left transition-colors">
                                         {{ $product->name }}
                                     </button>
                                     @if ($product->is_second)
@@ -98,7 +98,7 @@
                         <td class="px-6 py-4">Rp. {{ number_format($product->starting_price ?? 0, 0, ',', '.') }}</td>
                         <td class="px-6 py-4 text-right">
                             <a href="{{ route('admin.products.variants', $product->slug) }}" wire:navigate
-                                class="text-[#4E44DB] font-semibold text-xs border border-[#4E44DB] px-3 py-1.5 rounded-lg hover:bg-[#eff2ff] mr-2 transition inline-flex items-center">
+                                class="text-[#1c69d4] font-semibold text-xs border border-[#1c69d4] px-3 py-1.5 rounded-lg hover:bg-[#eff2ff] mr-2 transition inline-flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -140,7 +140,7 @@
 
             {{-- Modal Panel --}}
             <div
-                class="relative transform overflow-hidden rounded-4xl bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-[#4E44DB]/15 text-left transition-all sm:my-8 sm:w-full sm:max-w-md">
+                class="relative transform overflow-hidden rounded-4xl bg-white/80 backdrop-blur-2xl border border-white shadow-sm shadow-[#1c69d4]/15 text-left transition-all sm:my-8 sm:w-full sm:max-w-md">
 
                 {{-- Header --}}
                 <div
@@ -164,7 +164,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Nama Produk Utama</label>
                         <input type="text" wire:model="name" placeholder="Contoh: iPhone 15 Pro Max"
-                            class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#4E44DB] focus:ring-4 focus:ring-[#4E44DB]/10 rounded-2xl px-4 py-3 shadow-sm transition-all text-gray-800 placeholder-gray-400"
+                            class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#1c69d4] focus:ring-4 focus:ring-[#1c69d4]/10 rounded-lg px-4 py-3 shadow-sm transition-all text-gray-800 placeholder-gray-400"
                             required>
                         @error('name')
                             <span class="text-xs text-rose-500 font-medium ml-1 mt-1 block">{{ $message }}</span>
@@ -176,7 +176,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Kategori Produk <span
                                     class="text-rose-500">*</span></label>
                             <select wire:model="categoryId"
-                                class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#4E44DB] focus:ring-4 focus:ring-[#4E44DB]/10 rounded-2xl px-4 py-3 shadow-sm transition-all text-gray-800"
+                                class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#1c69d4] focus:ring-4 focus:ring-[#1c69d4]/10 rounded-lg px-4 py-3 shadow-sm transition-all text-gray-800"
                                 required>
                                 <option value="">Pilih Kategori...</option>
                                 @foreach ($categoriesList as $cat)
@@ -190,7 +190,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Merek (opsional)</label>
                             <select wire:model="brandId"
-                                class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#4E44DB] focus:ring-4 focus:ring-[#4E44DB]/10 rounded-2xl px-4 py-3 shadow-sm transition-all text-gray-800">
+                                class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#1c69d4] focus:ring-4 focus:ring-[#1c69d4]/10 rounded-lg px-4 py-3 shadow-sm transition-all text-gray-800">
                                 <option value="">Tanpa Merek / Lainnya...</option>
                                 @foreach ($brandsList as $b)
                                     <option value="{{ $b->id }}">{{ $b->name }}</option>
@@ -202,11 +202,11 @@
                         </div>
                     </div>
 
-                    <div class="bg-[#eff2ff]/50 border border-[#4E44DB]/10 rounded-2xl p-4 flex items-center justify-between group cursor-pointer hover:bg-[#eff2ff] transition-all"
+                    <div class="bg-[#eff2ff]/50 border border-[#1c69d4]/10 rounded-lg p-4 flex items-center justify-between group cursor-pointer hover:bg-[#eff2ff] transition-all"
                         onclick="document.getElementById('is_second_check').click()">
                         <div class="flex items-center gap-3">
                             <div
-                                class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-amber-500">
+                                class="w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-sm text-amber-500">
                                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -218,13 +218,13 @@
                             </div>
                         </div>
                         <input type="checkbox" id="is_second_check" wire:model="is_second"
-                            class="w-5 h-5 rounded-lg border-gray-300 text-[#4E44DB] focus:ring-[#4E44DB]/20 transition-all cursor-pointer">
+                            class="w-5 h-5 rounded-lg border-gray-300 text-[#1c69d4] focus:ring-[#1c69d4]/20 transition-all cursor-pointer">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Deskripsi Singkat</label>
                         <textarea wire:model="description" rows="3"
-                            class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#4E44DB] focus:ring-4 focus:ring-[#4E44DB]/10 rounded-2xl px-4 py-3 shadow-sm transition-all text-gray-800 placeholder-gray-400 resize-none"
+                            class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#1c69d4] focus:ring-4 focus:ring-[#1c69d4]/10 rounded-lg px-4 py-3 shadow-sm transition-all text-gray-800 placeholder-gray-400 resize-none"
                             placeholder="(Opsional) Masukkan deskripsi produk..."></textarea>
                     </div>
                     <div class="grid grid-cols-1 gap-4">
@@ -233,18 +233,18 @@
                             <div class="flex items-center gap-4">
                                 @if ($coverImage)
                                     <div
-                                        class="w-20 h-20 rounded-2xl overflow-hidden border-2 border-[#4E44DB] shadow-md shrink-0">
+                                        class="w-20 h-20 rounded-lg overflow-hidden border-2 border-[#1c69d4] shadow-sm shrink-0">
                                         <img src="{{ $coverImage->temporaryUrl() }}"
                                             class="w-full h-full object-cover">
                                     </div>
                                 @elseif($currentCoverUrl)
                                     <div
-                                        class="w-20 h-20 rounded-2xl overflow-hidden border border-gray-200 shadow-sm shrink-0">
+                                        class="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shadow-sm shrink-0">
                                         <img src="{{ $currentCoverUrl }}" class="w-full h-full object-cover">
                                     </div>
                                 @else
                                     <div
-                                        class="w-20 h-20 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center shrink-0">
+                                        class="w-20 h-20 rounded-lg bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center shrink-0">
                                         <svg class="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -255,14 +255,14 @@
 
                                 <div class="flex-1">
                                     <label
-                                        class="relative cursor-pointer bg-white rounded-xl border border-gray-200 px-4 py-2.5 text-xs font-bold text-gray-600 hover:bg-gray-50 transition-colors inline-block overflow-hidden">
+                                        class="relative cursor-pointer bg-white rounded-lg border border-gray-200 px-4 py-2.5 text-xs font-bold text-gray-600 hover:bg-gray-50 transition-colors inline-block overflow-hidden">
                                         <span>{{ $coverImage ? 'Ganti Cover' : ($currentCoverUrl ? 'Ubah Cover' : 'Upload Cover') }}</span>
                                         <input type="file" wire:model="coverImage" class="sr-only"
                                             accept="image/*">
                                     </label>
                                     <p class="text-[10px] text-gray-400 mt-1">Format: JPG, PNG, WEBP (Maks. 2MB)</p>
                                     <div wire:loading wire:target="coverImage"
-                                        class="text-[10px] text-[#4E44DB] font-bold mt-1">Mengupload...</div>
+                                        class="text-[10px] text-[#1c69d4] font-bold mt-1">Mengupload...</div>
                                 </div>
                             </div>
                             @error('coverImage')
@@ -277,7 +277,7 @@
                                 @foreach ($currentGallery as $media)
                                     <div class="relative group w-16 h-16">
                                         <img src="{{ $media['url'] }}"
-                                            class="w-full h-full object-cover rounded-xl border border-gray-100">
+                                            class="w-full h-full object-cover rounded-lg border border-gray-100">
                                         <button type="button" wire:click="removeGalleryImage({{ $media['id'] }})"
                                             wire:confirm="Hapus gambar ini dari galeri?"
                                             class="absolute -top-1.5 -right-1.5 bg-rose-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -293,7 +293,7 @@
                                 @if ($galleryImages)
                                     @foreach ($galleryImages as $index => $img)
                                         <div
-                                            class="w-16 h-16 rounded-xl border-2 border-emerald-400 overflow-hidden relative">
+                                            class="w-16 h-16 rounded-lg border-2 border-emerald-400 overflow-hidden relative">
                                             <img src="{{ $img->temporaryUrl() }}" class="w-full h-full object-cover">
                                             <div class="absolute inset-0 bg-emerald-400/20"></div>
                                         </div>
@@ -301,7 +301,7 @@
                                 @endif
 
                                 <label
-                                    class="w-16 h-16 rounded-xl border-2 border-dashed border-gray-200 hover:border-[#4E44DB] hover:bg-[#eff2ff]/50 flex items-center justify-center cursor-pointer transition-all">
+                                    class="w-16 h-16 rounded-lg border-2 border-dashed border-gray-200 hover:border-[#1c69d4] hover:bg-[#eff2ff]/50 flex items-center justify-center cursor-pointer transition-all">
                                     <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -315,7 +315,7 @@
                                 <span class="text-xs text-rose-500 font-medium ml-1 block">{{ $message }}</span>
                             @enderror
                             <div wire:loading wire:target="galleryImages"
-                                class="text-[10px] text-[#4E44DB] font-bold">Mengupload Galeri...</div>
+                                class="text-[10px] text-[#1c69d4] font-bold">Mengupload Galeri...</div>
                         </div>
                     </div>
                     {{-- Dynamic Specifications --}}
@@ -323,7 +323,7 @@
                         <div class="flex items-center justify-between mb-2 ml-1">
                             <label class="block text-sm font-medium text-gray-700">Spesifikasi Master</label>
                             <button type="button" wire:click="addSpecification"
-                                class="text-xs font-bold text-[#4E44DB] hover:text-[#3f36b8] bg-[#eff2ff] px-2 py-1 rounded-lg transition-colors">
+                                class="text-xs font-bold text-[#1c69d4] hover:text-[#3f36b8] bg-[#eff2ff] px-2 py-1 rounded-lg transition-colors">
                                 + Tambah Atribut
                             </button>
                         </div>
@@ -333,11 +333,11 @@
                                 <div class="flex gap-2 items-center">
                                     <input type="text" wire:model="specifications.{{ $index }}.key"
                                         placeholder="Ex: Kamera"
-                                        class="w-1/3 text-[13px] bg-white/60 border border-gray-200/70 focus:border-[#4E44DB] rounded-xl px-3 py-2 shadow-sm transition-all"
+                                        class="w-1/3 text-[13px] bg-white/60 border border-gray-200/70 focus:border-[#1c69d4] rounded-lg px-3 py-2 shadow-sm transition-all"
                                         required>
                                     <input type="text" wire:model="specifications.{{ $index }}.value"
                                         placeholder="Ex: 48 MP Mumpuni"
-                                        class="flex-1 text-[13px] bg-white/60 border border-gray-200/70 focus:border-[#4E44DB] rounded-xl px-3 py-2 shadow-sm transition-all"
+                                        class="flex-1 text-[13px] bg-white/60 border border-gray-200/70 focus:border-[#1c69d4] rounded-lg px-3 py-2 shadow-sm transition-all"
                                         required>
                                     <button type="button" wire:click="removeSpecification({{ $index }})"
                                         class="text-rose-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition-colors focus:outline-none">
@@ -350,7 +350,7 @@
                                 </div>
                             @empty
                                 <div
-                                    class="text-[13px] text-gray-400 italic text-center py-2 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
+                                    class="text-[13px] text-gray-400 italic text-center py-2 bg-gray-50/50 rounded-lg border border-dashed border-gray-200">
                                     Belum ada spesifikasi tambahan.
                                 </div>
                             @endforelse
@@ -360,11 +360,11 @@
                     {{-- Actions --}}
                     <div class="pt-4 flex gap-3">
                         <button type="button" wire:click="$set('showModal', false)"
-                            class="flex-1 bg-gray-100/50 hover:bg-gray-200/70 text-gray-700 py-3 rounded-2xl text-[15px] font-semibold transition-all">
+                            class="flex-1 bg-gray-100/50 hover:bg-gray-200/70 text-gray-700 py-3 rounded-lg text-[15px] font-semibold transition-all">
                             Batal
                         </button>
                         <button type="submit"
-                            class="flex-1 bg-[#4E44DB] text-white py-3 rounded-2xl text-[15px] font-semibold hover:bg-[#3f36b8] hover:shadow-lg hover:shadow-[#4E44DB]/30 active:scale-[0.98] transition-all">
+                            class="flex-1 bg-[#1c69d4] text-white py-3 rounded-lg text-[15px] font-semibold hover:bg-[#3f36b8] hover:shadow-sm hover:shadow-[#1c69d4]/30 active:scale-[0.98] transition-all">
                             Simpan
                         </button>
                     </div>
@@ -381,7 +381,7 @@
                 class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"></div>
 
             <div
-                class="relative transform overflow-hidden rounded-4xl bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-[#4E44DB]/15 text-left transition-all sm:my-8 w-full max-w-lg">
+                class="relative transform overflow-hidden rounded-4xl bg-white/80 backdrop-blur-2xl border border-white shadow-sm shadow-[#1c69d4]/15 text-left transition-all sm:my-8 w-full max-w-lg">
                 {{-- Header --}}
                 <div
                     class="px-6 py-5 border-b border-gray-200/50 flex justify-between items-center backdrop-blur-md bg-white/40">
@@ -408,7 +408,7 @@
                             @endif
                             <div class="flex-1">
                                 <div class="flex items-center gap-3 mb-1.5">
-                                    <h3 class="text-xl font-bold text-[#4E44DB]">{{ $detailProduct->name }}</h3>
+                                    <h3 class="text-xl font-bold text-[#1c69d4]">{{ $detailProduct->name }}</h3>
                                     @if ($detailProduct->has_active_erzap)
                                         <span
                                             class="bg-emerald-100 text-emerald-700 font-bold px-2.5 py-1 rounded-full text-[10px] uppercase tracking-wider shrink-0">Terkoneksi
@@ -417,7 +417,7 @@
                                 </div>
                                 <div class="flex gap-2 mb-3">
                                     <span
-                                        class="bg-[#eff2ff] text-[#4E44DB] px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-wide uppercase">{{ $detailProduct->category?->name ?? 'Tanpa Kategori' }}</span>
+                                        class="bg-[#eff2ff] text-[#1c69d4] px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-wide uppercase">{{ $detailProduct->category?->name ?? 'Tanpa Kategori' }}</span>
                                     @if ($detailProduct->brand)
                                         <span
                                             class="bg-gray-100 text-gray-600 px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-wide uppercase">{{ $detailProduct->brand->name }}</span>
@@ -437,7 +437,7 @@
                             <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                                 @foreach ($detailProduct->getMedia('gallery') as $image)
                                     <a href="{{ $image->getUrl() }}" target="_blank"
-                                        class="w-24 h-24 rounded-2xl overflow-hidden border border-gray-100 shadow-sm shrink-0 hover:scale-105 transition-transform">
+                                        class="w-24 h-24 rounded-lg overflow-hidden border border-gray-100 shadow-sm shrink-0 hover:scale-105 transition-transform">
                                         <img src="{{ $image->getUrl('thumb') }}" class="w-full h-full object-cover">
                                     </a>
                                 @endforeach
@@ -446,12 +446,12 @@
                     @endif
 
                     <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
-                        <div class="bg-[#eff2ff]/50 p-4 rounded-2xl border border-[#4E44DB]/10">
-                            <p class="text-xs text-[#4E44DB] font-bold tracking-wide uppercase mb-1">Total Stok</p>
+                        <div class="bg-[#eff2ff]/50 p-4 rounded-lg border border-[#1c69d4]/10">
+                            <p class="text-xs text-[#1c69d4] font-bold tracking-wide uppercase mb-1">Total Stok</p>
                             <p class="text-2xl font-black text-gray-800">{{ $detailProduct->total_stock }} <span
                                     class="text-sm font-medium text-gray-500">Unit</span></p>
                         </div>
-                        <div class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100">
+                        <div class="bg-emerald-50/50 p-4 rounded-lg border border-emerald-100">
                             <p class="text-xs text-emerald-600 font-bold tracking-wide uppercase mb-1">Harga Mulai</p>
                             <p class="text-2xl font-black text-gray-800"><span
                                     class="text-sm font-medium text-gray-500 mr-1">Rp</span>{{ number_format($detailProduct->starting_price ?? 0, 0, ',', '.') }}
@@ -466,8 +466,8 @@
                             <div class="space-y-2">
                                 @foreach ($detailProduct->specifications as $key => $value)
                                     <div
-                                        class="flex justify-between items-center py-2.5 px-4 bg-white/60 rounded-xl border border-gray-100 shadow-sm">
-                                        <span class="text-[14px] font-bold text-[#4E44DB]">{{ $key }}</span>
+                                        class="flex justify-between items-center py-2.5 px-4 bg-white/60 rounded-lg border border-gray-100 shadow-sm">
+                                        <span class="text-[14px] font-bold text-[#1c69d4]">{{ $key }}</span>
                                         <span
                                             class="text-[14px] font-medium text-gray-700 text-right">{{ $value }}</span>
                                     </div>
@@ -477,7 +477,7 @@
                     @else
                         <div class="pt-2">
                             <div
-                                class="text-[13px] text-gray-400 italic text-center py-4 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
+                                class="text-[13px] text-gray-400 italic text-center py-4 bg-gray-50/50 rounded-lg border border-dashed border-gray-200">
                                 Produk ini belum memiliki spesifikasi tersimpan.
                             </div>
                         </div>

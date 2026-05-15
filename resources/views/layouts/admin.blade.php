@@ -8,7 +8,18 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-gray-50 text-gray-900 font-sans antialiased overflow-hidden" x-data="{ sidebarOpen: false }">
+<style>
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+</style>
+<body class="bg-[#ffffff] text-[#262626] font-sans antialiased overflow-hidden" x-data="{ sidebarOpen: false, sidebarCollapsed: false }">
     <div class="flex h-screen w-full relative">
         {{-- Overlay for mobile --}}
         <div x-show="sidebarOpen" x-transition.opacity @click="sidebarOpen = false"

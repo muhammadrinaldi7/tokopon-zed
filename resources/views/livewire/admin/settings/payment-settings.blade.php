@@ -9,7 +9,7 @@
     <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden max-w-4xl">
         {{-- Header Section --}}
         <div class="px-8 py-6 border-b border-gray-100 bg-gray-50/50 flex items-start sm:items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-[#0097FF]/10 text-[#0097FF] flex items-center justify-center shrink-0">
+            <div class="w-12 h-12 rounded-lg bg-[#0097FF]/10 text-[#0097FF] flex items-center justify-center shrink-0">
                 <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
@@ -28,7 +28,7 @@
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Secret Key / API Key</label>
                 <input type="password" wire:model="xenditSecretKey" placeholder="xnd_development_..."
-                    class="w-full text-sm rounded-xl border-gray-200 px-4 py-3.5 focus:ring-2 focus:ring-[#0097FF]/20 focus:border-[#0097FF] transition">
+                    class="w-full text-sm rounded-lg border-gray-200 px-4 py-3.5 focus:ring-2 focus:ring-[#0097FF]/20 focus:border-[#0097FF] transition">
                 <p class="text-xs text-gray-400 mt-2 ml-1">Digunakan untuk membuat invoice (Sisi Server).</p>
                 @error('xenditSecretKey') <span class="text-xs text-rose-500 ml-1 mt-1 block">{{ $message }}</span> @enderror
             </div>
@@ -37,7 +37,7 @@
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Public Key</label>
                 <input type="password" wire:model="xenditPublicKey" placeholder="xnd_public_..."
-                    class="w-full text-sm rounded-xl border-gray-200 px-4 py-3.5 focus:ring-2 focus:ring-[#0097FF]/20 focus:border-[#0097FF] transition">
+                    class="w-full text-sm rounded-lg border-gray-200 px-4 py-3.5 focus:ring-2 focus:ring-[#0097FF]/20 focus:border-[#0097FF] transition">
                 <p class="text-xs text-gray-400 mt-2 ml-1">Digunakan untuk tokenisasi kartu kredit (Opsional jika hanya pakai VA/E-Wallet/QRIS).</p>
                 @error('xenditPublicKey') <span class="text-xs text-rose-500 ml-1 mt-1 block">{{ $message }}</span> @enderror
             </div>
@@ -46,7 +46,7 @@
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Callback Verification Token</label>
                 <input type="password" wire:model="xenditWebhookToken" placeholder="Token untuk memvalidasi Callback HTTP..."
-                    class="w-full text-sm rounded-xl border-gray-200 px-4 py-3.5 focus:ring-2 focus:ring-[#0097FF]/20 focus:border-[#0097FF] transition">
+                    class="w-full text-sm rounded-lg border-gray-200 px-4 py-3.5 focus:ring-2 focus:ring-[#0097FF]/20 focus:border-[#0097FF] transition">
                 <p class="text-xs text-gray-400 mt-2 ml-1">Cari token ini di Settings -> Callbacks. Digunakan untuk memastikan request dari Xendit asli.</p>
                 @error('xenditWebhookToken') <span class="text-xs text-rose-500 ml-1 mt-1 block">{{ $message }}</span> @enderror
             </div>
@@ -58,7 +58,7 @@
                 
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                     @foreach ($availableChannels as $code => $label)
-                        <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors {{ in_array($code, $activePaymentChannels) ? 'bg-[#0097FF]/5 border-[#0097FF]' : '' }}">
+                        <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors {{ in_array($code, $activePaymentChannels) ? 'bg-[#0097FF]/5 border-[#0097FF]' : '' }}">
                             <input type="checkbox" wire:model.live="activePaymentChannels" value="{{ $code }}"
                                 class="mt-0.5 w-4 h-4 text-[#0097FF] border-gray-300 rounded focus:ring-[#0097FF]">
                             <span class="text-xs font-semibold text-gray-700">{{ $label }}</span>
@@ -70,7 +70,7 @@
             {{-- Actions --}}
             <div class="pt-6 border-t border-gray-100 flex justify-end">
                 <button type="submit"
-                    class="bg-[#4E44DB] text-white px-8 py-3.5 rounded-xl font-bold hover:bg-[#3f36b8] active:scale-[0.98] transition-all shadow-lg shadow-[#4E44DB]/25 flex items-center justify-center gap-2"
+                    class="bg-[#1c69d4] text-white px-8 py-3.5 rounded-lg font-bold hover:bg-[#3f36b8] active:scale-[0.98] transition-all shadow-sm shadow-[#1c69d4]/25 flex items-center justify-center gap-2"
                     wire:loading.attr="disabled">
                     <span wire:loading.remove wire:target="saveSettings">Simpan Perubahan</span>
                     <span wire:loading wire:target="saveSettings" class="flex items-center gap-2">

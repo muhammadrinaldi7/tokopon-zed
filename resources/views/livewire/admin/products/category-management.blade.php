@@ -1,12 +1,12 @@
 <div class="space-y-6">
     <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-gray-800">Manajemen Kategori Produk</h1>
-        <button wire:click="create" class="bg-[#4E44DB] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-opacity-90 transition shadow-sm shadow-[#4E44DB]/20">
+        <button wire:click="create" class="bg-[#1c69d4] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-opacity-90 transition shadow-sm shadow-[#1c69d4]/20">
             Tambah Kategori
         </button>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <table class="w-full text-left text-sm whitespace-nowrap">
             <thead class="bg-gray-50 text-gray-600 font-semibold border-b border-gray-100">
                 <tr>
@@ -20,7 +20,7 @@
                 @forelse($categories as $category)
                     <tr class="hover:bg-gray-50 transition">
                         <td class="px-6 py-4 font-bold text-gray-900 flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-[#eff2ff] flex items-center justify-center text-[#4E44DB]">
+                            <div class="w-8 h-8 rounded-lg bg-[#eff2ff] flex items-center justify-center text-[#1c69d4]">
                                 @if($category->icon)
                                     <i class="{{ $category->icon }}"></i>
                                 @else
@@ -61,7 +61,7 @@
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0 transition-opacity" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div wire:click="$set('showModal', false)" class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"></div>
 
-            <div class="relative transform overflow-hidden rounded-4xl bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-[#4E44DB]/15 text-left transition-all sm:my-8 sm:w-full sm:max-w-md">
+            <div class="relative transform overflow-hidden rounded-4xl bg-white/80 backdrop-blur-2xl border border-white shadow-sm shadow-[#1c69d4]/15 text-left transition-all sm:my-8 sm:w-full sm:max-w-md">
                 
                 {{-- Header --}}
                 <div class="px-6 py-5 border-b border-gray-200/50 flex justify-between items-center backdrop-blur-md bg-white/40">
@@ -75,17 +75,17 @@
                 <form wire:submit.prevent="store" class="p-6 space-y-5">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Nama Kategori</label>
-                        <input type="text" wire:model="name" placeholder="Contoh: Smartphone" class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#4E44DB] focus:ring-4 focus:ring-[#4E44DB]/10 rounded-2xl px-4 py-3 shadow-sm transition-all text-gray-800" required>
+                        <input type="text" wire:model="name" placeholder="Contoh: Smartphone" class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#1c69d4] focus:ring-4 focus:ring-[#1c69d4]/10 rounded-lg px-4 py-3 shadow-sm transition-all text-gray-800" required>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Ikon <span class="text-gray-400 font-normal">(opsional)</span></label>
-                        <input type="text" wire:model="icon" placeholder="Contoh: fas fa-mobile" class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#4E44DB] focus:ring-4 focus:ring-[#4E44DB]/10 rounded-2xl px-4 py-3 shadow-sm transition-all text-gray-800">
+                        <input type="text" wire:model="icon" placeholder="Contoh: fas fa-mobile" class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#1c69d4] focus:ring-4 focus:ring-[#1c69d4]/10 rounded-lg px-4 py-3 shadow-sm transition-all text-gray-800">
                         <p class="text-xs text-gray-500 ml-1 mt-1.5">Kosongkan jika tidak memiliki ikon spesifik.</p>
                     </div>
 
                     <div class="pt-4 flex gap-3">
-                        <button type="button" wire:click="$set('showModal', false)" class="flex-1 bg-gray-100/50 hover:bg-gray-200/70 text-gray-700 py-3 rounded-2xl text-[15px] font-semibold transition-all">Batal</button>
-                        <button type="submit" class="flex-1 bg-[#4E44DB] text-white py-3 rounded-2xl text-[15px] font-semibold hover:bg-[#3f36b8] hover:shadow-lg hover:shadow-[#4E44DB]/30 active:scale-[0.98] transition-all">
+                        <button type="button" wire:click="$set('showModal', false)" class="flex-1 bg-gray-100/50 hover:bg-gray-200/70 text-gray-700 py-3 rounded-lg text-[15px] font-semibold transition-all">Batal</button>
+                        <button type="submit" class="flex-1 bg-[#1c69d4] text-white py-3 rounded-lg text-[15px] font-semibold hover:bg-[#3f36b8] hover:shadow-sm hover:shadow-[#1c69d4]/30 active:scale-[0.98] transition-all">
                             {{ $isEditing ? 'Simpan Perubahan' : 'Buat Kategori' }}
                         </button>
                     </div>

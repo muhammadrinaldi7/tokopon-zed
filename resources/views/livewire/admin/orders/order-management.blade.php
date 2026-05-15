@@ -7,7 +7,7 @@
     </div>
 
     {{-- Filters --}}
-    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 mb-6">
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 mb-6">
         <div class="flex-1 relative">
             <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none"
                 viewBox="0 0 24 24" stroke="currentColor">
@@ -15,11 +15,11 @@
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari No. Pesanan atau Nama Pembeli..."
-                class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border-gray-200 rounded-xl text-sm focus:ring-[#4E44DB]/20 focus:border-[#4E44DB]">
+                class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border-gray-200 rounded-lg text-sm focus:ring-[#1c69d4]/20 focus:border-[#1c69d4]">
         </div>
         <div class="w-full md:w-64 shrink-0">
             <select wire:model.live="statusFilter"
-                class="w-full px-4 py-2.5 bg-gray-50 border-gray-200 rounded-xl text-sm focus:ring-[#4E44DB]/20 focus:border-[#4E44DB]">
+                class="w-full px-4 py-2.5 bg-gray-50 border-gray-200 rounded-lg text-sm focus:ring-[#1c69d4]/20 focus:border-[#1c69d4]">
                 <option value="">Semua Status</option>
                 <option value="PENDING">Menunggu Bayar</option>
                 <option value="PROCESSING">Diproses</option>
@@ -31,7 +31,7 @@
     </div>
 
     {{-- Orders Table --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
@@ -58,7 +58,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 <p class="text-sm font-semibold text-gray-800">{{ $order->items->count() }} Item</p>
-                                <p class="text-sm font-black text-[#4E44DB] mt-1">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</p>
+                                <p class="text-sm font-black text-[#1c69d4] mt-1">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</p>
                             </td>
                             <td class="px-6 py-4">
                                 @php
@@ -94,7 +94,7 @@
                                     @endif
 
                                     {{-- Order Detail Button (Placeholder for Admin Order Detail mapping) --}}
-                                    <button class="p-1.5 text-gray-400 hover:text-[#4E44DB] hover:bg-blue-50 rounded-lg transition" title="Lihat Detail (Segera Hadir)">
+                                    <button class="p-1.5 text-gray-400 hover:text-[#1c69d4] hover:bg-blue-50 rounded-lg transition" title="Lihat Detail (Segera Hadir)">
                                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />

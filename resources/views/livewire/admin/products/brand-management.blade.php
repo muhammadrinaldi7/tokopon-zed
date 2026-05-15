@@ -2,12 +2,12 @@
     <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-gray-800">Manajemen Merek</h1>
         <button wire:click="create"
-            class="bg-[#4E44DB] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-opacity-90 transition">
+            class="bg-[#1c69d4] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-opacity-90 transition">
             Tambah Merek
         </button>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <table class="w-full text-left text-sm whitespace-nowrap">
             <thead class="bg-gray-50 text-gray-600 font-semibold border-b border-gray-100">
                 <tr>
@@ -64,7 +64,7 @@
                 class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"></div>
 
             <div
-                class="relative transform overflow-hidden rounded-4xl bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-[#4E44DB]/15 text-left transition-all sm:my-8 sm:w-full sm:max-w-md">
+                class="relative transform overflow-hidden rounded-4xl bg-white/80 backdrop-blur-2xl border border-white shadow-sm shadow-[#1c69d4]/15 text-left transition-all sm:my-8 sm:w-full sm:max-w-md">
                 <div
                     class="px-6 py-5 border-b border-gray-200/50 flex justify-between items-center backdrop-blur-md bg-white/40">
                     <h2 class="text-[17px] font-semibold tracking-tight text-gray-900">
@@ -82,7 +82,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Nama Merek</label>
                         <input type="text" wire:model="name" placeholder="Contoh: Apple"
-                            class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#4E44DB] focus:ring-4 focus:ring-[#4E44DB]/10 rounded-2xl px-4 py-3 shadow-sm transition-all text-gray-800 placeholder-gray-400"
+                            class="w-full text-[15px] bg-white/60 border border-gray-200/70 focus:bg-white focus:border-[#1c69d4] focus:ring-4 focus:ring-[#1c69d4]/10 rounded-lg px-4 py-3 shadow-sm transition-all text-gray-800 placeholder-gray-400"
                             required>
                         @error('name')
                             <span class="text-xs text-rose-500 font-medium ml-1 mt-1 block">{{ $message }}</span>
@@ -94,17 +94,17 @@
                         <div class="flex items-center gap-4">
                             @if ($logo)
                                 <div
-                                    class="w-16 h-16 rounded-xl overflow-hidden border-2 border-[#4E44DB] shadow-md shrink-0">
+                                    class="w-16 h-16 rounded-lg overflow-hidden border-2 border-[#1c69d4] shadow-sm shrink-0">
                                     <img src="{{ $logo->temporaryUrl() }}" class="w-full h-full object-cover">
                                 </div>
                             @elseif($currentLogoUrl)
                                 <div
-                                    class="w-16 h-16 rounded-xl overflow-hidden border border-gray-200 shadow-sm shrink-0">
+                                    class="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 shadow-sm shrink-0">
                                     <img src="{{ $currentLogoUrl }}" class="w-full h-full object-cover">
                                 </div>
                             @else
                                 <div
-                                    class="w-16 h-16 rounded-xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center shrink-0">
+                                    class="w-16 h-16 rounded-lg bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center shrink-0">
                                     <svg class="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -115,11 +115,11 @@
 
                             <div class="flex-1">
                                 <label
-                                    class="relative cursor-pointer bg-white rounded-xl border border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-50 transition-colors inline-block overflow-hidden">
+                                    class="relative cursor-pointer bg-white rounded-lg border border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-50 transition-colors inline-block overflow-hidden">
                                     <span>{{ $logo ? 'Ganti' : 'Pilih Logo' }}</span>
                                     <input type="file" wire:model="logo" class="sr-only" accept="image/*">
                                 </label>
-                                <div wire:loading wire:target="logo" class="text-[10px] text-[#4E44DB] font-bold mt-1">
+                                <div wire:loading wire:target="logo" class="text-[10px] text-[#1c69d4] font-bold mt-1">
                                     Mengupload...</div>
                             </div>
                         </div>
@@ -130,11 +130,11 @@
 
                     <div class="pt-4 flex gap-3">
                         <button type="button" wire:click="$set('showModal', false)"
-                            class="flex-1 bg-gray-100/50 hover:bg-gray-200/70 text-gray-700 py-3 rounded-2xl text-[15px] font-semibold transition-all">
+                            class="flex-1 bg-gray-100/50 hover:bg-gray-200/70 text-gray-700 py-3 rounded-lg text-[15px] font-semibold transition-all">
                             Batal
                         </button>
                         <button type="submit"
-                            class="flex-1 bg-[#4E44DB] text-white py-3 rounded-2xl text-[15px] font-semibold hover:bg-[#3f36b8] hover:shadow-lg hover:shadow-[#4E44DB]/30 active:scale-[0.98] transition-all">
+                            class="flex-1 bg-[#1c69d4] text-white py-3 rounded-lg text-[15px] font-semibold hover:bg-[#3f36b8] hover:shadow-sm hover:shadow-[#1c69d4]/30 active:scale-[0.98] transition-all">
                             Simpan
                         </button>
                     </div>

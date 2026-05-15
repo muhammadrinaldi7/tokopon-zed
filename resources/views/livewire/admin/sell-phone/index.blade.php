@@ -6,14 +6,14 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         {{-- Filters --}}
         <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row gap-4">
             <div class="relative flex-1">
-                <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari pelanggan atau tipe HP..." class="w-full pl-10 pr-4 py-2 text-sm border-gray-200 rounded-lg focus:ring-[#4E44DB] focus:border-[#4E44DB]">
+                <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari pelanggan atau tipe HP..." class="w-full pl-10 pr-4 py-2 text-sm border-gray-200 rounded-lg focus:ring-[#1c69d4] focus:border-[#1c69d4]">
                 <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             </div>
-            <select wire:model.live="status" class="text-sm border-gray-200 rounded-lg focus:ring-[#4E44DB] focus:border-[#4E44DB] w-full sm:w-48">
+            <select wire:model.live="status" class="text-sm border-gray-200 rounded-lg focus:ring-[#1c69d4] focus:border-[#1c69d4] w-full sm:w-48">
                 <option value="">Semua Status</option>
                 <option value="PENDING">Menunggu Taksiran</option>
                 <option value="OFFERED">Penawaran Dikirim</option>
@@ -48,7 +48,7 @@
                                 <div class="font-medium text-gray-900">{{ optional($item->user)->name }}</div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="font-bold text-[#4E44DB]">{{ $item->phone_brand }} {{ $item->phone_model }}</div>
+                                <div class="font-bold text-[#1c69d4]">{{ $item->phone_brand }} {{ $item->phone_model }}</div>
                                 <div class="text-xs text-gray-500 mt-1">RAM/Storage: {{ $item->phone_ram ?: '-' }} / {{ $item->phone_storage ?: '-' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -73,7 +73,7 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <a href="{{ route('admin.sell-phones.show', $item) }}" wire:navigate class="text-[#4E44DB] hover:text-[#3f36b8] font-semibold text-sm">
+                                <a href="{{ route('admin.sell-phones.show', $item) }}" wire:navigate class="text-[#1c69d4] hover:text-[#3f36b8] font-semibold text-sm">
                                     {{ $item->status === 'PENDING' ? 'Taksir Sekarang' : 'Detail' }} →
                                 </a>
                             </td>

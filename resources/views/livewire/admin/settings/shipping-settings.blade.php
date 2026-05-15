@@ -12,7 +12,7 @@
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Biteship API Key (Secret)</label>
                 <input type="password" wire:model="biteshipApiKey" placeholder="biteship_test_..."
-                    class="w-full text-sm rounded-xl border-gray-200 px-4 py-3.5 focus:ring-2 focus:ring-[#4E44DB]/20 focus:border-[#4E44DB] transition">
+                    class="w-full text-sm rounded-lg border-gray-200 px-4 py-3.5 focus:ring-2 focus:ring-[#1c69d4]/20 focus:border-[#1c69d4] transition">
                 <p class="text-xs text-gray-400 mt-2 ml-1">Dapatkan API Key di Dashboard Biteship -> Settings -> API Keys.</p>
                 @error('biteshipApiKey') <span class="text-xs text-rose-500 ml-1 mt-1 block">{{ $message }}</span> @enderror
             </div>
@@ -21,7 +21,7 @@
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Kode Pos Toko (Origin)</label>
                 <input type="text" wire:model="storeOriginPostalCode" placeholder="Contoh: 12345"
-                    class="w-full text-sm rounded-xl border-gray-200 px-4 py-3.5 focus:ring-2 focus:ring-[#4E44DB]/20 focus:border-[#4E44DB] transition">
+                    class="w-full text-sm rounded-lg border-gray-200 px-4 py-3.5 focus:ring-2 focus:ring-[#1c69d4]/20 focus:border-[#1c69d4] transition">
                 <p class="text-xs text-gray-400 mt-2 ml-1">Ini adalah lokasi awal pengiriman barang Anda. Dibutuhkan oleh Biteship untuk menghitung jarak & ongkir ke pembeli.</p>
                 @error('storeOriginPostalCode') <span class="text-xs text-rose-500 ml-1 mt-1 block">{{ $message }}</span> @enderror
             </div>
@@ -33,9 +33,9 @@
                 
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                     @foreach ($availableCouriers as $code => $label)
-                        <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors {{ in_array($code, $biteshipCouriers) ? 'bg-[#4E44DB]/5 border-[#4E44DB]' : '' }}">
+                        <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors {{ in_array($code, $biteshipCouriers) ? 'bg-[#1c69d4]/5 border-[#1c69d4]' : '' }}">
                             <input type="checkbox" wire:model.live="biteshipCouriers" value="{{ $code }}"
-                                class="mt-0.5 w-4 h-4 text-[#4E44DB] border-gray-300 rounded focus:ring-[#4E44DB]">
+                                class="mt-0.5 w-4 h-4 text-[#1c69d4] border-gray-300 rounded focus:ring-[#1c69d4]">
                             <span class="text-xs font-semibold text-gray-700">{{ $label }}</span>
                         </label>
                     @endforeach
@@ -45,7 +45,7 @@
             {{-- Actions --}}
             <div class="pt-6 border-t border-gray-100 flex justify-end">
                 <button type="submit"
-                    class="bg-[#4E44DB] text-white px-8 py-3.5 rounded-xl font-bold hover:bg-[#3f36b8] transition shadow-lg shadow-[#4E44DB]/25 flex items-center gap-2"
+                    class="bg-[#1c69d4] text-white px-8 py-3.5 rounded-lg font-bold hover:bg-[#3f36b8] transition shadow-sm shadow-[#1c69d4]/25 flex items-center gap-2"
                     wire:loading.attr="disabled">
                     <span wire:loading.remove wire:target="save">Simpan Pengaturan</span>
                     <span wire:loading wire:target="save" class="flex items-center gap-2">
