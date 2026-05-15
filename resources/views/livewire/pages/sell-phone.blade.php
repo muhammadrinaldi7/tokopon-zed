@@ -358,7 +358,34 @@
 
                 {{-- Evaluasi Validasi Step 2 --}}
                 @php
-                    $isStep2Valid = !empty($photos) && count($photos) >= 1;
+                    // 1. Validasi Foto (Minimal 1)
+                    $photoValid = !empty($photos) && count($photos) >= 1;
+
+                    // 2. Validasi Inputan Radio/Kondisi
+                    $rulesValid = false;
+                    if ($buyback_device && count($device_rules) > 0) {
+                        // Ambil semua nama kategori unik yang BUKAN kelengkapan (karena non-kelengkapan menggunakan sistem Radio)
+                        $requiredCategories = collect($device_rules)
+                            ->filter(function ($rule) {
+                                return !str_contains(strtolower($rule['category']), 'kelengkapan');
+                            })
+                            ->pluck('category')
+                            ->unique();
+
+                        // Hitung berapa banyak kategori wajib yang sudah dipilih oleh user di komponen Livewire
+                        $filledCategoriesCount = collect($selected_rules)
+                            ->filter(function ($value, $key) use ($requiredCategories) {
+                                // Memastikan key yang diisi ada di daftar kategori wajib dan nilainya tidak kosong
+                                return $requiredCategories->contains($key) && !empty($value);
+                            })
+                            ->count();
+
+                        // Dianggap valid jika jumlah yang diisi sama dengan jumlah kategori yang diwajibkan
+                        $rulesValid = $filledCategoriesCount === $requiredCategories->count();
+                    }
+
+                    // Gabungkan semua kondisi: Foto harus valid DAN semua radio kondisi harus sudah dipilih
+                    $isStep2Valid = $photoValid && $rulesValid;
                 @endphp
 
                 <div class="flex justify-between items-center pt-4 pb-10">
@@ -445,9 +472,28 @@
                     Edit Data
                 </button>
                 <div class="w-full md:w-auto">
-                    <button type="button" wire:click="submit"
-                        class="w-full md:w-auto bg-violet-600 hover:bg-violet-700 text-white px-10 py-4 rounded-2xl font-black text-lg transition-all active:scale-[0.97] shadow-xl shadow-violet-900/20">
-                        Kirim Penawaran Sekarang
+                    <button type="button" wire:click="submit" wire:loading.attr="disabled"
+                        class="w-full md:w-auto bg-violet-600 hover:bg-violet-700 text-white px-10 py-4 rounded-2xl font-black text-lg transition-all active:scale-[0.97] shadow-xl shadow-violet-900/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:pointer-events-none">
+
+                        {{-- Kondisi 1: Teks Normal (Akan hilang/tersembunyi saat loading) --}}
+                        <span wire:loading.remove wire:target="submit">
+                            Kirim Penawaran Sekarang
+                        </span>
+
+                        {{-- Kondisi 2: Konten Loading (Hanya muncul saat method submit berjalan) --}}
+                        {{-- Ganti baris pembuka span menjadi wire:loading.flex --}}
+                        <span wire:loading.flex wire:target="submit" class="items-center justify-center gap-2">
+                            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10"
+                                    stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            Mengirim...
+                        </span>
+
                     </button>
                     <p class="text-center text-[10px] text-neutral-400 mt-3 italic font-medium">
                         Dengan mengirim, Anda setuju dengan proses pengecekan teknis.
