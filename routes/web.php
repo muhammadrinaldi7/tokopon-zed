@@ -5,6 +5,7 @@ use App\Livewire\Pages\PhoneRepair;
 use App\Livewire\Pages\SellPhone;
 use App\Livewire\Pages\SellPhoneHistory;
 use App\Livewire\Pages\TradeIn;
+use App\Livewire\Pages\UserProfile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,7 @@ Route::middleware(['auth', 'customer'])->group(function () {
 
     // Trade In Client
     Route::get('/trade-in-history', \App\Livewire\Pages\TradeInHistory::class)->name('trade-in-history');
+    Route::get('/profile', UserProfile::class)->name('profile');
     Route::get('/sell-phone-history', SellPhoneHistory::class)->name('sell-phone-history');
     Route::get('/trade-in/{product}/submit', \App\Livewire\Pages\SubmitTradeIn::class)->name('trade-in.submit');
     Route::get('/trade-in/{tradeIn}/detail', \App\Livewire\Pages\TradeInDetail::class)->name('trade-ins.show');

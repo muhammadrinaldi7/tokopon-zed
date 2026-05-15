@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             AdminRoleSeeder::class,
             CsRoleSeeder::class,
             PermissionSeeder::class,
-            ProductErzapSeed::class,
+            // ProductErzapSeed::class,
         ]);
     }
 }

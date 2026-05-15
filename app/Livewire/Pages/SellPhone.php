@@ -4,6 +4,7 @@ namespace App\Livewire\Pages;
 
 use App\Models\Brand;
 use App\Models\SellPhone as SellPhoneModel;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
@@ -164,6 +165,21 @@ class SellPhone extends Component
             return redirect()->to('/login');
         }
 
+        // Cek kelengkapan Profil Penjual
+        $user = User::findOrFail(Auth::user()->id);
+
+        $isSellerReady = $user->profile && !empty($user->profile->full_name)
+            && !empty($user->profile->phone_number)
+            && !empty($user->identity)
+            && !empty($user->npwp)
+            && !empty($user->getFirstMediaUrl('ktp_photo'))
+            && $user->bankAccounts()->where('is_primary', true)->exists();
+
+        if (!$isSellerReady) {
+            $this->dispatch('show-toast', type: 'error', message: 'Silakan lengkapi Data Pribadi, KTP, NPWP, dan Rekening Bank di menu Profil.');
+            return $this->redirect(route('profile'), navigate: true);
+        }
+
         // Jalankan Validasi
         $this->validate();
 
@@ -202,7 +218,15 @@ class SellPhone extends Component
         $catatanText = $this->old_phone_additional_note ? ". Catatan Tambahan: {$this->old_phone_additional_note}" : "";
         $minusDesc = "Kondisi: {$kondisi}{$catatanText}";
 
-        // 4. Simpan ke Database
+        // 4. Hit API Accurate jika user belum punya ID Vendor
+        try {
+            app(\App\Services\AccurateService::class)->syncVendor($user);
+        } catch (\Exception $e) {
+            // Log error jika gagal hit accurate, tapi biarkan proses berlanjut
+            \Illuminate\Support\Facades\Log::error('Failed to sync vendor to Accurate: ' . $e->getMessage());
+        }
+
+        // 5. Simpan ke Database
         $sellPhone = \App\Models\SellPhone::create([
             'user_id'           => Auth::id(),
             'buyback_device_id' => $device->id,
@@ -215,7 +239,7 @@ class SellPhone extends Component
             'status'            => 'WAITING_FOR_DEVICE',
         ]);
 
-        // 5. Upload Media (Spatie Media Library)
+        // 6. Upload Media (Spatie Media Library)
         if (!empty($this->photos)) {
             foreach ($this->photos as $photo) {
                 $sellPhone->addMedia($photo->getRealPath())
@@ -226,7 +250,7 @@ class SellPhone extends Component
 
         $this->dispatch('show-toast', type: 'success', message: 'Penawaran disetujui! Silakan kirim perangkat Anda.');
 
-        // 6. Reset form ke keadaan semula
+        // 7. Reset form ke keadaan semula
         $this->reset([
             'selected_brand_id',
             'selected_model_name',

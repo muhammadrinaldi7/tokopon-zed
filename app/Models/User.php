@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -25,6 +27,12 @@ class User extends Authenticatable
         'provider',
         'provider_id',
         'avatar',
+        'identity',
+        'npwp',
+        'accurate_customer_id',
+        'accurate_customer_no',
+        'accurate_vendor_id',
+        'accurate_vendor_no',
     ];
 
     /**
@@ -58,6 +66,11 @@ class User extends Authenticatable
     public function addresses()
     {
         return $this->hasMany(\App\Models\UserAddress::class);
+    }
+
+    public function bankAccounts()
+    {
+        return $this->hasMany(\App\Models\UserBankAccount::class);
     }
 
     public function orders()

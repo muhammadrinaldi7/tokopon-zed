@@ -134,6 +134,25 @@ class TradeIn extends Component
 
     public function submit()
     {
+        // Cek Autentikasi
+        if (!Auth::check()) {
+            return redirect()->to('/login');
+        }
+
+        // Cek kelengkapan Profil Penjual
+        $user = Auth::user();
+        $isSellerReady = $user->profile && !empty($user->profile->full_name) 
+                        && !empty($user->profile->phone_number)
+                        && !empty($user->identity)
+                        && !empty($user->npwp)
+                        && !empty($user->getFirstMediaUrl('ktp_photo'))
+                        && $user->bankAccounts()->where('is_primary', true)->exists();
+
+        if (!$isSellerReady) {
+            session()->flash('error', 'Silakan lengkapi Data Pribadi, KTP, NPWP, dan Rekening Bank di menu Profil.');
+            return $this->redirect(route('profile'), navigate: true);
+        }
+
         // Validasi
         $this->validate([
             'selectedProductId' => 'required',
@@ -169,6 +188,14 @@ class TradeIn extends Component
             $catatanText = $this->old_phone_additional_note ? ". Catatan Lain: {$this->old_phone_additional_note}" : "";
             $minusDesc = "Kondisi / Minus: {$kondisi}{$catatanText}";
 
+            // 0. Hit API Accurate jika user belum punya ID Vendor
+            try {
+                app(\App\Services\AccurateService::class)->syncVendor(Auth::user());
+            } catch (\Exception $e) {
+                // Log error jika gagal hit accurate, tapi biarkan proses berlanjut
+                \Illuminate\Support\Facades\Log::error('Failed to sync vendor to Accurate: ' . $e->getMessage());
+            }
+
             // 1. Simpan Model
             $tradeIn = TradeInModel::create([
                 'user_id' => Auth::id(),
@@ -200,6 +227,7 @@ class TradeIn extends Component
             session()->flash('error', 'Terjadi kesalahan sistem');
         }
     }
+
     public function updatedSelectedTargetBrand()
     {
         // Reset pilihan produk saat user mengganti brand

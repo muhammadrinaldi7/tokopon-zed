@@ -120,10 +120,18 @@ new class extends Component {
                         x-transition:leave-end="opacity-0 scale-95"
                         class="absolute right-0 mt-2 w-52 bg-white border border-gray-100 rounded-2xl shadow-xl shadow-gray-200/50 py-2 z-50">
 
-                        <div class="px-4 py-2 border-b border-gray-50 mb-1">
-                            <p class="text-xs text-gray-400">Akun Anda</p>
-                            <p class="text-sm font-bold text-gray-800 truncate">{{ auth()->user()->email }}</p>
-                        </div>
+                        <a href="{{ route('profile') }}" wire:navigate>
+                            <div
+                                class="px-4 py-2 border-b hover:bg-gray-50 cursor-pointer hover:text-gray-600 transition border-gray-50 mb-1">
+                                <div class="flex  items-center gap-3">
+                                    <img src="{{ auth()->user()->avatar }}" alt="avatar user"
+                                        class="w-6 h-6 rounded-full object-cover">
+                                    <p class="text-sm font-semibold text-gray-700 leading-tight">
+                                        {{ explode(' ', auth()->user()->name)[0] }}</p>
+                                </div>
+                            </div>
+                        </a>
+
 
                         <a href="{{ route('orders.index') }}" wire:navigate
                             class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition">
@@ -135,7 +143,7 @@ new class extends Component {
                         </a>
 
                         <a href="{{ route('trade-in-history') }}" wire:navigate
-                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-amber-50 hover:text-amber-600 transition">
+                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-emerald-50 hover:text-emerald-600 transition">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -143,7 +151,7 @@ new class extends Component {
                             Tukar Tambah
                         </a>
                         <a href="{{ route('sell-phone-history') }}" wire:navigate
-                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-amber-50 hover:text-amber-600 transition">
+                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-violet-50 hover:text-violet-600 transition">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -171,8 +179,9 @@ new class extends Component {
                 </a>
                 <a href="#"
                     class="flex items-center gap-1.5 px-5 py-2 text-sm font-semibold text-gray-500 bg-gray-100 border border-gray-200 rounded-lg transition hover:bg-gray-200 hover:-translate-y-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                     </svg>
                     Chat
