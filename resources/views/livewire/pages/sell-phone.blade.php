@@ -103,7 +103,7 @@
                     x-init="setTimeout(() => show = true, 100)">
 
                     @foreach ($brands as $brand)
-                        <label class="relative cursor-pointer group">
+                        <label wire:key="brand-{{ $brand->id }}" class="relative cursor-pointer group">
                             <input type="radio" wire:model.live="selected_brand_id" value="{{ $brand->id }}"
                                 class="peer hidden">
                             <div
@@ -255,25 +255,22 @@
                         @endphp
 
                         @foreach ($groupedRules as $category => $rules)
-                            {{-- Sembunyikan kategori Baterai Health jika brand bukan Apple (ID 1) --}}
-                            @if (str_contains(strtolower($category), 'baterai') && $selected_brand_id != 1)
-                                @continue
-                            @endif
-
                             <div class="space-y-3 mb-6">
                                 <h1 class="text-xs font-black text-neutral-500 uppercase ml-1 tracking-wider block">
                                     {{ $category }}
                                 </h1>
 
-                                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                <div class="flex flex-wrap gap-3">
                                     @foreach ($rules as $rule)
-                                        <label class="cursor-pointer block">
+                                        <label class="cursor-pointer block ">
                                             {{-- LOGIKA PEMISAHAN: Jika kategori 'kelengkapan' pakai checkbox, jika tidak pakai radio --}}
                                             @if (str_contains(strtolower($category), 'kelengkapan'))
                                                 <input type="checkbox"
                                                     wire:model.live="selected_rules.{{ $rule['key'] }}"
                                                     class="peer hidden">
                                             @else
+                                                {{-- Untuk Radio, wire:model harus diarahkan ke property yang sama per kategori --}}
+                                                {{-- Contoh: selected_rules.layar atau selected_rules.fisik --}}
                                                 <input type="radio" name="{{ $category }}"
                                                     value="{{ $rule['key'] }}"
                                                     wire:model.live="selected_rules.{{ $category }}"
@@ -281,7 +278,7 @@
                                             @endif
 
                                             <div
-                                                class="py-4 px-3 bg-white shadow-sm border-2 border-transparent rounded-2xl text-center text-sm font-bold text-neutral-600 transition-all peer-checked:border-violet-600 peer-checked:bg-violet-50 peer-checked:text-violet-700 hover:border-violet-200 flex items-center justify-center min-h-[4rem]">
+                                                class="py-2 px-4 bg-white shadow-sm border-2 border-transparent rounded-xl text-center text-sm font-bold text-neutral-600 transition-all peer-checked:border-violet-600 peer-checked:bg-violet-50 peer-checked:text-violet-700 hover:border-violet-200 flex items-center justify-center ">
                                                 {{ $rule['name'] }}
                                             </div>
                                         </label>
