@@ -1,45 +1,44 @@
-<div class="bg-gray-50 min-h-screen pb-20">
-    {{-- Header Banner --}}
-    <div class="bg-linear-to-r from-[#4E44DB] to-[#0097FF] text-white pt-10 pb-16 relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-full opacity-10">
-            <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white blur-3xl"></div>
-        </div>
-        <div class="max-w-5xl mx-auto px-6 relative z-10">
-            <div class="flex items-center gap-3 mb-2">
-                <a href="/products" wire:navigate class="text-white/70 hover:text-white transition text-sm">
-                    ← Lanjut Belanja
-                </a>
+<div class="max-w-7xl mx-auto p-2  md:p-6 min-h-screen">
+    <div class="flex gap-2">
+        <a href="/"
+            class="bg-neutral-500 hover:bg-neutral-600 transition-colors text-white px-3 flex justify-center items-center rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-8 rotate-180">
+                <path fill-rule="evenodd"
+                    d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+                    clip-rule="evenodd" />
+            </svg>
+        </a>
+        <div
+            class="w-full flex gap-4  items-center bg-linear-to-r from-[#0097FF] via-[#4E44DB] to-[#013559] py-3 px-6 rounded-md shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-8 text-white">
+                <path
+                    d="M2.25 2.25a.75.75 0 0 0 0 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 0 0-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 0 0 0-1.5H5.378A2.25 2.25 0 0 1 7.5 15h11.218a.75.75 0 0 0 .674-.421 60.358 60.358 0 0 0 2.96-7.228.75.75 0 0 0-.525-.965A60.864 60.864 0 0 0 5.68 4.509l-.232-.867A1.875 1.875 0 0 0 3.636 2.25H2.25ZM3.75 20.25a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM16.5 20.25a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z" />
+            </svg>
+
+            <div class="flex justify-between items-center w-full">
+                <h1 class="text-white text-xl md:text-4xl font-bold">Keranjang Belanja</h1>
+                <p class="text-white text-lg font-bold">
+                    @if ($totalItems > 0)
+                        {{ $totalItems }}
+                    @else
+                        0
+                    @endif
+                </p>
             </div>
-            <h1 class="text-3xl md:text-4xl font-extrabold flex items-center gap-3">
-                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-                </svg>
-                Keranjang Belanja
-            </h1>
-            <p class="text-white/70 mt-1">
-                @if ($totalItems > 0)
-                    {{ $totalItems }} item di keranjang
-                @else
-                    Keranjang kosong
-                @endif
-            </p>
         </div>
     </div>
 
-    <div class="max-w-5xl mx-auto px-6 -mt-8 relative z-20">
+
+    <div class="mt-8 relative z-20">
         @if ($items->isEmpty())
             {{-- Empty Cart State --}}
-            <div class="bg-white rounded-3xl p-16 text-center shadow-xl border border-gray-100">
-                <div class="w-28 h-28 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-14 h-14 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-                    </svg>
+            <div class="bg-white rounded-3xl p-8 text-center shadow-xl border border-gray-100">
+                <div class="w-65 h-auto  flex items-center justify-center mx-auto mb-2">
+                    <img src="{{ asset('assets/png/cart.png') }}" alt="">
                 </div>
                 <h3 class="text-xl font-bold text-gray-800 mb-2">Keranjang Belanjamu Kosong</h3>
-                <p class="text-gray-500 mb-8 max-w-sm mx-auto">Yuk mulai belanja dan temukan smartphone impianmu!</p>
+                <p class="text-gray-500 mb-4 max-w-sm mx-auto text-xs">Yuk mulai belanja dan temukan smartphone
+                    impianmu!</p>
                 <a href="{{ route('buy-mobile') }}" wire:navigate
                     class="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-bold text-white bg-[#4E44DB] rounded-2xl shadow-lg shadow-[#4E44DB]/30 hover:bg-[#3d35b8] hover:-translate-y-0.5 transition-all">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
